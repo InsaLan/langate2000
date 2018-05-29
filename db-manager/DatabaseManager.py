@@ -1,37 +1,48 @@
-import os.path
 import sqlite3
-import http.client
+import requests
 
 def hashFunction(s):
 
 class DatabaseManager:
-    def __init__(self):
-        # Open a connection to local database
-        if not os.path.isfile("local.db"):
-            open("local.db", 'x').close()
-            localConnection = sqlite3.connect("local.db")
-            self.localCursor = localConnection.cursor()
-            self.localCursor.execute("create table users (user text, pass text)")
-        else:
-            localConnection = sqlite3.connect("local.db")
-            self.localCursor = localConnection.cursor()
-        self.remoteLogin = http.client.HTTPSConnection("www.insalan.fr/api")
-        # Open a connection to remote database
-    
-    LOGIN_OK = 0
-    USER_NOT_FOUND = 1
-    WRONG_PASSWORD = 2
+    # localDatabase
+    # remoteDatabase
+    DEFAULT_FILENAME = "local.db"
 
-    def login(self, username, password):
-        uh, ph = hashFunction(username), hashFunction(password)
-        self.localCursor.execute("select pass from users where user=?", (uh,))
-        result = localCursor.fetchone()
-        if (result != None):
+    def __init__(self):
+        open(DEFAULT_FILENAME, 'x').close()
+        self.localDatabase = sqlite3.connect(DEFAULT_FILENAME).cursor()
+        self.localDatabase.execute("create table userPass (username text, password text)")
+        self.localDatabase.execute("create table userObj (username text, object text)")
+
+    def __init__(self, filename):
+        self.localDatabase = sqlite3.connect(filename).cursor()
+    
+    def getUser(self, username, password):
+        # Check local database
+        self.localDatabase.execute("select password from userPass where username=?", (username,))
+        result = self.localDatabase.fetchone()
+        if result != None:
             # User is present in local database
-            if (result[0] == ph):
-                return LOGIN_OK
+            if password == result[0]:
+                return User() # TODO
             else:
-                return WRONG_PASSWORD
+                raise WrongPasswordError
         else:
             # User is missing from local database
-            remoteLogin.request("POST", "/api/user/me", ..., ...)
+            result = requests.post("https://www.insalan.fr/api/user/me", data = {"username" : "", "password" : ""})
+            resultJson = result.json()
+
+    
+    def addUser(self, user):
+        self.localDatabase.execute("insert into userPass values (?, ?)", )
+    
+    def isLocal(self, user):
+        return 
+    
+    def delUser(self, username): #id ?
+
+    def getUserPassword(self, user):
+    
+    def getUsers(self):
+    
+    def getMachines(self, user):
