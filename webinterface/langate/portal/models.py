@@ -1,17 +1,25 @@
 from django.db import models
-
-# Create your models here.
-
-#Custom usermodel
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-class LanUser(models.Model):
-    #README : content of base user model :
-    #https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#django.contrib.auth.models.User
+
+class Profile(models.Model):
     #DOCU related : https://docs.djangoproject.com/en/2.0/topics/auth/customizing/#extending-user
+    #and https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
     #Additionnal attributes
-    hasPayed = models.BooleanField
+    ##Relevant if player :
     tournament = models.CharField(max_length=100)
-    #Normalement il existe un moyen de gérer les groupes dans django, à voir...
-    
+    team = models.CharField(max_length=100)
+
+    #Functions listening modifications of user
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()

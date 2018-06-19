@@ -1,7 +1,9 @@
 """ Insalan website authentication backend """
+from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.models import UserManager, User
 
 UserModel = get_user_model()
 
@@ -41,7 +43,49 @@ class InsalanBackend(ModelBackend):
                     return user
         '''
 
-        NotImplemented
+        #TODO :
+        #Get the json from web
+        #If the credentials are correct and the player has payed
+        if NotImplemented:
+            user = User.objects.create_user(username=username,
+                                            email=None,
+                                            password=password)
+        #If the credentials are correct and the player HASN'T payed
+        elif NotImplemented:
+            raise NotAllowedException(username,"This player is correctly registered but hasn't paid.")
+
+        #Else
+        else:
+            raise BadCredentialsException()
+
+        #TODO later :
+        #Fill the profil automatically linked to the account with data (tournament, role)
+
+        #Then return the user newly created
+        return user
 
     def get_user_id(self, attributes):
         NotImplemented
+
+
+class LoginException(Exception):
+    """Base class for exceptions in this module."""
+    pass
+class BadCredentialsException(LoginException):
+    """Exception raised when the login or password doesn't match.
+    Attributes:
+        None
+    """
+    def __init__(self):
+        pass
+class NotAllowedException(LoginException,PermissionDenied):
+    """Exception raised when the user entered good credentials but
+        - was a player and didn't pay
+        - was banned
+    Attributes:
+        username -- username related to the unsuccessful transaction
+        message -- message related to the error
+    """
+    def __init__(self,username : str, message : str):
+        self.username = username
+        self.message = message
