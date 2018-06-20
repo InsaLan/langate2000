@@ -1,0 +1,115 @@
+/* Custom CSS rules for the dark theme */
+/* most of these rules override bootstrap rules */
+
+.background-insalan {
+	background-color: #36393F;
+}
+                                                                                     
+html, body {
+	height: 100%;
+}
+
+.navbar-insalan {
+	background-color: #2A2A2A !important; /* black navbar */
+}
+
+.active .nav-link {
+	color: #fff !important; /* white for selected links */
+}
+
+.navbar-nav .nav-link {
+	color: #AFB3AA; /* white-grey for unselected links */
+}
+.navbar-brand img {
+	margin-right: 0.45rem;
+}
+.navbar-brand {
+	margin-right: 0.7rem !important;
+}
+
+.form-control, .form-control:hover, .form-control:focus {
+.form-control, .form-control:hover, .form-control:focus {	background-color: #313339; /* dark grey for form controls */
+.form-control, .form-control:hover, .form-control:focus {	border-radius: 3px !important;
+	border-style: solid !important;
+	border-width: 1px !important;
+	border-color: rgba(0,0,0,.3) !important;
+	color: #b9bbbe;
+}
+                                                                                     
+.btn-insalan {
+	background-color: #293e5c; /* blue button, same color used for emphasis and links */
+	color: #b9bbbe;
+}
+                                                                                     
+                                                                                     
+form label { /* form labels are grey with small uppercase text */
+	color: #b9bbbe;
+	font-size: small;
+	letter-spacing: .5px;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+@media (max-height: 640px) { /* below h=660 we need to set a padding before the footer otherwise the footer covers things */
+	.form-auth {
+		padding-bottom: 3rem;
+	}
+}
+                                                                                     
+.footer-insalan {
+	font-size: 0.9rem;
+	color: rgba(255, 255, 255, .5); /* understated grey for the footer */
+}
+
+/* Tables */
+
+.table-insalan td, .table-insalan th {
+	border: .2px solid rgba(0,0,0,.3) !important;
+}
+
+.table-insalan thead th {
+	border-bottom-width: .2px;
+}
+
+.table-insalan {
+	margin-top: 2rem;
+	margin-bottom: 2rem !important;
+	background-color: #313339;
+	font-size: .95rem;
+}
+
+.action-list {
+	width: 25%;
+	text-align: center;
+}
+
+.action-list ul {
+	margin-bottom: 0.1rem;
+}
+
+/* Right widget bar displayed on the home pages */
+
+.widget-bar-insalan .card {
+	color: #AFB3AA;
+	margin-bottom: 1rem;
+	background-color: #313339;
+	border: 1px solid rgba(0,0,0,.3);
+}
+
+.widget-bar-insalan .card-title {
+	color: #fff;
+}
+
+/* Text related stuff */
+
+.text-white {
+	color: #b9bbbe !important; /* white-grey for texts in general */
+}
+
+.text-blue-insalan {
+	color: #007bff;
+}
+
+.text-danger {
+	color: #f25435 !important; 
+}
