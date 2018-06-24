@@ -4,10 +4,12 @@
 .background-insalan {
 	background-color: #36393F;
 }
-                                                                                     
+
 html, body {
 	height: 100%;
 }
+
+/* Navbar */
 
 .navbar-insalan {
 	background-color: #2A2A2A !important; /* black navbar */
@@ -27,22 +29,18 @@ html, body {
 	margin-right: 0.7rem !important;
 }
 
+/* Forms */
+
 .form-control, .form-control:hover, .form-control:focus {
-.form-control, .form-control:hover, .form-control:focus {	background-color: #313339; /* dark grey for form controls */
-.form-control, .form-control:hover, .form-control:focus {	border-radius: 3px !important;
+	background-color: #313339; /* dark grey for form controls */
+	border-radius: 3px !important;
 	border-style: solid !important;
 	border-width: 1px !important;
 	border-color: rgba(0,0,0,.3) !important;
 	color: #b9bbbe;
 }
-                                                                                     
-.btn-insalan {
-	background-color: #293e5c; /* blue button, same color used for emphasis and links */
-	color: #b9bbbe;
-}
-                                                                                     
-                                                                                     
-form label { /* form labels are grey with small uppercase text */
+
+.label-alt-insalan { /* form labels are grey with small uppercase text on the login page */
 	color: #b9bbbe;
 	font-size: small;
 	letter-spacing: .5px;
@@ -55,7 +53,35 @@ form label { /* form labels are grey with small uppercase text */
 		padding-bottom: 3rem;
 	}
 }
-                                                                                     
+
+/* Buttons */
+
+.btn-insalan {
+	background-color: #0062cc; /* blue buttons */
+	color: #fff;
+}
+
+.btn-insalan:active, .btn-insalan:hover {
+	background-color: #007bff;
+}
+
+.btn-sec-insalan {
+	background-color: #545b62;
+	border: 0;
+	color: #fff;
+}
+
+.btn-sec-insalan:active, .btn-sec-insalan:hover {
+	background-color: #6c757d !important;
+	border: 0 !important;
+}
+
+
+.table-insalan.table-sm .fas {
+	font-size: .85rem; /* icons in buttons have to be smaller when used in a small table */
+}
+
+
 .footer-insalan {
 	font-size: 0.9rem;
 	color: rgba(255, 255, 255, .5); /* understated grey for the footer */
@@ -78,13 +104,8 @@ form label { /* form labels are grey with small uppercase text */
 	font-size: .95rem;
 }
 
-.action-list {
-	width: 25%;
-	text-align: center;
-}
-
-.action-list ul {
-	margin-bottom: 0.1rem;
+.table-insalan th, td {
+	vertical-align: middle !important;
 }
 
 /* Right widget bar displayed on the home pages */
@@ -106,10 +127,55 @@ form label { /* form labels are grey with small uppercase text */
 	color: #b9bbbe !important; /* white-grey for texts in general */
 }
 
-.text-blue-insalan {
+.text-blue {
 	color: #007bff;
 }
 
 .text-danger {
-	color: #f25435 !important; 
+	color: #f25435 !important;
+}
+
+a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+a:hover, a:active {
+	color: #0062cc;
+	text-decoration: none;
+}
+
+/* Administration */
+
+.badge-admin-insalan {
+	font-size: .95rem;
+}
+
+.col-actions-admin-insalan {
+	width: 10%;
+}
+
+.col-payment-admin-insalan, .col-account-admin-insalan {
+	width: 85px;
+}
+
+
+/* Modals */
+
+.modal-insalan .modal-content {
+	background-color: #36393F;
+	color: #b9bbbe !important;
+}
+
+.modal-insalan .modal-header {
+	color: #fff;
+	border-bottom: 1px solid rgba(255, 255, 255, .15);
+}
+
+.modal-insalan .modal-footer {
+	border-top: 1px solid rgba(255, 255, 255, .15);
+}
+
+.close, .close:hover, .close:active {
+	color: #fff;
 }

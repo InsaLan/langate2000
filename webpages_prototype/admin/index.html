@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>administration - langate 2000</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="../static/bootstrap.min.css" />
+		<link rel="stylesheet" href="../static/insalan.css" />
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+	</head>
+	<body class="background-insalan">
+		<div class="d-flex flex-column h-100">
+
+			<div class="header">
+				<nav class="navbar navbar-expand-lg navbar-insalan">
+					<a class="navbar-brand" href="#" style="color:#F8F9FA">
+						<img src="../static/logo.png" width="34" height="30" />
+						Administration InsaLan</a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="faslse" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarNav">
+						<ul class="navbar-nav">
+							<li class="nav-item active">
+								<a class="nav-link" href="#">Utilisateurs <span class="sr-only">(current)</span></a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">Widgets</a>
+							</li>
+							<li class="nav-item">
+	            	<a class="nav-link" href="#">Logs</a>
+              </li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+
+			<div class="container-fluid text-white pt-4">
+
+				<div class="header-buttons-admin-insalan">
+					<button type="button" class="btn btn-insalan" data-toggle="modal" data-target="#create-user-modal">Nouvel utilisateur</button>
+				</div>
+
+				<table class="table table-insalan table-bordered">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Pseudo</th>
+							<th scope="col">Adresse mail</th>
+							<th scope="col">Rôle</th>
+							<th scope="col" class="col-account-admin-insalan">Compte</th>
+							<th scope="col" class="col-payment-admin-insalan">Paiement</th>
+							<th scope="col">Inscription tournois</th>
+							<th scope="col">État LAN</th>
+							<th scope="col" class="col-actions-admin-insalan">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="row">1</th>
+							<td>darkgallium</td>
+							<td>darkgallium@somewhere.com</td>
+							<td><span class="text-danger">Administrateur</span></td>
+							<td>
+								<span class="badge badge-primary badge-admin-insalan"><span class="fas fa-database"></span></span>
+								<span class="badge badge-light badge-admin-insalan"><span class="fas fa-user"></span></span>
+							</td>
+							<td></td>
+							<td></td>
+							<td><span class="text-success">Connecté</span></td>
+							<td>
+								<div role="group" aria-label="Actions">
+									<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'utilisateur"><span class="fas fa-pen" aria-hidden="true"></span></button>
+									<button type="button" class="btn btn-sec-insalan" aria-label="Appareils enregistrés"><span class="fas fa-globe" aria-hidden="true"></span></button>
+									<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'utilisateur"><span class="fas fa-trash" aria-hidden="true"></span></button>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+	          	<th scope="row">2</th>
+	          	<td>jim</td>
+	          	<td>jim@internet.com</td>
+	          	<td><span>Joueur</span></td>
+							<td>
+								<span class="badge badge-light badge-admin-insalan"><span class="fas fa-user"></span></span>
+							</td>
+							<td>Oui</td>
+	          	<td>Overwatch</td>
+	          	<td><span class="text-muted">Jamais connecté</span></td>
+	          	<td>
+								<div role="group" aria-label="Actions">
+									<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'utilisateur"><span class="fas fa-pen" aria-hidden="true"></span></button>
+									<button type="button" class="btn btn-sec-insalan" aria-label="Appareils enregistrés"><span class="fas fa-globe" aria-hidden="true"></span></button>
+									<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'utilisateur"><span class="fas fa-trash" aria-hidden="true"></span></button>
+								</div>
+	          	</td>
+	          </tr>
+
+						<tr>
+	          	<th scope="row">3</th>
+							<td>julien.boure</td>
+							<td></td>
+	          	<td><span>Joueur</span></td>
+							<td>
+								<span class="badge badge-success badge-admin-insalan"><span class="fas fa-database"></span></span>
+							</td>
+							<td>Non</td>
+							<td></td>
+	          	<td><span class="text-success">Connecté</span></td>
+	          	<td>
+								<div role="group" aria-label="Actions">
+									<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'utilisateur"><span class="fas fa-pen" aria-hidden="true"></span></button>
+									<button type="button" class="btn btn-sec-insalan" aria-label="Appareils enregistrés"><span class="fas fa-globe" aria-hidden="true"></span></button>
+									<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'utilisateur"><span class="fas fa-trash" aria-hidden="true"></span></button>
+								</div>
+	          	</td>
+	          </tr>
+
+						<tr>
+							<th scope="row">4</td>
+            	<td>insaltlan</td>
+            	<td>ppi@perdu.com</td>
+            	<td><span>Joueur</span></td>
+							<td>
+								<span class="badge badge-primary badge-admin-insalan"><span class="fas fa-database"></span></span>
+								<span class="badge badge-light badge-admin-insalan"><span class="fas fa-user"></span></span>
+							</td>
+							<td>Oui</td>
+							<td>CS:GO</td>
+            	<td><span class="text-success">Connecté</span></td>
+            	<td>
+								<div role="group" aria-label="Actions">
+									<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'utilisateur"><span class="fas fa-pen" aria-hidden="true"></span></button>
+									<button type="button" class="btn btn-sec-insalan" aria-label="Appareils enregistrés"><span class="fas fa-globe" aria-hidden="true"></span></button>
+									<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'utilisateur"><span class="fas fa-trash" aria-hidden="true"></span></button>
+								</div>
+            	</td>
+            </tr>
+
+						<tr>
+							<th scope="row">4</td>
+							<td>Moob</td>
+							<td></td>
+							<td><span class="text-blue">Staff</span></td>
+							<td>
+								<span class="badge badge-success badge-admin-insalan"><span class="fas fa-database"></span></span>
+							</td>
+							<td></td>
+							<td></td>
+							<td><span class="text-warning">Déconnecté</span></td>
+							<td>
+								<div role="group" aria-label="Actions">
+									<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'utilisateur"><span class="fas fa-pen" aria-hidden="true"></span></button>
+									<button type="button" class="btn btn-sec-insalan" aria-label="Appareils enregistrés"><span class="fas fa-globe" aria-hidden="true"></span></button>
+									<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'utilisateur"><span class="fas fa-trash" aria-hidden="true"></span></button>
+								</div>
+							</td>
+						</tr>
+
+
+					</tbody>
+
+				</table>
+			</div>
+
+			<div class="text-center mt-auto footer-insalan">
+				<p>LanGate2000 par Kuro, Trinity, LinHD, darkgallium</p>
+			</div>
+
+		</div>
+
+		<!-- Modal Create User -->
+
+		<div class="modal modal-insalan fade" id="create-user-modal" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title">Créer un nouvel utilisateur local</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+						<div class="container">
+							<form>
+								<div class="form-group row" id="create_account_nickname_g">
+									<label for="create_account_nickname" class="col-sm-4 col-form-label">Pseudo : </label>
+									<input type="email" class="form-control col-sm-8" id="create_account_nickname">
+								</div>
+
+								<div class="form-group row" id="create_account_email_g">
+									<label for="create_account_email" class="col-sm-4 col-form-label">Adresse mail : </label>
+									<input type="email" class="form-control col-sm-8" id="create_account_email">
+								</div>
+
+								<div class="form-group row" id="create_account_role_g">
+									<label for="create_account_role" class="col-sm-4 col-form-label">Rôle : </label>
+									<select class="form-control col-sm-8" id="create_account_role">
+										<option value="admin">Administrateur</option>
+										<option value="staff">Staff</option>
+										<option value="player" selected>Joueur</option>
+									</select>
+								</div>
+
+								<div class="form-group row" id="create_account_tournament_g">
+									<label for="create_account_tournament" class="col-sm-4 col-form-label">Tournoi : </label>
+									<div class="col-sm-8" id="create_account_tournament">
+										<div class="form-check">
+											<input class="form-check-input" name="create_account_tournament" type="radio" value="csgo">
+										  <label class="form-check-label" for="csgo">
+										    Counter Strike Global Offensive
+										  </label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" name="create_account_tournament" type="radio" value="dota2">
+											<label class="form-check-label" for="dota2">
+												Dota 2
+											</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" name="create_account_tournament" type="radio" value="hs">
+											<label class="form-check-label" for="hs">
+												Heartstone
+											</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" name="create_account_tournament" type="radio" value="lol">
+											<label class="form-check-label" for="lol">
+												League Of Legends
+											</label>
+										</div>
+								</div>
+							</div>
+
+							<div class="form-check" id="create_account_payment_g">
+							  <input class="form-check-input" type="checkbox" value="" id="create_account_payment">
+							  <label class="form-check-label" for="create_account_payment">
+							    Paiement enregistré
+							  </label>
+							</div>
+
+							</form>
+						</div>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-sec-insalan" data-dismiss="modal">Annuler</button>
+		        <button type="button" class="btn btn-insalan">Valider</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+		<!-- Scripts -->
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="../static/bootstrap.min.js"></script>
+		<script src="../static/insalan.js"></script>
+
+	</body>
+</html>

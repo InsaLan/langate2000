@@ -4,12 +4,13 @@
 		<title>connecté - langate 2000</title>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="stylesheet" href="static/bootstrap.min.css" />	
+		<link rel="stylesheet" href="static/bootstrap.min.css" />
 		<link rel="stylesheet" href="static/insalan.css" />
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
 	</head>
 	<body class="background-insalan">
 		<div class="d-flex flex-column h-100">
-			
+
 			<div class="header">
 				<nav class="navbar navbar-expand-lg navbar-insalan">
 					<a class="navbar-brand" href="#" style="color:#F8F9FA">
@@ -23,12 +24,6 @@
 							<li class="nav-item active">
 								<a class="nav-link" href="#">Accueil <span class="sr-only">(current)</span></a>
 							</li>
-							<li class="nav-item">                                     	
-                                                        	<a class="nav-link" href="#">Pizzas</a>
-                                                        </li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">État du réseau</a>
-							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="#">FAQ</a>
 							</li>
@@ -39,73 +34,116 @@
 
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col">
-						<div class="pt-4 col-sm-12 col-md-8 col-lg-6 col-xl-6 mx-auto text-white text-center">
+					<div class="col-sm-12 col-md-8 col-lg-9 col-xl-9 main">
+						<div class="text-white text-center pt-5">
 							<h2>Bon jeu, darkgallium !</h2>
 							<p class="pt-2">Vous êtes désormais connecté au réseau de l'InsaLan.</p>
-							<p>Si vous rencontrez des difficultés concernant le réseau, n'hésitez pas à consulter la <a href="#">FAQ</a> qui réponds aux questions fréquemmement posées et la page <a href="#">état du réseau</a> où sont rassemblées les informations sur le réseau en temps réel.</p>
+							<p>Si vous rencontrez des difficultés concernant le réseau, n'hésitez pas à consulter la <a href="#">FAQ</a> qui réponds aux questions fréquemmement posées.</p>
 						</div>
 
-						<div class="pt-3 col-sm-12 col-md-8 col-lg-6 col-xl-6 mx-auto text-white">
+						<div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
 							<p class="text-center">Sachez que vous pouvez connecter au maximum 3 appareils sur le réseau.<br>L'ensemble des appareils actuellement connectés avec votre compte apparaissent ci-dessous :</p>
 							<table class="table table-sm table-insalan table-bordered">
 								<thead>
-							      		<tr>
-							          		<th scope="col" class="align-middle">#</th>
+				      		<tr>
+			          		<th scope="col" class="align-middle">#</th>
 										<th scope="col" class="align-middle">Nom de l'appareil</th>
 										<th scope="col" class="align-middle">Réseau</th>
-										<th scope="col" class="align-middle">Actions</th>
+										<th scope="col" class="align-middle" style="width: 110px;">Actions</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr>
 										<th scope="row">1</th>
-										<td>Ordinateur (cet appareil)</td>
+										<td>Ordinateur 1 (cet appareil)</td>
 										<td>Filaire</td>
-										<td class="action-list">
-											<ul class="list-inline">
-												<li class="list-inline-item"><a href="#">Renommer</a></li>
-												<li class="list-inline-item"><a href="#">Supprimer</a></li>
-											</ul>
+										<td>
+											<div class="text-center" role="group" aria-label="Actions">
+												<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span class="fas fa-pen" aria-hidden="true"></span></button>
+												<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
+											</div>
 										</td>
 									</tr>
 									<tr>
-                                                                        	<th scope="row">2</th>
-                                                                        	<td>Moto G4</td>
+                  	<th scope="row">2</th>
+                  	<td>Appareil mobile 1</td>
 										<td>WiFi</td>
-                                                                        	<td class="action-list">
-											<ul class="list-inline">
-												<li class="list-inline-item"><a href="#">Renommer</a></li>
-												<li class="list-inline-item"><a href="#">Supprimer</a></li>
-                                                                                        </ul>
+                  	<td class="action-list">
+											<div class="text-center" role="group" aria-label="Actions">
+												<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span class="fas fa-pen" aria-hidden="true"></span></button>
+												<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
+											</div>
 										</td>
-                                                                        </tr>
+                  </tr>
 									<tr>
-                                                                        	<th scope="row">3</th>
-                                                                        	<td>Alienware SX50</td>
+                  	<th scope="row">3</th>
+                  	<td>Ordinateur 2</td>
 										<td>WiFi</td>
-                                                                        	<td class="action-list">
-									        	<ul class="list-inline">
-												<li class="list-inline-item"><a href="#">Renommer</a></li>
-												<li class="list-inline-item"><a href="#">Supprimer</a></li>
-									                </ul>
-									        </td>	
+                  	<td>
+											<div class="text-center" role="group" aria-label="Actions">
+												<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span class="fas fa-pen" aria-hidden="true"></span></button>
+												<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
+											</div>
+						        </td>
 									</tr>
 
 								</tbody>
-							</table>  
+							</table>
 						</div>
 
 					 </div>
 
-				</div>
-			</div>
-			
+					 <div class="d-none d-md-block d-lg-block d-xl-block col-md-4 col-lg-3 col-xl-3 widget-bar-insalan pt-4">
+						 <div class="card">
+							 <div class="card-body">
+								 <h5 class="card-title">État du réseau</h5>
+								 <p class="card-text">
+									 Réseau local : <span class="text-success">ok</span><br>
+									 Accès internet : <span class="text-warning">instable</span><br>
+									 Serveur CS:GO : <span class="text-danger">incident</span><br>
+									 Serveur TeamSpeak : <span class="text-success">ok</span>
+								 </p>
+							 </div>
+						 </div>
+
+						 <div class="card">
+							 <div class="card-body">
+									<h5 class="card-title">Annonce</h5>
+									<p class="card-text">
+								 Nous rencontrons actuellement des problèmes de stabilité de notre accès internet.<br>Nos équipes sont  à pied d'oeuvre pour résoudre ce problème dans les plus brefs délais.<br>Nous vous remercions de votre patience.
+									</p>
+							 </div>
+						 </div>
+
+						 <div class="card">
+							 <div class="card-body">
+									<h5 class="card-title">Pizzas</h5>
+								 <p class="card-text">Voici les crénaux auxquels vous pouvez commander :</p>
+									 <ul>
+										 <li>18h-20h, livraison à 21h30.</li>
+										 <li>20h-22h, livraison à 22h30.</li>
+									 </ul>
+									 <p class="card-text">Vous pouvez commander en ligne (règlement CB) ou à la buvette (chèques, espèces)</p>
+									 <a href="#" class="card-link">Commander en ligne</a>
+								</div>
+							</div>
+
+					 </div>
+				 </div>
+			 </div>
+
 			<div class="text-center mt-auto footer-insalan">
-				<p>LanGate2000 par Kuro, Trinity, LinHD, darkgallium</p>
+				<p>LanGate2000 par darkgallium, Kuro, LinHD, Trinity</p>
 			</div>
 
 		</div>
-		
+
+		<!-- Scripts -->
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="../static/bootstrap.min.js"></script>
+		<script src="../static/insalan.js"></script>
+
+
 	</body>
 </html>
