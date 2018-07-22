@@ -1,0 +1,181 @@
+/* Custom CSS rules for the dark theme */
+/* most of these rules override bootstrap rules */
+
+.background-insalan {
+	background-color: #36393F;
+}
+
+html, body {
+	height: 100%;
+}
+
+/* Navbar */
+
+.navbar-insalan {
+	background-color: #2A2A2A !important; /* black navbar */
+}
+
+.active .nav-link {
+	color: #fff !important; /* white for selected links */
+}
+
+.navbar-nav .nav-link {
+	color: #AFB3AA; /* white-grey for unselected links */
+}
+.navbar-brand img {
+	margin-right: 0.45rem;
+}
+.navbar-brand {
+	margin-right: 0.7rem !important;
+}
+
+/* Forms */
+
+.form-control, .form-control:hover, .form-control:focus {
+	background-color: #313339; /* dark grey for form controls */
+	border-radius: 3px !important;
+	border-style: solid !important;
+	border-width: 1px !important;
+	border-color: rgba(0,0,0,.3) !important;
+	color: #b9bbbe;
+}
+
+.label-alt-insalan { /* form labels are grey with small uppercase text on the login page */
+	color: #b9bbbe;
+	font-size: small;
+	letter-spacing: .5px;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+@media (max-height: 640px) { /* below h=660 we need to set a padding before the footer otherwise the footer covers things */
+	.form-auth {
+		padding-bottom: 3rem;
+	}
+}
+
+/* Buttons */
+
+.btn-insalan {
+	background-color: #0062cc; /* blue buttons */
+	color: #fff;
+}
+
+.btn-insalan:active, .btn-insalan:hover {
+	background-color: #007bff;
+}
+
+.btn-sec-insalan {
+	background-color: #545b62;
+	border: 0;
+	color: #fff;
+}
+
+.btn-sec-insalan:active, .btn-sec-insalan:hover {
+	background-color: #6c757d !important;
+	border: 0 !important;
+}
+
+
+.table-insalan.table-sm .fas {
+	font-size: .85rem; /* icons in buttons have to be smaller when used in a small table */
+}
+
+
+.footer-insalan {
+	font-size: 0.9rem;
+	color: rgba(255, 255, 255, .5); /* understated grey for the footer */
+}
+
+/* Tables */
+
+.table-insalan td, .table-insalan th {
+	border: .2px solid rgba(0,0,0,.3) !important;
+}
+
+.table-insalan thead th {
+	border-bottom-width: .2px;
+}
+
+.table-insalan {
+	margin-top: 2rem;
+	margin-bottom: 2rem !important;
+	background-color: #313339;
+	font-size: .95rem;
+}
+
+.table-insalan th, td {
+	vertical-align: middle !important;
+}
+
+/* Right widget bar displayed on the home pages */
+
+.widget-bar-insalan .card {
+	color: #AFB3AA;
+	margin-bottom: 1rem;
+	background-color: #313339;
+	border: 1px solid rgba(0,0,0,.3);
+}
+
+.widget-bar-insalan .card-title {
+	color: #fff;
+}
+
+/* Text related stuff */
+
+.text-white {
+	color: #b9bbbe !important; /* white-grey for texts in general */
+}
+
+.text-blue {
+	color: #007bff;
+}
+
+.text-danger {
+	color: #f25435 !important;
+}
+
+a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+a:hover, a:active {
+	color: #0062cc;
+	text-decoration: none;
+}
+
+/* Administration */
+
+.badge-admin-insalan {
+	font-size: .95rem;
+}
+
+.col-actions-admin-insalan {
+	width: 10%;
+}
+
+.col-payment-admin-insalan, .col-account-admin-insalan {
+	width: 85px;
+}
+
+
+/* Modals */
+
+.modal-insalan .modal-content {
+	background-color: #36393F;
+	color: #b9bbbe !important;
+}
+
+.modal-insalan .modal-header {
+	color: #fff;
+	border-bottom: 1px solid rgba(255, 255, 255, .15);
+}
+
+.modal-insalan .modal-footer {
+	border-top: 1px solid rgba(255, 255, 255, .15);
+}
+
+.close, .close:hover, .close:active {
+	color: #fff;
+}

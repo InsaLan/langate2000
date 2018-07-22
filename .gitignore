@@ -24,7 +24,7 @@
 ######################
 *.log
 *.sql
-*.sqlite
+*.sqlite3
 
 # OS generated files #
 ######################
@@ -139,7 +139,7 @@ ENV/
 .mypy_cache/
 
 #Internal
-webinterface/langate/langate/settings_secret.py
+secret_settings.py
 
 # IDE files #
 #############
