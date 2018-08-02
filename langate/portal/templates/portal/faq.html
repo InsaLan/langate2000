@@ -1,5 +1,96 @@
-{% extends 'layout.html' %}
+{% extends 'portal/portal_layout.html' %}
 
-{% block content %}
-<p>Coucou t'as des questions ?</p>
+{% block main %}
+
+<div class="pt-5 text-white text-center">
+	<h2>Foire aux Questions</h2>
+	<p>Cette page regroupe les questions régulièrement posées au sujet du réseau de l'InsaLan.</p>
+</div>
+
+<div class="text-white col-xl-9 col-md-10 col-sm-12 col-xs-12 mx-auto">
+	<div class="faq-cat">
+		<p class="faq-cat-header">Généralités</p>
+		<div class="faq-cat-content">
+			<a data-toggle="collapse" href="#faq-answer-1" aria-expanded="false" aria-controls="faq-answer-1" class="faq-question"><i class="material-icons">keyboard_arrow_down</i> Question 1</a>
+			
+			<div class="row faq-answer-container">
+				<div class="col">
+					<div class="collapse multi-collapse" class="faq-answer" id="faq-answer-1">
+						<p>Réponse 1</p>
+					</div>
+				</div>
+			</div>
+
+			<a data-toggle="collapse" href="#faq-answer-2" aria-expanded="false" aria-controls="faq-answer-2" class="faq-question"><i class="material-icons">keyboard_arrow_down</i> Question 2</a>
+                        
+			<div class="row faq-answer-container">
+                        	<div class="col">
+                        		<div class="collapse multi-collapse" class="faq-answer" id="faq-answer-2">
+                        			<p>Réponse 2</p>
+                        		</div>
+                        	</div>
+                        </div>
+
+			<a data-toggle="collapse" href="#faq-answer-3" aria-expanded="false" aria-controls="faq-answer-3" class="faq-question"><i class="material-icons">keyboard_arrow_down</i> Question 3</a>
+                        
+			<div class="row faq-answer-container">
+                        	<div class="col">
+                        		<div class="collapse multi-collapse" class="faq-answer" id="faq-answer-3">
+                        			<p>Réponse 3</p>
+                        		</div>
+                        	</div>
+                        </div>
+
+		</div>
+	</div>
+
+	<div class="faq-cat">
+		<p class="faq-cat-header">Catégorie 2</p>
+		<div class="faq-cat-content">
+			<a data-toggle="collapse" href="#faq-answer-4" aria-expanded="false" aria-controls="faq-answer-4" class="faq-question"><i class="material-icons">keyboard_arrow_down</i> Question 4</a>
+			
+			<div class="row faq-answer-container">
+				<div class="col">
+					<div class="collapse multi-collapse" class="faq-answer" id="faq-answer-4">
+						<p>Réponse 4</p>
+					</div>
+				</div>
+			</div>
+
+			<a data-toggle="collapse" href="#faq-answer-5" aria-expanded="false" aria-controls="faq-answer-5" class="faq-question"><i class="material-icons">keyboard_arrow_down</i> Question 5</a>
+                        
+			<div class="row faq-answer-container">
+                        	<div class="col">
+                        		<div class="collapse multi-collapse" class="faq-answer" id="faq-answer-5">
+                        			<p>Réponse 5</p>
+                        		</div>
+                        	</div>
+                        </div>
+
+			<a data-toggle="collapse" href="#faq-answer-6" aria-expanded="false" aria-controls="faq-answer-6" class="faq-question"><i class="material-icons">keyboard_arrow_down</i> Question 6</a>
+                        
+			<div class="row faq-answer-container">
+                        	<div class="col">
+                        		<div class="collapse multi-collapse" class="faq-answer" id="faq-answer-6">
+                        			<p>Réponse 6</p>
+                        		</div>
+                        	</div>
+                        </div>
+
+		</div>
+	</div>
+
+</div>
+
+<script>
+	$(".faq-question").click(function (){
+		if ( $(this).attr('aria-expanded') == "false" ) {
+			$(this).children().text("keyboard_arrow_up");
+		}
+		else {
+			$(this).children().text("keyboard_arrow_down");
+		}
+	});
+</script>
+
 {% endblock %}

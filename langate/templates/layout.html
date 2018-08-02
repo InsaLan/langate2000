@@ -9,6 +9,9 @@
 		
 		<link rel="stylesheet" href="{% static "bootstrap/bootstrap.min.css" %}" />
 		<link id="custom-stylesheet" rel="stylesheet" href="{% static "css/langate.css" %}" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+		<script src="{% static "js/jquery.min.js" %}"></script>
 	</head>
 	<body class="background-insalan">
 		<div class="d-flex flex-column h-100">
@@ -26,13 +29,13 @@
 					<div class="collapse navbar-collapse" id="navbarNav">
 						<ul class="navbar-nav">
                             {% block navitem-home %}
-                            <li class="nav-item active">
-								<a class="nav-link" href="#">Accueil <span class="sr-only">(current)</span></a>
+			    <li class="nav-item {% if page_name == "index" %}active{% endif %}">
+								<a class="nav-link" href="/">Accueil <span class="sr-only">(current)</span></a>
                             </li>
                             {% endblock %}
                             {% block navitem-faq %}
-							<li class="nav-item">
-								<a class="nav-link" href="#">FAQ</a>
+							<li class="nav-item {% if page_name == "faq" %}active{% endif %}">
+								<a class="nav-link" href="/faq">FAQ</a>
                             </li>
                             {% endblock %}
 						</ul>
@@ -42,7 +45,7 @@
 			</div>
 
 			<div class="container-fluid">
-				<div id="content">
+				<div class="row" id="content">
 				{% block content %}
 				{% endblock %}
 				</div>
@@ -55,6 +58,8 @@
 		</div>
 		
 		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		
 		<script src="{% static "bootstrap/bootstrap.min.js" %}"></script>
+
 	</body>
 </html>
