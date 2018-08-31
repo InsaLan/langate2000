@@ -1,4 +1,4 @@
-{% extends 'portal/portal_layout.html' %}
+{% extends 'portal/login_layout.html' %}
 
 {% block main %}
 
@@ -8,14 +8,31 @@
 </div>
 <div class="row">
 	<div class="pt-4 col-sm-12 col-md-6 col-lg-5 col-xl-4 mx-auto">
-		<form class="form-auth">
+		<form class="form-auth" method="post">
 			
+			{% if form.errors %}
+				{% for error in form.non_field_errors %}
+					<div class="non-field-errors">
+				    		<strong>{{ error|escape }}</strong>
+        				</div>
+				{% endfor %}
+
+			{% endif %}
+
 			{% csrf_token %}
 			
 			{% for field in form %}
 				<div class="form-group">
 					{{ field.label_tag }}
 					{{ field }}
+					
+					{% if field.errors %}
+						<div class="invalid-feedback">
+							{% for error in field.errors %}
+        	                                		<strong>{{ error|escape }}</strong>
+                	                        	{% endfor %}
+						</div>
+					{% endif %}
 				</div>
 			{% endfor %}
 

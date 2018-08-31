@@ -9,7 +9,7 @@
 		
 		<link rel="stylesheet" href="{% static "bootstrap/bootstrap.min.css" %}" />
 		<link id="custom-stylesheet" rel="stylesheet" href="{% static "css/langate.css" %}" />
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
 		<script src="{% static "js/jquery.min.js" %}"></script>
 	</head>
@@ -27,18 +27,23 @@
 						<span class="navbar-toggler-icon"></span>
 					</button>
 					<div class="collapse navbar-collapse" id="navbarNav">
-						<ul class="navbar-nav">
+						<ul class="navbar-nav mr-auto">
                             {% block navitem-home %}
 			    <li class="nav-item {% if page_name == "index" %}active{% endif %}">
-								<a class="nav-link" href="/">Accueil <span class="sr-only">(current)</span></a>
+								<a class="nav-link" href="{% url 'index' %}">Accueil <span class="sr-only">(current)</span></a>
                             </li>
                             {% endblock %}
                             {% block navitem-faq %}
 							<li class="nav-item {% if page_name == "faq" %}active{% endif %}">
-								<a class="nav-link" href="/faq">FAQ</a>
+								<a class="nav-link" href="{% url 'faq' %}">FAQ</a>
                             </li>
                             {% endblock %}
 						</ul>
+						<span class="navbar-text text-white">
+							{% if user.is_authenticated %}
+								Connecté en tant que {{ user.username }}
+							{% endif %}
+						</span>
 					</div>
                 </nav>
                 {% endblock %}

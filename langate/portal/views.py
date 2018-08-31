@@ -1,14 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .forms import LoginForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-def index(request):
 
-    f = LoginForm(request.POST or None)
-
-    context = { "page_name": "index", "form": f }
-    return render(request, 'portal/index.html', context)
+@login_required
+def connected(request):
+    context = { "page_name": "index" }
+    return render(request, 'portal/connected.html', context)
 
 def faq(request):
     context = { "page_name": "faq" }

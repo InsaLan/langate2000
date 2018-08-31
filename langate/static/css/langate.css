@@ -52,6 +52,18 @@ html, body {
 	font-weight: 600;
 }
 
+.invalid-feedback {
+        font-size: 80%;
+        color: #f25435 !important;
+        margin-top: .55rem;
+}
+
+.non-field-errors {
+	font-size: 80%;
+	color: #f25435;
+	margin-bottom: .65rem;
+}
+
 @media (max-height: 640px) { /* below h=660 we need to set a padding before the footer otherwise the footer covers things */
 	.form-auth {
 		padding-bottom: 3rem;
@@ -73,6 +85,10 @@ html, body {
 	background-color: #545b62;
 	border: 0;
 	color: #fff;
+	padding: .255rem .65rem;
+	margin-right: .2rem;
+	margin-top: .25rem;
+	margin-bottom: .25rem;
 }
 
 .btn-sec-insalan:active, .btn-sec-insalan:hover {
@@ -80,6 +96,10 @@ html, body {
 	border: 0 !important;
 }
 
+
+.btn-sec-insalan:focus {
+	box-shadow: none; /* temporary */
+}
 
 .table-insalan.table-sm .fas {
 	font-size: .85rem; /* icons in buttons have to be smaller when used in a small table */
