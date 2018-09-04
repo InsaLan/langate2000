@@ -138,8 +138,11 @@ ENV/
 # mypy
 .mypy_cache/
 
-#Internal
-secret_settings.py
+# Internal
+settings_local.py
+
+# Virtual Env
+venv
 
 # IDE files #
 #############

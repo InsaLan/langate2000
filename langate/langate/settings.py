@@ -21,8 +21,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # If you get a warning, be sure to have the variable SECRET_KEY populated into the file secret_settings.py
+from settings_local import *
+
 try:
-    from secret_settings import SECRET_KEY 
+    from settings_local import *
 except Exception:
     SECRET_KEY = 'secret'
     print("[WARN] Secret settings not found, the website isn't secure anymore.")
