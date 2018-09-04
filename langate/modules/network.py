@@ -85,7 +85,7 @@ class Ipset:
             raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
 
         connectArgs = ["sudo", "ipset", "add", self.name, mac, "-exist"]
-        if timeout!=None:
+        if timeout is not None:
             connectArgs.append("timeout")
             connectArgs.append(str(timeout))
         if self.counter:
@@ -96,13 +96,15 @@ class Ipset:
         if self.skbinfo:
             connectArgs.append("skbmark")
             if multiVpn:
+                # Todo : Unresolved attribute reference 'statelessMark' for class 'Ipset'
+                # there is probably a typo here, to verify
                 connectArgs.append(hex(self.statelessMark))
-            elif mark==None:
+            elif mark is None:
                 connectArgs.append(hex(self.nextAdd+self.markStart))
                 self.nextAdd = (self.nextAdd+1) % self.markMod
             else:
                 connectArgs.append(hex(mark))
-        elif mark!=None:
+        elif mark is not None:
             raise FeatureDisabledError("Feature skbinfo is disables for this set")
 
         result = run(connectArgs, stderr=PIPE, timeout=2)
@@ -142,13 +144,15 @@ class Ipset:
 
         if result.returncode!=0:
             return (False, 0, 0)
+        # Todo : Unresolved attribute reference 'skbmark' for class 'Ipset'
+        # there is probably a typo here, to verify
         if not self.counter and not self.skbmark:
             return (True, 0, 0)
 
         listArgs = ["sudo", "ipset", "list", self.name]
         result = run(listArgs, stdout=PIPE, stderr=PIPE, timeout=2)
         if result.returncode!=0:
-            raise GenericNetwokError(result.stderr.decode("UTF-8"))
+            raise GenericNetworkError(result.stderr.decode("UTF-8"))
         out = result.stdout.decode("UTF-8")
         for line in out.splitlines():
             if re.match(mac.upper()+'.*', line):
@@ -170,7 +174,7 @@ class Ipset:
         clearArgs = ["sudo", "ipset", "flush", self.name]
         result = run(clearArgs, stderr=PIPE, timeout=2)
         if result.returncode!=0:
-            raise GenericNetwokError(result.stderr.decode("UTF-8"))
+            raise GenericNetworkError(result.stderr.decode("UTF-8"))
 
     #get all entry from the set, with how much bytes thes transfered and what is their mark
     def getAllConnected(self) -> Dict[str, Tuple[int,int]]:
@@ -178,7 +182,7 @@ class Ipset:
         listArgs = ["sudo", "ipset", "list", self.name]
         result = run(listArgs, stdout=PIPE, stderr=PIPE, timeout=2)
         if result.returncode!=0:
-            raise GenericNetwokError(result.stderr.decode("UTF-8"))
+            raise GenericNetworkError(result.stderr.decode("UTF-8"))
         out = result.stdout.decode("UTF-8")
         res = dict()
         for line in out.splitlines():
@@ -203,7 +207,7 @@ class Ipset:
         clearArgs = ["sudo", "ipset", "destroy", self.name]
         result = run(clearArgs, stderr=PIPE, timeout=2)
         if result.returncode!=0:
-            raise GenericNetwokError(result.stde.decode("UTF-8"))
+            raise GenericNetworkError(result.stderr.decode("UTF-8"))
         del self
 
     #add an entry to internal log
@@ -216,7 +220,7 @@ class Ipset:
         listArgs = ["sudo", "ipset", "list", self.name]
         result = run(listArgs, stdout=PIPE, stderr=PIPE, timeout=2)
         if result.returncode!=0:
-            raise GenericNetwokError(result.stderr.decode("UTF-8"))
+            raise GenericNetworkError(result.stderr.decode("UTF-8"))
         out = result.stdout.decode("UTF-8")
 
         currentTime = time()
@@ -240,6 +244,7 @@ class Ipset:
                         vpn=int(vpn.group(1),16)
                     else:
                         continue
+                    # Todo : vpnLog may be referenced before assignment -> to verify
                     if vpn in vpnLog:
                         vpnLog[vpn]+=byte
                     else:
@@ -271,7 +276,7 @@ class Ipset:
         return self.vpnLogs
 
     #clear internal logs (logs are never cleared otherwise, taking memory indefinitely)
-    def clearLogs(self, after=time()):
+    def clearLogs(self, after=time()): # Todo : Verify if 'after' is necessary if it isn't used
         if not self.counter:
             raise FeatureDisabledError("Feature counter is disables for this set")
         self.userLogs = list()
