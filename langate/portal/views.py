@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def connected(request):
-    context = { "page_name": "index" }
+    context = { "page_name": "connected" }
     return render(request, 'portal/connected.html', context)
 
 def faq(request):

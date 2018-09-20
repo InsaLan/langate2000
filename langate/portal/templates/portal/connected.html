@@ -3,7 +3,7 @@
 {% block main %}
 
 <div class="text-white text-center pt-5">
-	<h2>Bon jeu, darkgallium !</h2>
+	<h2>Bon jeu, {{ user.username }}</h2>
 	<p class="pt-2">Vous êtes désormais connecté au réseau de l'InsaLan.</p>
 	<p>Si vous rencontrez des difficultés concernant le réseau, n'hésitez pas à consulter la <a href="{% url 'faq' %}">FAQ</a> qui réponds aux questions fréquemmement posées.</p>
 </div>

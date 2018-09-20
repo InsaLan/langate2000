@@ -21,7 +21,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # If you get a warning, be sure to have the variable SECRET_KEY populated into the file secret_settings.py
-from settings_local import *
 
 try:
     from settings_local import *
@@ -46,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'portal',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -136,5 +136,5 @@ STATICFILES_DIRS = (
 
 # Authentification
 
-LOGIN_URL = "/"
 LOGIN_REDIRECT_URL = "/connected"
+

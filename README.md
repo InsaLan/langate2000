@@ -10,4 +10,6 @@ Le code (variables ainsi que commentaires de documentation) doit être en anglai
 Pour déployer ce projet, il faut :
 - Installer python 3 ainsi que pip : ```sudo apt-get install -y python3 python3-pip```
 - Installer django 2 : ```sudo pip3 install django```
+- Installer django-bootstrap4 : ```sudo pip3 install django-bootstrap4```
+
 Vous pouvez alors lancer le serveur de développement ```python3 webinterface/langate/manage.py runserver```
