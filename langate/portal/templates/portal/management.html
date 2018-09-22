@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
+        <p class="text-left">Liste des joueurs :</p>
+        <table class="table table-sm table-insalan table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Pseudo</th>
+                <th scope="col">Adresse mail</th>
+                <th scope="col">Rôle</th>
+                <th scope="col" class="col-account-admin-insalan">Compte</th>
+                <th scope="col" class="col-payment-admin-insalan">Paiement</th>
+                <th scope="col">Inscription tournois</th>
+                <th scope="col">État LAN</th>
+                <th scope="col" class="col-actions-admin-insalan">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for player in player.list %}
+                <tr>
+                    <th scope="row">1</th>
+                    <td>darkgallium</td>
+                    <td>darkgallium@somewhere.com</td>
+                    <td><span class="text-danger">Administrateur</span></td>
+                    <td>
+                        <span class="badge badge-primary badge-admin-insalan"><span
+                                class="fas fa-database"></span></span>
+                        <span class="badge badge-light badge-admin-insalan"><span class="fas fa-user"></span></span>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="text-success">Connecté</span></td>
+                    <td>
+                        <div role="group" class="but" aria-label="Actions">
+                            <button type="button" class="btn btn-sec-insalan" aria-label="Modifier">Modifier<span
+                                    class="fas fa-pen" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-sec-insalan" aria-label="Appareils">Appareils
+                                <spanclass
+                                ="fas fa-globe" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer">Supprimer
+                                <spanclass
+                                ="fas fa-trash" aria-hidden="true"></span></button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <th scope="row">1</th>
+                <td>darkgallium</td>
+                <td>darkgallium@somewhere.com</td>
+                <td><span class="text-danger">Administrateur</span></td>
+                <td>
+                    <span class="badge badge-primary badge-admin-insalan"><span class="fas fa-database"></span></span>
+                    <span class="badge badge-light badge-admin-insalan"><span class="fas fa-user"></span></span>
+                </td>
+                <td></td>
+                <td></td>
+                <td><span class="badge badge-success">Connecté</span></td>
+                <td>
+                    <div role="group" class="btn-group" aria-label="Actions">
+                        <button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'utilisateur"><span
+                                class="fas fa-pen" aria-hidden="true">&nbsp;</span>Modifier
+                        </button>
+                        <button type="button" class="btn btn-sec-insalan" aria-label="Appareils enregistrés"><span
+                                class="fas fa-globe" aria-hidden="true">&nbsp;</span>Appareils
+                        </button>
+                        <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'utilisateur"><span
+                                class="fas fa-trash" aria-hidden="true">&nbsp;</span>Supprimer
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

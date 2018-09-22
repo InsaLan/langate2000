@@ -7,6 +7,6 @@ from . import views
 
 urlpatterns = [
     path('', views.connected, name='connected'),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('management', views.management, name='management'),
     path('faq', views.faq, name='faq'),
 ]

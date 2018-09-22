@@ -39,6 +39,13 @@
                                 <a class="nav-link" href="{% url 'faq' %}">FAQ</a>
                             </li>
                         {% endblock %}
+                        {% if request.user.is_staff %}
+                            {% block navitem-management %}
+                                <li class="nav-item {% if page_name == "management" %}active{% endif %}">
+                                    <a class="nav-link" href="{% url 'management' %}">Gestion</a>
+                                </li>
+                            {% endblock %}
+                        {% endif %}
                     </ul>
                     <span class="navbar-text text-white">
 							{% if user.is_authenticated %}
