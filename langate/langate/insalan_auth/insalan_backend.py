@@ -7,16 +7,17 @@ from django.contrib.auth.models import UserManager, User
 
 UserModel = get_user_model()
 
+
 class InsalanBackend(ModelBackend):
-    '''
+    """
     A class extending ModelBackend to authenticate remote users from insalan.fr if they
     are not locals users.
-    '''
+    """
 
-    #README : related documentation :
-    #https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
+    # README : related documentation :
+    # https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
 
-    def authenticate(self, request : HttpRequest , username : str = None, password : str = None, **kwargs):
+    def authenticate(self, request: HttpRequest, username: str = None, password: str = None, **kwargs):
         """
         authenticate() should check the credentials it gets and return a user object that matches those credentials
         if the credentials are valid. If they’re not valid, it should return None
@@ -29,7 +30,7 @@ class InsalanBackend(ModelBackend):
         if username is None:
             username = kwargs.get(UserModel.USERNAME_FIELD)
 
-        #Example : django "official" version
+        # Example : django "official" version
         '''
         def authenticate(self, request , username = None, password = None, **kwargs):
             try:
@@ -43,25 +44,25 @@ class InsalanBackend(ModelBackend):
                     return user
         '''
 
-        #TODO :
-        #Get the json from web
-        #If the credentials are correct and the player has payed
+        # TODO :
+        # Get the json from web
+        # If the credentials are correct and the player has payed
         if NotImplemented:
             user = User.objects.create_user(username=username,
                                             email=None,
                                             password=password)
-        #If the credentials are correct and the player HASN'T payed
+        # If the credentials are correct and the player HASN'T payed
         elif NotImplemented:
-            raise NotAllowedException(username,"This player is correctly registered but hasn't paid.")
+            raise NotAllowedException(username, "This player is correctly registered but hasn't paid.")
 
-        #Else
+        # Else
         else:
             raise BadCredentialsException()
 
-        #TODO later :
-        #Fill the profil automatically linked to the account with data (tournament, role)
+        # TODO later :
+        # Fill the profil automatically linked to the account with data (tournament, role)
 
-        #Then return the user newly created
+        # Then return the user newly created
         return user
 
     def get_user_id(self, attributes):
@@ -71,14 +72,19 @@ class InsalanBackend(ModelBackend):
 class LoginException(Exception):
     """Base class for exceptions in this module."""
     pass
+
+
 class BadCredentialsException(LoginException):
     """Exception raised when the login or password doesn't match.
     Attributes:
         None
     """
+
     def __init__(self):
         pass
-class NotAllowedException(LoginException,PermissionDenied):
+
+
+class NotAllowedException(LoginException, PermissionDenied):
     """Exception raised when the user entered good credentials but
         - was a player and didn't pay
         - was banned
@@ -86,6 +92,7 @@ class NotAllowedException(LoginException,PermissionDenied):
         username -- username related to the unsuccessful transaction
         message -- message related to the error
     """
-    def __init__(self,username : str, message : str):
+
+    def __init__(self, username: str, message: str):
         self.username = username
         self.message = message

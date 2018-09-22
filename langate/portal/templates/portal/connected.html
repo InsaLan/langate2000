@@ -2,60 +2,68 @@
 
 {% block main %}
 
-<div class="text-white text-center pt-5">
-	<h2>Bon jeu, {{ user.username }}</h2>
-	<p class="pt-2">Vous êtes désormais connecté au réseau de l'InsaLan.</p>
-	<p>Si vous rencontrez des difficultés concernant le réseau, n'hésitez pas à consulter la <a href="{% url 'faq' %}">FAQ</a> qui réponds aux questions fréquemmement posées.</p>
-</div>
+    <div class="text-white text-center pt-5">
+        <h2>Bon jeu, {{ user.username }}</h2>
+        <p class="pt-2">Vous êtes désormais connecté au réseau de l'InsaLan.</p>
+        <p>Si vous rencontrez des difficultés concernant le réseau, n'hésitez pas à consulter la <a
+                href="{% url 'faq' %}">FAQ</a> qui réponds aux questions fréquemmement posées.</p>
+    </div>
 
-<div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
-	<p class="text-center">Sachez que vous pouvez connecter au maximum 3 appareils sur le réseau.<br>L'ensemble des appareils actuellement connectés avec votre compte apparaissent ci-dessous :</p>
-	<table class="table table-sm table-insalan table-bordered">
-		<thead>
-			<tr>
-				<th scope="col" class="align-middle">#</th>
-				<th scope="col" class="align-middle">Nom de l'appareil</th>
-				<th scope="col" class="align-middle">Réseau</th>
-				<th scope="col" class="align-middle" style="width: 110px;">Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<th scope="row">1</th>
-				<td>Ordinateur 1 (cet appareil)</td>
-				<td>Filaire</td>
-				<td>
-					<div class="text-center" role="group" aria-label="Actions">
-						<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span class="fas fa-pen" aria-hidden="true"></span></button>
-						<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">2</th>
-				<td>Appareil mobile 1</td>
-				<td>WiFi</td>
-				<td class="action-list">
-					<div class="text-center" role="group" aria-label="Actions">
-						<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span class="fas fa-pen" aria-hidden="true"></span></button>
-						<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
-					</div>
-				</td>
-</tr>
-			<tr>
-				<th scope="row">3</th>
-				<td>Ordinateur 2</td>
-				<td>WiFi</td>
-				<td>
-					<div class="text-center" role="group" aria-label="Actions">
-						<button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span class="fas fa-pen" aria-hidden="true"></span></button>
-						<button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
-					</div>
-				</td>
-			</tr>
+    <div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
+        <p class="text-center">Sachez que vous pouvez connecter au maximum 3 appareils sur le réseau.<br>L'ensemble des
+            appareils actuellement connectés avec votre compte apparaissent ci-dessous :</p>
+        <table class="table table-sm table-insalan table-bordered">
+            <thead>
+            <tr>
+                <th scope="col" class="align-middle">#</th>
+                <th scope="col" class="align-middle">Nom de l'appareil</th>
+                <th scope="col" class="align-middle">Réseau</th>
+                <th scope="col" class="align-middle" style="width: 110px;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Ordinateur 1 (cet appareil)</td>
+                <td>Filaire</td>
+                <td>
+                    <div class="text-center" role="group" aria-label="Actions">
+                        <button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span
+                                class="fas fa-pen" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span
+                                class="fas fa-trash" aria-hidden="true"></span></button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Appareil mobile 1</td>
+                <td>WiFi</td>
+                <td class="action-list">
+                    <div class="text-center" role="group" aria-label="Actions">
+                        <button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span
+                                class="fas fa-pen" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span
+                                class="fas fa-trash" aria-hidden="true"></span></button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>Ordinateur 2</td>
+                <td>WiFi</td>
+                <td>
+                    <div class="text-center" role="group" aria-label="Actions">
+                        <button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span
+                                class="fas fa-pen" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span
+                                class="fas fa-trash" aria-hidden="true"></span></button>
+                    </div>
+                </td>
+            </tr>
 
-		</tbody>
-	</table>
-</div>
+            </tbody>
+        </table>
+    </div>
 
 {% endblock %}

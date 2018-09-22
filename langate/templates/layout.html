@@ -1,70 +1,72 @@
 <!DOCTYPE html>
 <html lang="fr">
-<html>
-	{% load static %}
-	<head>
-		<title>{% block title %}{% endblock %} - Insalan Langate</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		
-		<link rel="stylesheet" href="{% static "bootstrap/bootstrap.min.css" %}" />
-		<link id="custom-stylesheet" rel="stylesheet" href="{% static "css/langate.css" %}" />
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+{% load static %}
+<head>
+    <title>{% block title %}{% endblock %} - Insalan Langate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<script src="{% static "js/jquery.min.js" %}"></script>
-	</head>
-	<body class="background-insalan">
-		<div class="d-flex flex-column h-100">
+    <link rel="stylesheet" href="{% static "bootstrap/bootstrap.min.css" %}"/>
+    <link id="custom-stylesheet" rel="stylesheet" href="{% static "css/langate.css" %}"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
-			<div class="header">
-				{# Navbar bootstrap #}
-                {% block navbar %}
-				<nav class="navbar navbar-expand-lg navbar-insalan">
-					<a class="navbar-brand" href="#" style="color:#F8F9FA">
-						<img src="{% static "logo.png" %}" width="34" height="30" />
-						Portail InsaLan</a>
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse" id="navbarNav">
-						<ul class="navbar-nav mr-auto">
-                            {% block navitem-home %}
-			    <li class="nav-item {% if page_name == "connected" or "accounts" in request.path %}active{% endif %}">
-								<a class="nav-link" href="/">Accueil <span class="sr-only">(current)</span></a>
+    <script src="{% static "js/jquery.min.js" %}"></script>
+</head>
+<body class="background-insalan">
+<div class="d-flex flex-column h-100">
+
+    <div class="header">
+        {# Navbar bootstrap #}
+        {% block navbar %}
+            <nav class="navbar navbar-expand-lg navbar-insalan">
+                <a class="navbar-brand" href="#" style="color:#F8F9FA">
+                    <img src="{% static "logo.png" %}" width="34" height="30"/>
+                    Portail InsaLan</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mr-auto">
+                        {% block navitem-home %}
+                            <li class="nav-item {% if page_name == "connected" or "accounts" in request.path %}active{% endif %}">
+                                <a class="nav-link" href="/">Accueil <span class="sr-only">(current)</span></a>
                             </li>
-                            {% endblock %}
-                            {% block navitem-faq %}
-							<li class="nav-item {% if page_name == "faq" %}active{% endif %}">
-								<a class="nav-link" href="{% url 'faq' %}">FAQ</a>
+                        {% endblock %}
+                        {% block navitem-faq %}
+                            <li class="nav-item {% if page_name == "faq" %}active{% endif %}">
+                                <a class="nav-link" href="{% url 'faq' %}">FAQ</a>
                             </li>
-                            {% endblock %}
-						</ul>
-						<span class="navbar-text text-white">
+                        {% endblock %}
+                    </ul>
+                    <span class="navbar-text text-white">
 							{% if user.is_authenticated %}
-								Connecté en tant que {{ user.username }}
-							{% endif %}
+                                Connecté en tant que {{ user.username }}
+                            {% endif %}
 						</span>
-					</div>
-                </nav>
-                {% endblock %}
-			</div>
+                </div>
+            </nav>
+        {% endblock %}
+    </div>
 
-			<div class="container-fluid">
-				<div class="row" id="content">
-				{% block content %}
-				{% endblock %}
-				</div>
-			</div>
+    <div class="container-fluid">
+        <div class="row" id="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
 
-			<div class="text-center mt-auto footer-insalan">
-				<p> InsaLan, Rennes | 2017 / 2018 © Logiciel distribué sous licence Apache <a href="#" class="link">Crédits</a> </p>
-			</div>
+    <div class="text-center mt-auto footer-insalan">
+        <p> InsaLan, Rennes | 2017 / 2018 © Logiciel distribué sous licence Apache <a href="#" class="link">Crédits</a>
+        </p>
+    </div>
 
-		</div>
-		
-		<!-- Include all compiled plugins (below), or include individual files as needed -->
-		
-		<script src="{% static "bootstrap/bootstrap.min.js" %}"></script>
+</div>
 
-	</body>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+
+<script src="{% static "bootstrap/bootstrap.min.js" %}"></script>
+
+</body>
 </html>

@@ -3,52 +3,55 @@
 {% block content %}
 
 
-<div class="col-sm-12 col-md-8 col-lg-9 col-xl-9 main">
-	
-	{# main content (forms, infos...) goes there #}                                                                                                                                            
-	{% block main %}
-	{% endblock %}
-			
-</div>
+    <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9 main">
+
+        {# main content (forms, infos...) goes there #}
+        {% block main %}
+        {% endblock %}
+
+    </div>
 
 
-<div class="d-none d-md-block d-lg-block d-xl-block col-md-4 col-lg-3 col-xl-3 widget-bar-insalan pt-4">
-	
-	{# widget bar #}
+    <div class="d-none d-md-block d-lg-block d-xl-block col-md-4 col-lg-3 col-xl-3 widget-bar-insalan pt-4">
 
-	<div class="card">
-		<div class="card-body">
-			<h5 class="card-title">État du réseau</h5>
-			<p class="card-text">
-				Réseau local : <span class="text-success">ok</span><br>
-				Accès internet : <span class="text-warning">instable</span><br>
-				Serveur CS:GO : <span class="text-danger">incident</span><br>
-				Serveur TeamSpeak : <span class="text-success">ok</span>
-			</p>
-		</div>
-	</div>
+        {# widget bar #}
 
-	<div class="card">
-	  	<div class="card-body">
-                	<h5 class="card-title">Annonce</h5>
-                	<p class="card-text">
-			Nous rencontrons actuellement des problèmes de stabilité de notre accès internet.<br>Nos équipes sont à pied d'oeuvre pour résoudre ce problème dans les plus brefs délais.<br>Nous vous remercions de votre patience.
-                	</p>
-          	</div>
-	</div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">État du réseau</h5>
+                <p class="card-text">
+                    Réseau local : <span class="text-success">ok</span><br>
+                    Accès internet : <span class="text-warning">instable</span><br>
+                    Serveur CS:GO : <span class="text-danger">incident</span><br>
+                    Serveur TeamSpeak : <span class="text-success">ok</span>
+                </p>
+            </div>
+        </div>
 
-	<div class="card">
-	  	<div class="card-body">
-                	<h5 class="card-title">Pizzas</h5>
-			<p class="card-text">Voici les crénaux auxquels vous pouvez commander :</p>
-			<ul>
-				<li>18h-20h, livraison à 21h30.</li>
-				<li>20h-22h, livraison à 22h30.</li>
-			</ul>
-			<p class="card-text">Vous pouvez commander en ligne (règlement CB) ou à la buvette (chèques, espèces)</p>
-			<a href="#" class="card-link">Commander en ligne</a>
-              	</div>
-	</div>
-</div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Annonce</h5>
+                <p class="card-text">
+                    Nous rencontrons actuellement des problèmes de stabilité de notre accès internet.<br>Nos équipes
+                    sont à pied d'oeuvre pour résoudre ce problème dans les plus brefs délais.<br>Nous vous remercions
+                    de votre patience.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Pizzas</h5>
+                <p class="card-text">Voici les crénaux auxquels vous pouvez commander :</p>
+                <ul>
+                    <li>18h-20h, livraison à 21h30.</li>
+                    <li>20h-22h, livraison à 22h30.</li>
+                </ul>
+                <p class="card-text">Vous pouvez commander en ligne (règlement CB) ou à la buvette (chèques,
+                    espèces)</p>
+                <a href="#" class="card-link">Commander en ligne</a>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
