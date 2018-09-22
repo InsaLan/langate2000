@@ -343,18 +343,18 @@ class Ipset:
             raise NotInSetError("'{}' is not in the set")
 
 
-# Todo : Methods have to have self as first parameter or to be static
 class NetworkUtil:
 
-    # verify if mac is well formed
+    @staticmethod
     def verify_mac(mac: str) -> bool:
         return bool(re.match(r'^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$', mac))
 
-    # verify is ip is well formed
+    @staticmethod
     def verify_ip(ip: str) -> bool:
         return bool(re.match(r'^([0-9]{1,3}\.){3}[0-9]{1,3}$', ip))
 
     # get ip from mac
+    @staticmethod
     def get_ip(mac: str) -> str:
         if not NetworkUtil.verify_mac(mac):
             raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
@@ -366,6 +366,7 @@ class NetworkUtil:
         raise UnknownAddress("'{}' does not have a known ip".format(mac))
 
     # get mac from ip
+    @staticmethod
     def get_mac(ip: str) -> str:
         if not NetworkUtil.verify_ip(ip):
             raise InvalidAddressError("'{}' is not a valid ip address".format(ip))
