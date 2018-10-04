@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from collections import defaultdict
 from typing import Iterable, Dict, Set, List, Tuple
 from time import time
 from subprocess import run, PIPE, TimeoutExpired
@@ -70,7 +71,7 @@ class Ipset:
 
     # create a new set
     def __init__(self, name="langate", default_timeout=0, counter=True, marking=True, mark=(0, 1),
-                 multi_vpn_mark=4294967295):
+                 multi_vpn_mark=4294967295, fixed_vpn_timeout=30):
         # CMD=sudo ipset create langate hash:mac -exist hashsize 4096 timeout 0 counters skbinfo
         self.name = name
         self.timeout = default_timeout
@@ -104,11 +105,18 @@ class Ipset:
             if re.match(r'.*set with the same name already exists.*', result.stderr.decode("UTF-8")):
                 raise SetExistError("set with same name but different settings already exist")
             raise UnknownInitializationError(result.stderr.decode("UTF-8"))
+        if self.counter and self.skbinfo:
+            # CMD=sudo ipset create langate-recent hash:mac -exist hashsize 4096 timeout 60
+            creation_args = ["sudo", "ipset", "create", self.name + "-recent", "hash:mac", "-exist", "hashsize", "4096",
+                             "timeout", str(fixed_vpn_timeout)]
+            result = run(creation_args, stderr=PIPE, timeout=2)
+            if result.returncode != 0:
+                raise UnknownInitializationError(result.stderr.decode("UTF-8"))
 
     # add a user to the set
     def connect_user(self, mac: str, timeout=None, mark=None, counter=0, multi_vpn=False):
         # CMD=sudo ipset add langate 00:00:00:00:00:01 -exist timeout 0 skbmark 0
-        if not NetworkUtil.verify_mac(mac):
+        if not verify_mac(mac):
             raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
 
         connect_args = ["sudo", "ipset", "add", self.name, mac, "-exist"]
@@ -119,35 +127,28 @@ class Ipset:
             connect_args.append("bytes")
             connect_args.append(str(counter))
         elif counter != 0:
-            raise FeatureDisabledError("Feature counter is disables for this set")
+            raise FeatureDisabledError("Feature counter is disabled for this set")
         if self.skbinfo:
             connect_args.append("skbmark")
             if multi_vpn:
-                # Todo : Unresolved attribute reference 'statelessMark' for class 'Ipset'
-                # there is probably a typo here, to verify
-                connect_args.append(hex(self.statelessMark))
+                connect_args.append(hex(self.multiVpnMark))
             elif mark is None:
                 connect_args.append(hex(self.nextAdd + self.markStart))
                 self.nextAdd = (self.nextAdd + 1) % self.markMod
             else:
                 connect_args.append(hex(mark))
         elif mark is not None:
-            raise FeatureDisabledError("Feature skbinfo is disables for this set")
+            raise FeatureDisabledError("Feature skbinfo is disabled for this set")
 
         result = run(connect_args, stderr=PIPE, timeout=2)
 
         if result.returncode != 0:
             raise GenericNetworkError(result.stderr.decode("UTF-8"))
 
-    # add multiple mac to the set
-    def connect_users(self, macs: Iterable[str]):
-        for mac in macs:
-            self.connect_user(mac)
-
     # remove mac from the set
     def disconnect_user(self, mac: str):
         # CMD=sudo ipset del langate 00:00:00:00:00:01
-        if not NetworkUtil.verify_mac(mac):
+        if not verify_mac(mac):
             raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
         disconnect_args = ["sudo", "ipset", "del", self.name, mac, "-exist"]
 
@@ -161,7 +162,7 @@ class Ipset:
         # CMD=sudo ipset test langate 00:00:00:00:00:01 -q
         # CMD=sudo ipset list langate | grep 00:00:00:00:00:01
 
-        if not NetworkUtil.verify_mac(mac):
+        if not verify_mac(mac):
             raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
 
         test_args = ["sudo", "ipset", "test", self.name, mac, "-q"]
@@ -170,9 +171,7 @@ class Ipset:
 
         if result.returncode != 0:
             return False, 0, 0
-        # Todo : Unresolved attribute reference 'skbmark' for class 'Ipset'
-        # there is probably a typo here, to verify
-        if not self.counter and not self.skbmark:
+        if not self.counter and not self.skbinfo:
             return True, 0, 0
 
         list_args = ["sudo", "ipset", "list", self.name]
@@ -241,7 +240,7 @@ class Ipset:
         # CMD=sudo ipset list langate
 
         if not self.counter:
-            raise FeatureDisabledError("Feature counter is disables for this set")
+            raise FeatureDisabledError("Feature counter is disabled for this set")
 
         list_args = ["sudo", "ipset", "list", self.name]
         result = run(list_args, stdout=PIPE, stderr=PIPE, timeout=2)
@@ -252,7 +251,7 @@ class Ipset:
         current_time = time()
         user_log = dict()
         if self.skbinfo:
-            vpn_log = dict()
+            vpn_log = defaultdict(lambda: 0, {})
 
         for line in out.splitlines():
             if re.match('([0-9A-F]{2}:){5}[0-9A−F]{2}.*', line):
@@ -270,11 +269,7 @@ class Ipset:
                         vpn = int(vpn.group(1), 16)
                     else:
                         continue
-                    # Todo : vpn_log may be referenced before assignment -> to verify
-                    if vpn in vpn_log:
-                        vpn_log[vpn] += byte
-                    else:
-                        vpn_log[vpn] = byte
+                    vpn_log[vpn] += byte
 
         self.userLogs.append((current_time, user_log))
 
@@ -289,28 +284,71 @@ class Ipset:
     # get logs, by user. Entries are sorted by date, tuple contain date and bytes transfered by mac since previous entry
     def get_users_logs(self) -> List[Tuple[time, Dict[str, int]]]:
         if not self.counter:
-            raise FeatureDisabledError("Feature counter is disables for this set")
+            raise FeatureDisabledError("Feature counter is disabled for this set")
         return self.userLogs
 
     # get logs, by vpn. Entries are sorted by date, tuple contain date and bytes transfered by vpn since previous entry
     def get_vpn_logs(self) -> List[Tuple[time, Dict[int, int]]]:
         if not self.counter:
-            raise FeatureDisabledError("Feature counter is disables for this set")
+            raise FeatureDisabledError("Feature counter is disabled for this set")
         if not self.skbinfo:
-            raise FeatureDisabledError("Feature skbinfo is disables for this set")
+            raise FeatureDisabledError("Feature skbinfo is disabled for this set")
         return self.vpnLogs
 
     # clear internal logs (logs are never cleared otherwise, taking memory indefinitely)
-    def clear_logs(self, after=time()):  # Todo : Verify if 'after' is necessary if it isn't used
+    def clear_logs(self, after=time()):
         if not self.counter:
-            raise FeatureDisabledError("Feature counter is disables for this set")
-        self.userLogs = list()
+            raise FeatureDisabledError("Feature counter is disabled for this set")
+        lo = 0
+        hi = len(self.userLogs)
+        while lo < hi:
+            mid = (lo+hi)//2
+            if self.userLogs[mid][0] < after: lo = mid+1
+            else: hi = mid
+        index = lo
+        self.userLogs = self.userLogs[index:]
         if self.skbinfo:
-            self.vpnLogs = list()
+            self.vpnLogs = self.vpnLogs[index:]
 
     # try to auto-balance vpn usage by switching some user of vpn
     def try_balance(self):
-        NotImplemented
+        # CMD=sudo ipset list langate
+        if self.counter and self.skbinfo:
+            # get users recent network usage
+            logs = self.get_users_logs()
+            if len(logs) > 0: log = logs[-1][1]
+            else: return
+            user_info = self.get_all_connected()
+            all_connected = set(user_info)
+
+            # get all fixed users
+            list_args = ["sudo", "ipset", "list", self.name]
+            result = run(list_args, stdout=PIPE, stderr=PIPE, timeout=2)
+            if result.returncode != 0:
+                raise GenericNetworkError(result.stderr.decode("UTF-8"))
+            out = result.stdout.decode("UTF-8")
+            fixed = set()
+            for line in out.splitlines():
+                if re.match('([0-9A-F]{2}:){5}[0-9A−F]{2}.*', line):
+                    mac = re.search("(([0-9A-F]{2}:){5}[0-9A−F]{2})", line).group(1)
+                    fixed.add(mac)
+
+            can_move = all_connected - fixed
+            vpn_usage = defaultdict(lambda: 0, {})
+
+            for player in fixed:
+                vpn_usage[user_info[player][1]] += log[player]
+
+            can_move = sorted(can_move, key=lambda p: log[p], reverse=True)
+
+            vpn = sorted(vpn_usage, key=lambda v: vpn_usage[v])
+            for player in can_move:
+                vpn_usage[vpn[0]] += log[player]
+                set_vpn(player, vpn[0])
+                vpn = sorted(vpn, key=lambda v: vpn_usage[v])
+
+        else:
+            raise FeatureDisabledError("Feature counter or skbinfo is disabled for this set")
 
     # get current mapping of vpn and mac (each entry contain the vpn number, with who is connected to it)
     def get_balance(self) -> Dict[int, Set[str]]:
@@ -326,10 +364,10 @@ class Ipset:
 
     # move someone to a new vpn
     def set_vpn(self, mac: str, vpn: int):
-        if not NetworkUtil.verify_mac(mac):
+        if not verify_mac(mac):
             raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
         if not self.skbinfo:
-            raise FeatureDisabledError("Feature skbinfo is disables for this set")
+            raise FeatureDisabledError("Feature skbinfo is disabled for this set")
 
         user_info = self.get_user_info(mac)
         if user_info[0]:
@@ -343,36 +381,35 @@ class Ipset:
             raise NotInSetError("'{}' is not in the set")
 
 
-class NetworkUtil:
+# verify if mac is well formed
+def verify_mac(mac: str) -> bool:
+    return bool(re.match(r'^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$', mac))
 
-    @staticmethod
-    def verify_mac(mac: str) -> bool:
-        return bool(re.match(r'^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$', mac))
 
-    @staticmethod
-    def verify_ip(ip: str) -> bool:
-        return bool(re.match(r'^([0-9]{1,3}\.){3}[0-9]{1,3}$', ip))
+# verify is ip is well formed
+def verify_ip(ip: str) -> bool:
+    return bool(re.match(r'^([0-9]{1,3}\.){3}[0-9]{1,3}$', ip))
 
-    # get ip from mac
-    @staticmethod
-    def get_ip(mac: str) -> str:
-        if not NetworkUtil.verify_mac(mac):
-            raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
-        f = open('/proc/net/arp', 'r')
-        lines = f.readlines()[1:]
-        for line in lines:
-            if line.startswith(mac, 41):  # 41=offset in line
-                return line.split(' ')[0]
-        raise UnknownAddress("'{}' does not have a known ip".format(mac))
 
-    # get mac from ip
-    @staticmethod
-    def get_mac(ip: str) -> str:
-        if not NetworkUtil.verify_ip(ip):
-            raise InvalidAddressError("'{}' is not a valid ip address".format(ip))
-        f = open('/proc/net/arp', 'r')
-        lines = f.readlines()[1:]
-        for line in lines:
-            if line.startswith(ip, 0):  # 41=offset in line
-                return line[41:].split(' ')[0]
-        raise UnknownAddress("'{}' does not have a known mac".format(ip))
+# get ip from mac
+def get_ip(mac: str) -> str:
+    if not verify_mac(mac):
+        raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
+    f = open('/proc/net/arp', 'r')
+    lines = f.readlines()[1:]
+    for line in lines:
+        if line.startswith(mac, 41):  # 41=offset in line
+            return line.split(' ')[0]
+    raise UnknownAddress("'{}' does not have a known ip".format(mac))
+
+
+# get mac from ip
+def get_mac(ip: str) -> str:
+    if not verify_ip(ip):
+        raise InvalidAddressError("'{}' is not a valid ip address".format(ip))
+    f = open('/proc/net/arp', 'r')
+    lines = f.readlines()[1:]
+    for line in lines:
+        if line.startswith(ip, 0):  # 41=offset in line
+            return line[41:].split(' ')[0]
+    raise UnknownAddress("'{}' does not have a known mac".format(ip))
