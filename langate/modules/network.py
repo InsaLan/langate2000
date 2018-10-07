@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
-from typing import Iterable, Dict, Set, List, Tuple
+from typing import Dict, Set, List, Tuple
 from time import time
 from subprocess import run, PIPE, TimeoutExpired
 import re
@@ -25,7 +25,7 @@ class IpsetNotFoundError(NetworkInitializationError):
 
 
 class PermissionDeniedError(NetworkInitializationError):
-    """permission request timedout or was denied, verify /etc/sudoers ?"""
+    """permission request timed out or was denied, verify /etc/sudoers ?"""
 
 
 class SetExistError(NetworkInitializationError):
@@ -60,34 +60,44 @@ class Ipset:
     name: str
     counter: bool
     skbinfo: bool
-    markStart: int
-    markMod: int
-    nextAdd: int
-    multiVpnMark: int
-    userLogs: List[Tuple[time, Dict[str, int]]]
-    vpnLogs: List[Tuple[time, Dict[int, int]]]
-    lastUserMeasure: Dict[str, int]
-    lastVpnMeasure: Dict[int, int]
+    mark_start: int
+    mark_mod: int
+    next_add: int
+    multi_vpn_mark: int
+    user_logs: List[Tuple[time, Dict[str, int]]]
+    vpn_logs: List[Tuple[time, Dict[int, int]]]
+    last_user_measure: Dict[str, int]
+    last_vpn_measure: Dict[int, int]
 
-    # create a new set
     def __init__(self, name="langate", default_timeout=0, counter=True, marking=True, mark=(0, 1),
                  multi_vpn_mark=4294967295, fixed_vpn_timeout=30):
-        # CMD=sudo ipset create langate hash:mac -exist hashsize 4096 timeout 0 counters skbinfo
+        """
+        Create a new set with provided arguments. Equivalent to the command :
+        'sudo ipset create langate hash:mac -exist hashsize 4096 timeout 0 counters skbinfo"
+
+        :param name: Name of the set.
+        :param default_timeout: Timeout by default.
+        :param counter: #TODO
+        :param marking: #TODO
+        :param mark: #TODO
+        :param multi_vpn_mark: #TODO
+        :param fixed_vpn_timeout: #TODO
+        """
         self.name = name
         self.timeout = default_timeout
         self.counter = counter
         self.skbinfo = marking
-        (self.markStart, self.markMod) = mark
-        self.nextAdd = 0
-        self.multiVpnMark = multi_vpn_mark
+        (self.mark_start, self.mark_mod) = mark
+        self.next_add = 0
+        self.multi_vpn_mark = multi_vpn_mark
         if self.counter:
-            self.userLogs = list()
-            self.lastUserMeasure = dict()
+            self.user_logs = list()
+            self.last_user_measure = dict()
             if self.skbinfo:
-                self.vpnLogs = list()
-                self.lastVpnMeasure = dict()
-        creation_args = ["sudo", "ipset", "create", self.name, "hash:mac", "-exist", "hashsize", "4096", "timeout",
-                         str(default_timeout)]
+                self.vpn_logs = list()
+                self.last_vpn_measure = dict()
+        creation_args = ["sudo", "ipset", "create", self.name, "hash:mac",
+                         "-exist", "hashsize", "4096", "timeout", str(default_timeout)]
         if self.counter:
             creation_args.append("counters")
         if self.skbinfo:
@@ -113,9 +123,19 @@ class Ipset:
             if result.returncode != 0:
                 raise UnknownInitializationError(result.stderr.decode("UTF-8"))
 
-    # add a user to the set
-    def connect_user(self, mac: str, timeout=None, mark=None, counter=0, multi_vpn=False):
-        # CMD=sudo ipset add langate 00:00:00:00:00:01 -exist timeout 0 skbmark 0
+    def connect_user(self, mac: str, timeout: int = None, mark: int = None, counter: int = 0, multi_vpn: bool = False):
+        """
+        Add a user to the set.
+        Equivalent to the command :
+        'sudo ipset add langate 00:00:00:00:00:01 -exist timeout 0 skbmark 0'
+
+        :param mac: Mac of the user.
+        :param timeout: (Optional) Timeout after which the user will be disconnected.
+        :param mark: #TODO
+        :param counter: #TODO
+        :param multi_vpn: #TODO
+        """
+
         if not verify_mac(mac):
             raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
 
@@ -131,10 +151,10 @@ class Ipset:
         if self.skbinfo:
             connect_args.append("skbmark")
             if multi_vpn:
-                connect_args.append(hex(self.multiVpnMark))
+                connect_args.append(hex(self.multi_vpn_mark))
             elif mark is None:
-                connect_args.append(hex(self.nextAdd + self.markStart))
-                self.nextAdd = (self.nextAdd + 1) % self.markMod
+                connect_args.append(hex(self.next_add + self.mark_start))
+                self.next_add = (self.next_add + 1) % self.mark_mod
             else:
                 connect_args.append(hex(mark))
         elif mark is not None:
@@ -145,9 +165,14 @@ class Ipset:
         if result.returncode != 0:
             raise GenericNetworkError(result.stderr.decode("UTF-8"))
 
-    # remove mac from the set
     def disconnect_user(self, mac: str):
-        # CMD=sudo ipset del langate 00:00:00:00:00:01
+        """
+        Remove a user from the set.
+        Equivalent to the command :
+        'sudo ipset del langate 00:00:00:00:00:01'
+
+        :param mac: Mac of the user.
+        """
         if not verify_mac(mac):
             raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
         disconnect_args = ["sudo", "ipset", "del", self.name, mac, "-exist"]
@@ -157,10 +182,19 @@ class Ipset:
         if result.returncode != 0:
             raise GenericNetworkError(result.stderr.decode("UTF-8"))
 
-    # from mac, get if connected, how much bytes where transfered since connected and what mark is used by the entry
     def get_user_info(self, mac: str) -> (bool, int, int):
-        # CMD=sudo ipset test langate 00:00:00:00:00:01 -q
-        # CMD=sudo ipset list langate | grep 00:00:00:00:00:01
+        """
+        Get users information from his mac address.
+        Obtained by the commands :
+        'sudo ipset test langate 00:00:00:00:00:01 -q'
+        and 'sudo ipset list langate | grep 00:00:00:00:00:01'
+
+        :param mac: Mac adress of the user.
+        :return: (bool:1,int:2,int:3) with
+        1 : if the user is connected,
+        2 : how much bytes were transfered
+        and 3 : what mark is used for the entry.
+        """
 
         if not verify_mac(mac):
             raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
@@ -179,6 +213,7 @@ class Ipset:
         if result.returncode != 0:
             raise GenericNetworkError(result.stderr.decode("UTF-8"))
         out = result.stdout.decode("UTF-8")
+        res = (None, None, None)
         for line in out.splitlines():
             if re.match(mac.upper() + '.*', line):
                 byte = re.search('bytes ([0-9]+)', line)
@@ -191,19 +226,26 @@ class Ipset:
                     skbmark = int(skbmark.group(1), 16)
                 else:
                     skbmark = 0
-                return True, byte, skbmark
+                res = (True, byte, skbmark)
+        return res
 
-    # remove all entry from the set
     def clear(self):
-        # CMD=sudo ipset flush langate
+        """
+        Clear the set, by removing all entry from it. Equivalent to the command :
+        'sudo ipset flush langate'
+        """
         clear_args = ["sudo", "ipset", "flush", self.name]
         result = run(clear_args, stderr=PIPE, timeout=2)
         if result.returncode != 0:
             raise GenericNetworkError(result.stderr.decode("UTF-8"))
 
-    # get all entry from the set, with how much bytes thes transfered and what is their mark
     def get_all_connected(self) -> Dict[str, Tuple[int, int]]:
-        # CMD=sudo ipset list langate
+        """
+        Get all entries from the set, with how much bytes they transferred and what is their mark.
+        Equivalent to the command : 'sudo ipset list langate"
+
+        :return: #TODO
+        """
         list_args = ["sudo", "ipset", "list", self.name]
         result = run(list_args, stdout=PIPE, stderr=PIPE, timeout=2)
         if result.returncode != 0:
@@ -212,8 +254,8 @@ class Ipset:
         res = dict()
         for line in out.splitlines():
             if re.match('([0-9A-F]{2}:){5}[0-9A−F]{2}.*', line):
-                mac = re.search("(([0-9A-F]{2}:){5}[0-9A−F]{2})", line).group(1)
-                byte = re.search('bytes ([0-9]+)', line)
+                mac = re.search('(([0-9A-F]{2}:){5}[0-9A−F]{2})', line).group(1)
+                byte = re.search(r'bytes ([0-9]+)', line)
                 if byte:
                     byte = int(byte.group(1))
                 else:
@@ -226,18 +268,22 @@ class Ipset:
                 res[mac] = (byte, skbmark)
         return res
 
-    # delete the set (don't use is after or it will throws lots of exceptions
     def delete(self):
-        # CMD=sudo ipset destroy langate
+        """
+        Delete the set. Equivalent to the command :
+        'sudo ipset destroy langate"
+        """
         clear_args = ["sudo", "ipset", "destroy", self.name]
         result = run(clear_args, stderr=PIPE, timeout=2)
         if result.returncode != 0:
             raise GenericNetworkError(result.stderr.decode("UTF-8"))
-        del self
 
     # add an entry to internal log
     def log_statistics(self):
-        # CMD=sudo ipset list langate
+        """
+        Add an entry to internal log. Equivalent to the command :
+        'sudo ipset list langate'
+        """
 
         if not self.counter:
             raise FeatureDisabledError("Feature counter is disabled for this set")
@@ -258,11 +304,11 @@ class Ipset:
                 mac = re.search("(([0-9A-F]{2}:){5}[0-9A−F]{2})", line).group(1)
                 byte = int(re.search('bytes ([0-9]+)', line).group(1))
 
-                if mac in self.lastUserMeasure:
-                    user_log[mac] = byte - self.lastUserMeasure[mac]
+                if mac in self.last_user_measure:
+                    user_log[mac] = byte - self.last_user_measure[mac]
                 else:
                     user_log[mac] = byte
-                self.lastUserMeasure[mac] = byte
+                self.last_user_measure[mac] = byte
                 if self.skbinfo:
                     vpn = re.search('skbmark (0x[0-9]+)', line)
                     if vpn:
@@ -271,53 +317,74 @@ class Ipset:
                         continue
                     vpn_log[vpn] += byte
 
-        self.userLogs.append((current_time, user_log))
+        self.user_logs.append((current_time, user_log))
 
         if self.skbinfo:
             for vpn in vpn_log:
-                if vpn not in self.lastVpnMeasure:
-                    self.lastVpnMeasure[vpn] = 0
-                vpn_log[vpn] -= self.lastVpnMeasure[vpn]
-                self.lastVpnMeasure[vpn] += vpn_log[vpn]
-            self.vpnLogs.append((current_time, vpn_log))
+                if vpn not in self.last_vpn_measure:
+                    self.last_vpn_measure[vpn] = 0
+                vpn_log[vpn] -= self.last_vpn_measure[vpn]
+                self.last_vpn_measure[vpn] += vpn_log[vpn]
+            self.vpn_logs.append((current_time, vpn_log))
 
-    # get logs, by user. Entries are sorted by date, tuple contain date and bytes transfered by mac since previous entry
     def get_users_logs(self) -> List[Tuple[time, Dict[str, int]]]:
+        """
+        Get logs by users, sorted by date.
+
+        :return: Tuple containing date and bytes transferred by mac since previous entry.
+        #TODO clarify return type : what is the srt inside the dictionary ?
+        """
         if not self.counter:
             raise FeatureDisabledError("Feature counter is disabled for this set")
-        return self.userLogs
+        return self.user_logs
 
-    # get logs, by vpn. Entries are sorted by date, tuple contain date and bytes transfered by vpn since previous entry
     def get_vpn_logs(self) -> List[Tuple[time, Dict[int, int]]]:
+        """
+        Get logs by vpn sorted by date.
+
+        :return: Tuple containing date and bytes transferred by vpn since previous entry.
+        #TODO clarify return type : what is the each int inside the dictionary ?
+        """
         if not self.counter:
             raise FeatureDisabledError("Feature counter is disabled for this set")
         if not self.skbinfo:
             raise FeatureDisabledError("Feature skbinfo is disabled for this set")
-        return self.vpnLogs
+        return self.vpn_logs
 
-    # clear internal logs (logs are never cleared otherwise, taking memory indefinitely)
     def clear_logs(self, after=time()):
+        """
+        Clear internal logs (logs are never cleared otherwise, taking memory indefinitely).
+
+        :param after: Time after which the cleaning must be done, none if not set.
+        """
         if not self.counter:
             raise FeatureDisabledError("Feature counter is disabled for this set")
         lo = 0
-        hi = len(self.userLogs)
+        hi = len(self.user_logs)
         while lo < hi:
-            mid = (lo+hi)//2
-            if self.userLogs[mid][0] < after: lo = mid+1
-            else: hi = mid
+            mid = (lo + hi) // 2
+            if self.user_logs[mid][0] < after:
+                lo = mid + 1
+            else:
+                hi = mid
         index = lo
-        self.userLogs = self.userLogs[index:]
+        self.user_logs = self.user_logs[index:]
         if self.skbinfo:
-            self.vpnLogs = self.vpnLogs[index:]
+            self.vpn_logs = self.vpn_logs[index:]
 
-    # try to auto-balance vpn usage by switching some user of vpn
     def try_balance(self):
-        # CMD=sudo ipset list langate
+        """
+        Try to auto-balance vpn usage by switching some user of vpn. Equivalent to the command:
+        'sudo ipset list langate"
+        """
+
         if self.counter and self.skbinfo:
             # get users recent network usage
             logs = self.get_users_logs()
-            if len(logs) > 0: log = logs[-1][1]
-            else: return
+            if len(logs) > 0:
+                log = logs[-1][1]
+            else:
+                return
             user_info = self.get_all_connected()
             all_connected = set(user_info)
 
@@ -344,14 +411,18 @@ class Ipset:
             vpn = sorted(vpn_usage, key=lambda v: vpn_usage[v])
             for player in can_move:
                 vpn_usage[vpn[0]] += log[player]
-                set_vpn(player, vpn[0])
+                self.set_vpn(player, vpn[0])
                 vpn = sorted(vpn, key=lambda v: vpn_usage[v])
 
         else:
             raise FeatureDisabledError("Feature counter or skbinfo is disabled for this set")
 
-    # get current mapping of vpn and mac (each entry contain the vpn number, with who is connected to it)
     def get_balance(self) -> Dict[int, Set[str]]:
+        """
+        Get current mapping of vpn and mac (each entry contain the vpn number, with who is connected to it)
+
+        :return: Dictionary composed of vpn and set of mac addresses
+        """
         res = dict()
         connected = self.get_all_connected()
         for mac in connected:
@@ -362,8 +433,13 @@ class Ipset:
                 res[connected[mac][1]].add(mac)
         return res
 
-    # move someone to a new vpn
     def set_vpn(self, mac: str, vpn: int):
+        """
+        Move an user to a new vpn.
+
+        :param mac: Mac address of the user.
+        :param vpn: Vpn where move the user to.
+        """
         if not verify_mac(mac):
             raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
         if not self.skbinfo:
@@ -375,24 +451,41 @@ class Ipset:
             byte = user_info[1]
             self.connect_user(mac, mark=vpn, counter=byte)
             if self.counter:
-                self.lastVpnMeasure[old_vpn] = self.lastVpnMeasure.get(old_vpn, 0) - self.lastUserMeasure.get(mac, 0)
-                self.lastVpnMeasure[vpn] = self.lastVpnMeasure.get(vpn, 0) + self.lastUserMeasure.get(mac, 0)
+                self.last_vpn_measure[old_vpn] = self.last_vpn_measure.get(old_vpn, 0) \
+                                                 - self.last_user_measure.get(mac, 0)
+                self.last_vpn_measure[vpn] = self.last_vpn_measure.get(vpn, 0) \
+                                             + self.last_user_measure.get(mac, 0)
         else:
             raise NotInSetError("'{}' is not in the set")
 
 
-# verify if mac is well formed
 def verify_mac(mac: str) -> bool:
+    """
+    Verify if mac address is correctly formed.
+
+    :param mac: Mac address to verify.
+    :return: True is correctly formed, False if not.
+    """
     return bool(re.match(r'^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$', mac))
 
 
-# verify is ip is well formed
 def verify_ip(ip: str) -> bool:
+    """
+    Verify if ip address is correctly formed.
+
+    :param ip: Ip address to verify.
+    :return: True is correctly formed, False if not.
+    """
     return bool(re.match(r'^([0-9]{1,3}\.){3}[0-9]{1,3}$', ip))
 
 
-# get ip from mac
 def get_ip(mac: str) -> str:
+    """
+    Get the ip address associated with a given mac address.
+
+    :param mac: Mac address of the user.
+    :return: Ip address of the user.
+    """
     if not verify_mac(mac):
         raise InvalidAddressError("'{}' is not a valid mac address".format(mac))
     f = open('/proc/net/arp', 'r')
@@ -405,6 +498,12 @@ def get_ip(mac: str) -> str:
 
 # get mac from ip
 def get_mac(ip: str) -> str:
+    """
+    Get the mac address associated with a given ip address.
+
+    :param ip: Ip address of the user.
+    :return: Mac address of the user.
+    """
     if not verify_ip(ip):
         raise InvalidAddressError("'{}' is not a valid ip address".format(ip))
     f = open('/proc/net/arp', 'r')
