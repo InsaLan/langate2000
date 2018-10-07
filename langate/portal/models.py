@@ -1,10 +1,19 @@
-from django.db import models
+from enum import Enum
 
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+
+# Create your models here.
+
+class Role(Enum):
+    P = "Player"
+    M = "Manager"
+    G = "Guest"
+    S = "Staff Member"
+    A = "Administrator"
 
 
 class Profile(models.Model):
@@ -13,9 +22,19 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # Additionnal attributes
-    ##Relevant if player :
+    role = models.CharField(
+        max_length=1,
+        default=Role.P,
+        choices=[(tag, tag.value) for tag in Role]  # Choices is a list of Tuple
+    )
+    ## Relevant if player :
+    has_paid = models.BooleanField(default=False)
     tournament = models.CharField(max_length=100)
     team = models.CharField(max_length=100)
+
+    def remove_user(self):
+        User.delete(self.user)
+        self.delete()
 
 
 # Functions listening modifications of user
