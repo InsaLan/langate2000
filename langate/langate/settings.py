@@ -20,11 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # If you get a warning, be sure to have the variable SECRET_KEY populated into the file secret_settings.py
-try:
-    from settings_local import *
-except ModuleNotFoundError:
-    SECRET_KEY = 'secret'
-    print("[WARN] Secret settings not found, the website isn't secure anymore.")
+# try:
+#     from settings_local import *
+# except ModuleNotFoundError:
+#     SECRET_KEY = 'secret'
+#     print("[WARN] Secret settings not found, the website isn't secure anymore.")
+SECRET_KEY = "secret"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -129,3 +130,5 @@ STATICFILES_DIRS = (
 # Authentification
 
 LOGIN_REDIRECT_URL = "/connected"
+
+AUTHENTICATION_BACKENDS = ('langate.insalan_auth.insalan_backend.InsalanBackend',)

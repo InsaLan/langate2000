@@ -1,23 +1,23 @@
 """ Insalan website authentication backend """
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.http import HttpRequest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import UserManager, User
+import requests
 
 UserModel = get_user_model()
 
-
 class InsalanBackend(ModelBackend):
-    """
+    '''
     A class extending ModelBackend to authenticate remote users from insalan.fr if they
     are not locals users.
-    """
+    '''
 
-    # README : related documentation :
-    # https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
+    #README : related documentation :
+    #https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
 
-    def authenticate(self, request: HttpRequest, username: str = None, password: str = None, **kwargs):
+    def authenticate(self, request : HttpRequest , username : str = None, password : str = None, **kwargs):
         """
         authenticate() should check the credentials it gets and return a user object that matches those credentials
         if the credentials are valid. If they’re not valid, it should return None
@@ -30,60 +30,84 @@ class InsalanBackend(ModelBackend):
         if username is None:
             username = kwargs.get(UserModel.USERNAME_FIELD)
 
-        # Example : django "official" version
-        '''
-        def authenticate(self, request , username = None, password = None, **kwargs):
-            try:
-                user = UserModel._default_manager.get_by_natural_key(username)
-            except UserModel.DoesNotExist:
-                # Run the default password hasher once to reduce the timing
-                # difference between an existing and a nonexistent user (#20760).
-                UserModel().set_password(password)
+        try:
+            # Try to find user in local database
+            user = UserModel._default_manager.get_by_natural_key(username)
+
+            # User exists in local database
+            if not (user.check_password(password) and self.user_can_authenticate(user)):
+                # Wrong password
+                raise BadCredentialsException
             else:
-                if user.check_password(password) and self.user_can_authenticate(user):
+                # Credentials are ok
+                return user
+
+        except UserModel.DoesNotExist:
+            # User is missing from local database, we need to check insalan.fr
+            """
+            API optional request data
+            { "tournaments": "t1,t2,..." }
+
+            API response
+            {
+                "user": { "username": username },
+                "err":  "registration_not_found",   (player not found)
+                        "no_paid_place",            (player found but he has not paid)
+                        None,                       (player found and he has paid)
+                "tournament":   "manager"   (the person is a manager of one of the tournaments t1, t2, ...)
+                                "t1"        (he is a player and registered in tournament t1)
+                                None
+            }
+            For now we are not using tournament data, but we might use it in the future.            
+            """
+
+            # Request with authentication
+            request_result = requests.get("https://www.insalan.fr/api/user/me", auth = (username, password))
+
+            if request_result.status_code == 401: # 401 = Unauthorized
+                # Bad credentials
+                raise BadCredentialsException
+
+            if request_result.status_code != 200: # 200 = OK
+                # The request failed because of something else
+                raise LoginException
+
+            # Credentials are ok in remote database
+            try:
+                json_result = request_result.json()
+                paid_status = json_result["err"]
+                if paid_status == "registration_not_found":
+                    # The player is not registered in a tournament
+                    # TODO : what to return ? failure ?
+                    raise ValidationError("This player is not registered in any tournament.")
+                elif paid_status == "no_paid_place":
+                    # The player is registered but has not paid
+                    raise ValidationError("This player is registered but has not paid.")
+                else:
+                    # The player has paid, we can return the object
+                    user = User.objects.create_user(username = username,
+                                                    email = None,
+                                                    password = password)
                     return user
-        '''
-
-        # TODO :
-        # Get the json from web
-        # If the credentials are correct and the player has payed
-        if NotImplemented:
-            user = User.objects.create_user(username=username,
-                                            email=None,
-                                            password=password)
-        # If the credentials are correct and the player HASN'T payed
-        elif NotImplemented:
-            raise NotAllowedException(username, "This player is correctly registered but hasn't paid.")
-
-        # Else
-        else:
-            raise BadCredentialsException()
-
-        # TODO later :
-        # Fill the profil automatically linked to the account with data (tournament, role)
-
-        # Then return the user newly created
-        return user
+            except ValidationError:
+                raise
+            except:
+                # Wrong JSON object
+                raise LoginException
 
     def get_user_id(self, attributes):
         NotImplemented
 
-
 class LoginException(Exception):
     """Base class for exceptions in this module."""
     pass
-
-
 class BadCredentialsException(LoginException):
     """Exception raised when the login or password doesn't match.
     Attributes:
         None
     """
-
     def __init__(self):
         pass
-
-
 class NotAllowedException(LoginException, PermissionDenied):
     """Exception raised when the user entered good credentials but
         - was a player and didn't pay
@@ -92,7 +116,6 @@ class NotAllowedException(LoginException, PermissionDenied):
         username -- username related to the unsuccessful transaction
         message -- message related to the error
     """
-
-    def __init__(self, username: str, message: str):
+    def __init__(self, username : str, message : str):
         self.username = username
         self.message = message
