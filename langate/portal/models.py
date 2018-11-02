@@ -24,11 +24,10 @@ class Profile(models.Model):
     # Additionnal attributes
     role = models.CharField(
         max_length=1,
-        default=Role.P,
+        default=Role.P.value,
         choices=[(tag, tag.value) for tag in Role]  # Choices is a list of Tuple
     )
     ## Relevant if player :
-    has_paid = models.BooleanField(default=False)
     tournament = models.CharField(max_length=100)
     team = models.CharField(max_length=100)
 
@@ -41,7 +40,10 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        if(instance.is_staff):
+            Profile.objects.create(user=instance, role=Role.A.value)
+        else:
+            Profile.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)

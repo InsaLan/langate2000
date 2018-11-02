@@ -12,67 +12,41 @@
                 <th scope="col">Adresse mail</th>
                 <th scope="col">Rôle</th>
                 <th scope="col" class="col-account-admin-insalan">Compte</th>
-                <th scope="col" class="col-payment-admin-insalan">Paiement</th>
                 <th scope="col">Inscription tournois</th>
-                <th scope="col">État LAN</th>
                 <th scope="col" class="col-actions-admin-insalan">Actions</th>
             </tr>
             </thead>
             <tbody>
-            {% for player in player.list %}
+            {% for player in players_list %}
                 <tr>
-                    <th scope="row">1</th>
-                    <td>darkgallium</td>
-                    <td>darkgallium@somewhere.com</td>
-                    <td><span class="text-danger">Administrateur</span></td>
+                    <th scope="row">{{ player.id }}</th>
+                    <td>{{ player.name }}</td>
+                    <td>{{ player.email }}</td>
+                    <td><span class="text-danger">{{ player.role }}</span></td>
                     <td>
-                        <span class="badge badge-primary badge-admin-insalan"><span
-                                class="fas fa-database"></span></span>
-                        <span class="badge badge-light badge-admin-insalan"><span class="fas fa-user"></span></span>
+                        {% if player.isInDatabse %}
+                            <span class="badge badge-primary badge-admin-insalan"><span class="fas fa-database"></span></span>
+                        {% endif %}
+                        {% if player.isStaff %}
+                            <span class="badge badge-light badge-admin-insalan"><span class="fas fa-user"></span></span>
+                        {% endif %}
                     </td>
-                    <td></td>
-                    <td></td>
-                    <td><span class="text-success">Connecté</span></td>
+                    <td>{{ player.tournament }}</td>
                     <td>
-                        <div role="group" class="but" aria-label="Actions">
-                            <button type="button" class="btn btn-sec-insalan" aria-label="Modifier">Modifier<span
-                                    class="fas fa-pen" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-sec-insalan" aria-label="Appareils">Appareils
-                                <spanclass
-                                ="fas fa-globe" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer">Supprimer
-                                <spanclass
-                                ="fas fa-trash" aria-hidden="true"></span></button>
+                        <div role="group" class="btn-group" aria-label="Actions">
+                            <button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'utilisateur"><span
+                                    class="fas fa-pen" aria-hidden="true">&nbsp;</span>Modifier
+                            </button>
+                            <button type="button" class="btn btn-sec-insalan" aria-label="Appareils enregistrés"><span
+                                    class="fas fa-globe" aria-hidden="true">&nbsp;</span>Appareils
+                            </button>
+                            <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'utilisateur"><span
+                                    class="fas fa-trash" aria-hidden="true">&nbsp;</span>Supprimer
+                            </button>
                         </div>
                     </td>
                 </tr>
             {% endfor %}
-            <tr>
-                <th scope="row">1</th>
-                <td>darkgallium</td>
-                <td>darkgallium@somewhere.com</td>
-                <td><span class="text-danger">Administrateur</span></td>
-                <td>
-                    <span class="badge badge-primary badge-admin-insalan"><span class="fas fa-database"></span></span>
-                    <span class="badge badge-light badge-admin-insalan"><span class="fas fa-user"></span></span>
-                </td>
-                <td></td>
-                <td></td>
-                <td><span class="badge badge-success">Connecté</span></td>
-                <td>
-                    <div role="group" class="btn-group" aria-label="Actions">
-                        <button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'utilisateur"><span
-                                class="fas fa-pen" aria-hidden="true">&nbsp;</span>Modifier
-                        </button>
-                        <button type="button" class="btn btn-sec-insalan" aria-label="Appareils enregistrés"><span
-                                class="fas fa-globe" aria-hidden="true">&nbsp;</span>Appareils
-                        </button>
-                        <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'utilisateur"><span
-                                class="fas fa-trash" aria-hidden="true">&nbsp;</span>Supprimer
-                        </button>
-                    </div>
-                </td>
-            </tr>
             </tbody>
         </table>
     </div>
