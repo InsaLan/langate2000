@@ -1,27 +1,29 @@
+# coding=utf-8
 """ Insalan website authentication backend """
-from django.core.exceptions import PermissionDenied, ValidationError
-from django.http import HttpRequest
+import requests
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth.models import UserManager, User
-import requests
+from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.http import HttpRequest
 
 UserModel = get_user_model()
 
+
 class InsalanBackend(ModelBackend):
-    '''
+    """
     A class extending ModelBackend to authenticate remote users from insalan.fr if they
     are not locals users.
-    '''
+    """
 
-    #README : related documentation :
-    #https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
+    # README : related documentation :
+    # https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
 
-    def authenticate(self, request : HttpRequest , username : str = None, password : str = None, **kwargs):
+    def authenticate(self, request: HttpRequest, username: str = None, password: str = None, **kwargs):
         """
         authenticate() should check the credentials it gets and return a user object that matches those credentials
         if the credentials are valid. If they’re not valid, it should return None
-        :param request: an HttpRequest and may be None if it wasn’t provided
+        :param request: an HttpRequest and may be None if it was not provided
         :param username: a string, which is the username of the user
         :param password: a string, which is the password of the user
         :param kwargs: could contain the username at the key 'username'
@@ -32,6 +34,7 @@ class InsalanBackend(ModelBackend):
 
         try:
             # Try to find user in local database
+            # TODO : to simplify, by using two backend (the default one of django, as well as this one in fallback)
             user = UserModel._default_manager.get_by_natural_key(username)
 
             # User exists in local database
@@ -62,13 +65,13 @@ class InsalanBackend(ModelBackend):
             """
 
             # Request with authentication
-            request_result = requests.get("https://www.insalan.fr/api/user/me", auth = (username, password))
+            request_result = requests.get("https://www.insalan.fr/api/user/me", auth=(username, password))
 
-            if request_result.status_code == 401: # 401 = Unauthorized
+            if request_result.status_code == 401:  # 401 = Unauthorized
                 # Bad credentials
                 raise BadCredentialsException
 
-            if request_result.status_code != 200: # 200 = OK
+            if request_result.status_code != 200:  # 200 = OK
                 # The request failed because of something else
                 raise LoginException
 
@@ -85,37 +88,52 @@ class InsalanBackend(ModelBackend):
                     raise ValidationError("This player is registered but has not paid.")
                 else:
                     # The player has paid, we can return the object
-                    user = User.objects.create_user(username = username,
-                                                    email = None,
-                                                    password = password)
+                    user = User.objects.create_user(username=username,
+                                                    email=None,
+                                                    password=password)
                     return user
             except ValidationError:
-                raise
+                raise ValidationError
             except:
+                # TODO : should be more precise (PEP 8 : do not use bare except)
                 # Wrong JSON object
                 raise LoginException
 
     def get_user_id(self, attributes):
+        # TODO : why is this function not implemented ? It is really useful ?
+        """
+        (Docstring to do)
+        :param attributes:
+        """
         NotImplemented
 
+
 class LoginException(Exception):
-    """Base class for exceptions in this module."""
-    pass
-class BadCredentialsException(LoginException):
-    """Exception raised when the login or password doesn't match.
-    Attributes:
-        None
     """
+    Base class for exceptions in this module.
+    """
+    pass
+
+
+class BadCredentialsException(LoginException):
+    """
+    Exception raised when the login or password doesn't match.
+    """
+
     def __init__(self):
         pass
+
+
 class NotAllowedException(LoginException, PermissionDenied):
-    """Exception raised when the user entered good credentials but
+    """
+    Exception raised when the user entered good credentials but
         - was a player and didn't pay
         - was banned
     Attributes:
         username -- username related to the unsuccessful transaction
         message -- message related to the error
     """
-    def __init__(self, username : str, message : str):
+
+    def __init__(self, username: str, message: str):
         self.username = username
         self.message = message
