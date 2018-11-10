@@ -1,0 +1,59 @@
+<!-- Modal Too Many Devices -->
+
+<div class="modal modal-insalan" id="too-many-devices-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Oops...</h5>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="text-white pt-1">
+                        <p><b>Vous êtes connecté sur plus de 3 appareils sur le réseau.</b></p>
+                        <p>Vous devez déconnecter au moins un appareil du réseau avant de pouvoir accéder à internet sur cet appareil.</p>
+                        <p>Attention, les appareils déconnectés du réseau ne peuvent plus accéder à internet et vous redirigeront sur ce portail.</p>
+                    </div>
+
+                    <div class="text-white mx-auto">
+                        <table class="table table-sm table-insalan table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col" class="align-middle">#</th>
+                                <th scope="col" class="align-middle">Nom de l'appareil</th>
+                                <th scope="col" class="align-middle">Réseau</th>
+                                <th scope="col" class="align-middle" style="width: 100px;">Supprimer ?</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for dev in devices_list %}
+
+                                <tr>
+                                    <th scope="row">{{ dev.count }}</th>
+                                    <td>{{ dev.id }} {% if dev.current_client %}<b>(cet appareil)</b>{% endif %}</td>
+                                    <td>{{ dev.area }}</td>
+                                    <td>
+                                        <div class="text-center" role="group" aria-label="Actions">
+                                            <button type="button" class="btn btn-sec-insalan" data-deviceid="{{ dev.id }}" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#too-many-devices-modal').modal({
+        backdrop: 'static',
+        keyboard: false,
+    });
+</script>

@@ -22,48 +22,29 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Ordinateur 1 (cet appareil)</td>
-                <td>Filaire</td>
-                <td>
-                    <div class="text-center" role="group" aria-label="Actions">
-                        <button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span
-                                class="fas fa-pen" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span
-                                class="fas fa-trash" aria-hidden="true"></span></button>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Appareil mobile 1</td>
-                <td>WiFi</td>
-                <td class="action-list">
-                    <div class="text-center" role="group" aria-label="Actions">
-                        <button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span
-                                class="fas fa-pen" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span
-                                class="fas fa-trash" aria-hidden="true"></span></button>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Ordinateur 2</td>
-                <td>WiFi</td>
-                <td>
-                    <div class="text-center" role="group" aria-label="Actions">
-                        <button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'appareil"><span
-                                class="fas fa-pen" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'appareil"><span
-                                class="fas fa-trash" aria-hidden="true"></span></button>
-                    </div>
-                </td>
-            </tr>
+
+            {% for dev in devices_list %}
+
+                <tr>
+                    <th scope="row">{{ dev.count }}</th>
+                    <td>{{ dev.id }} {% if dev.current_client %}<b>(cet appareil)</b>{% endif %}</td>
+                    <td>{{ dev.area }}</td>
+                    <td>
+                        <div class="text-center" role="group" aria-label="Actions">
+                            <button type="button" class="btn btn-sec-insalan" data-deviceid="{{ dev.id }}" aria-label="Modifier l'appareil"><span class="fas fa-pen" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-sec-insalan" data-deviceid="{{ dev.id }}" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
+                        </div>
+                    </td>
+                </tr>
+
+            {% endfor %}
 
             </tbody>
         </table>
     </div>
+
+    {% if too_many_devices %}
+        {% include 'portal/modal_too_many_devices.html' %}
+    {% endif %}
 
 {% endblock %}
