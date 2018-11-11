@@ -64,6 +64,7 @@ def connected(request):
         dev = {
             "count": i,
             "id": d.id,
+            "name": d.name,
             "area": d.area,
             "current_client": (d.ip == client_ip)
         }

@@ -62,6 +62,7 @@ class Device(models.Model):
 
         return Device(mac=mac, area=area, **validated_data)
 
+    # FIXME : we should consider also the case when an user deletes its last device !
 
 # Functions listening modifications of user
 @receiver(post_save, sender=User)

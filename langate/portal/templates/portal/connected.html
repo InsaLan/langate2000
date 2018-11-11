@@ -2,6 +2,8 @@
 
 {% block main %}
 
+    {% csrf_token %}
+
     <div class="text-white text-center pt-5">
         <h2>Bon jeu, {{ user.username }}</h2>
         <p class="pt-2">Vous êtes désormais connecté au réseau de l'InsaLan.</p>
@@ -27,12 +29,12 @@
 
                 <tr>
                     <th scope="row">{{ dev.count }}</th>
-                    <td>{{ dev.id }} {% if dev.current_client %}<b>(cet appareil)</b>{% endif %}</td>
+                    <td>{{ dev.name }} {% if dev.current_client %}<b>(cet appareil)</b>{% endif %}</td>
                     <td>{{ dev.area }}</td>
                     <td>
                         <div class="text-center" role="group" aria-label="Actions">
-                            <button type="button" class="btn btn-sec-insalan" data-deviceid="{{ dev.id }}" aria-label="Modifier l'appareil"><span class="fas fa-pen" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-sec-insalan" data-deviceid="{{ dev.id }}" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-sec-insalan modify-device-btn" data-deviceid="{{ dev.id }}" aria-label="Modifier l'appareil"><span class="fas fa-pen" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-sec-insalan delete-device-btn" data-deviceid="{{ dev.id }}" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
                 </tr>
@@ -46,5 +48,117 @@
     {% if too_many_devices %}
         {% include 'portal/modal_too_many_devices.html' %}
     {% endif %}
+
+    <!-- Modal Remove Device -->
+
+    <div class="modal modal-insalan" id="delete-device-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Supprimer ?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-white">
+                    <p>Voulez-vous vraiment supprimer l'appareil <b id="delete-device-name"></b> ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                    <button type="button" class="btn btn-danger" id="delete-device-confirm-btn">Oui</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal modal-insalan" id="modify-device-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier un appareil</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <form>
+                            <div class="form-group row" id="create_account_nickname_g">
+                                <label for="modify-device-name" class="col-sm-4 col-form-label">Nom de l'appareil : </label>
+                                <input type="text" class="form-control col-sm-8" id="modify-device-name">
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sec-insalan" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-insalan" id="modify-device-confirm-btn">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).on("click", ".delete-device-btn", function (e) {
+            $("#delete-device-confirm-btn").data("deviceid", $(this).data("deviceid"));
+            $("#delete-device-name").text($(this).data("deviceid"));
+            $("#delete-device-modal").modal("show");
+        });
+
+        $(document).on("click", ".modify-device-btn", function (e) {
+            $("#modify-device-confirm-btn").data("deviceid", $(this).data("deviceid"));
+            $("#modify-device-modal").modal("show");
+        });
+
+
+        let csrftoken = $("[name=csrfmiddlewaretoken]").val();
+
+        $.ajaxSetup({
+
+            beforeSend: function(xhr, settings) {
+                if (!this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+
+        });
+
+        $("#delete-device-confirm-btn").click( function () {
+
+            let id = $(this).data("deviceid");
+
+            $.ajax({
+                url: '/api/user_devices/'+id+'/',
+                type: 'DELETE',
+
+                success: function(result) {
+                    $("#delete-device-modal").modal('hide');
+                }
+            });
+
+        });
+
+        $("#modify-device-confirm-btn").click( function () {
+
+            let id = $(this).data("deviceid");
+
+            $.ajax({
+                url: '/api/user_devices/'+id+'/',
+                type: 'PUT',
+                data: "name="+encodeURI($("#modify-device-name").val()),
+
+                success: function(result) {
+                    $("#modify-device-modal").modal('hide');
+                    location.reload();
+                }
+            });
+
+        });
+
+
+    </script>
 
 {% endblock %}
