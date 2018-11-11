@@ -56,7 +56,10 @@ def connected(request):
             dev.save()
 
     # Passing user devices to the template
+
+    user_devices = Device.objects.filter(user=request.user)
     i = 1
+
     for d in user_devices:
         dev = {
             "count": i,

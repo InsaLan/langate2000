@@ -38,8 +38,11 @@ class Profile(models.Model):
 
 
 class Device(models.Model):
-    # Profile of the User of the device
+    # User of the device
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # Name of the device
+    name = models.CharField(max_length=100, default="Computer")
 
     # IP address of the device
     ip = models.CharField(max_length=15)
