@@ -1,0 +1,165 @@
+{% extends 'portal/portal_layout.html' %}
+
+{% block main %}
+
+<div class="pt-5 text-white text-center">
+	<h2>Détails - {{ user.name }}</h2>
+</div>
+<div class="text-white col-xl-9 col-md-10 col-sm-12 col-xs-12 mx-auto">
+	<div class="faq-cat">
+		<p class="faq-cat-header">Informations générales</p>
+		<table>
+			<tr><th>Nom :</th><td>{{ user.realname }}</td></tr> 
+			<tr><th>Pseudo :</th><td>{{ user.name }}</td></tr>
+			<tr><th>Autre info? :</th><td>jsp?</td></tr>
+		</table>
+		<br/>
+		<p class="faq-cat-header">Périphériques connectés</p>
+		<table class="table table-dark table-hover">
+			<thead>
+				<tr>
+					<th></th>
+					<th>type de périphérique</th>
+					<th>type de connexion</th>
+					<th>ip</th>
+					<th>mac</th>
+					<th>connecté</th>
+					<th>supprimer</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for device in devices %}
+				<tr href="#user-device-{{ forloop.counter }}" data-toggle="collapse" aria-expanded="false" aria-controls="user-device-{{ forloop.counter }}" class="toggle">
+					<td class="arrow"><i class="fas fa-angle-down"></i></td>
+					<td>{{ device.type }}</td>
+					<td>{{ device.connexion }}</td>
+					<td>{{ device.ip }}</td>
+					<td>{{ device.mac }}</td>
+					<td class="text-center">{% if device.connected %}
+						<span class="badge badge-pill badge-success">
+							<i class="fas fa-check"></i>
+						</span>
+					    {% else %}
+						<span class="badge badge-pill badge-dark">
+							<i class="fas fa-times"></i>
+						</span>
+					    {% endif %}
+					</td>
+					<td>
+						<button style="float: right;" class="btn btn-danger">
+							Supprimer
+						</button>
+				    </a>
+					</td>
+				</tr>
+				<tr class="collapse multi-collapse" id="user-device-{{ forloop.counter }}">
+					<td colspan="6">
+						<canvas id="myChart" style="width: 100%; height: 300px;">Met a jour ton navigateur</canvas>
+				</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script>
+$(".toggle").click(function (){
+	arrow=$(this).first().find('.arrow');
+	if ( $(this).attr('aria-expanded') == "false" ) {
+		arrow.html("<i class=\"fas fa-angle-up\"></i>");
+	}
+	else {
+		arrow.html("<i class=\"fas fa-angle-down\"></i>");
+	}
+});
+
+var ctx = $("#myChart");
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: "Download",
+	    backgroundColor: 'rgba(0, 0, 0, 0)',
+            borderColor: 'rgba(249, 12, 0, 0.8)',
+	    showLine: true,
+		data: [
+			//{x:"2018-08-29 00:00:00", y:45},
+		],
+        },
+	{
+            label: "Upload",
+	    backgroundColor: 'rgba(0, 0, 0, 0)',
+            borderColor: 'rgba(69, 232, 0, 0.8)',
+	    showLine: true,
+		data: [
+			//{x:"2018-08-29 00:00:00", y:45},
+		],
+        }]
+    },
+    options: {
+	title: {
+		display: true,
+		text: 'Usage du réseau'
+	},
+	scales: {
+		xAxes: [{
+			type: 'time',
+			display: true,
+			scaleLabel: {
+				display: true
+			},
+			gridLines: {
+				color: 'rgba(255, 255, 255, 0.1)'
+			},
+		}],
+		yAxes: [{
+			display: true,
+			scaleLabel: {
+                		type: 'linear',
+				display: true,
+				labelString: 'Mb/s'
+			},
+			ticks: {
+				suggestedMin: 0,
+				suggestedMax: 100,
+			},
+			gridLines: {
+				color: 'rgba(255, 255, 255, 0.1)'
+			}
+		}]
+	},
+	animation : {
+		easing: 'linear',
+		duration: 1000*1.8,
+	}
+    }
+    // Configuration options go here
+});
+d=new Date();
+addElem=function(redraw){
+	if (typeof redraw === 'undefined') { redraw = true; }
+	chart.data.datasets.forEach((dataset) => {
+        	dataset.data.push({x: new Date(d.getTime()), y:Math.random()*100});
+		if(dataset.data.length>60) {
+			dataset.data.shift();
+		}
+    	});
+	d.setMinutes(d.getMinutes()+5)
+	if (redraw) {
+		chart.update();
+	}
+}
+for(i=0; i<60; i++){
+	addElem(false);
+}
+inter=setInterval(addElem, 1000);
+</script>
+<style>
+thead th {
+	text-align: center;
+}
+</style>
+{% endblock %}
