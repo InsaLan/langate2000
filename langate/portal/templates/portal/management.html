@@ -2,8 +2,24 @@
 
 {% block content %}
 
+    {% include 'portal/modal_create_user.html' %}
+
     <div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
-        <p class="text-left">Liste des joueurs :</p>
+        <h1 class="display-4">Page d'aministration</h1>
+        <hr class="my-4">
+
+        <nav id="navbar-title" class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Joueurs enregistrés :</a>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <button type="button" class="btn btn-insalan align-right" data-toggle="modal"
+                            data-target="#create-user-modal">
+                        Nouvel utilisateur
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
         <table class="table table-sm table-insalan table-bordered">
             <thead>
             <tr>
