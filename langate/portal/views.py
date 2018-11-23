@@ -33,10 +33,11 @@ def management(request):
 
 @login_required
 def connected(request):
-    context = {"page_name": "connected", "too_many_devices": False, "devices_list": []}
 
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('REMOTE_ADDR')
+
+    context = {"page_name": "connected", "too_many_devices": False, "current_ip": client_ip}
 
     # Checking if the device accessing the gate is already in user devices
 
@@ -54,23 +55,6 @@ def connected(request):
 
             dev = Device(user=request.user, ip=client_ip)
             dev.save()
-
-    # Passing user devices to the template
-
-    user_devices = Device.objects.filter(user=request.user)
-    i = 1
-
-    for d in user_devices:
-        dev = {
-            "count": i,
-            "id": d.id,
-            "name": d.name,
-            "area": d.area,
-            "current_client": (d.ip == client_ip)
-        }
-
-        i += 1
-        context["devices_list"].append(dev)
 
     return render(request, 'portal/connected.html', context)
 

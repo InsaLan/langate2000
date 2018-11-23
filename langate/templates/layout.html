@@ -6,10 +6,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="{% static "bootstrap/bootstrap.min.css" %}"/>
-    <link id="custom-stylesheet" rel="stylesheet" href="{% static "css/langate.css" %}"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "bootstrap/bootstrap.min.css" %}" />
+    <link id="custom-stylesheet" rel="stylesheet" href="{% static "css/langate.css" %}" />
+    <link rel="stylesheet" href="{% static "css/fontawesome.min.css" %}" />
 
     <script src="{% static "js/jquery.min.js" %}"></script>
     <script src="{% static "bootstrap/bootstrap.min.js" %}"></script>
@@ -41,7 +40,7 @@
                                 <a class="nav-link" href="{% url 'faq' %}">FAQ</a>
                             </li>
                         {% endblock %}
-                        {% if request.user.is_staff %}
+                        {% if user.is_staff %}
                             {% block navitem-management %}
                                 <li class="nav-item {% if page_name == "management" %}active{% endif %}">
                                     <a class="nav-link" href="{% url 'management' %}">Gestion</a>
@@ -49,11 +48,17 @@
                             {% endblock %}
                         {% endif %}
                     </ul>
-                    <span class="navbar-text text-white">
-							{% if user.is_authenticated %}
-                                Connecté en tant que {{ user.username }}
-                            {% endif %}
-						</span>
+
+                    <ul class="nav navbar-nav ml-auto">
+
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/accounts/logout/">Déconnexion</a>
+                            </li>
+                        {% endif %}
+
+                    </ul>
+
                 </div>
             </nav>
         {% endblock %}

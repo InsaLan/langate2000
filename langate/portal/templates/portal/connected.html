@@ -2,51 +2,62 @@
 
 {% block main %}
 
-    {% csrf_token %}
-
-    <div class="text-white text-center pt-5">
-        <h2>Bon jeu, {{ user.username }}</h2>
-        <p class="pt-2">Vous êtes désormais connecté au réseau de l'InsaLan.</p>
-        <p>Si vous rencontrez des difficultés concernant le réseau, n'hésitez pas à consulter la <a
-                href="{% url 'faq' %}">FAQ</a> qui réponds aux questions fréquemmement posées.</p>
-    </div>
-
-    <div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
-        <p class="text-center">Sachez que vous pouvez connecter au maximum 3 appareils sur le réseau.<br>L'ensemble des
-            appareils actuellement connectés avec votre compte apparaissent ci-dessous :</p>
-        <table class="table table-sm table-insalan table-bordered">
-            <thead>
-            <tr>
-                <th scope="col" class="align-middle">#</th>
-                <th scope="col" class="align-middle">Nom de l'appareil</th>
-                <th scope="col" class="align-middle">Réseau</th>
-                <th scope="col" class="align-middle" style="width: 110px;">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            {% for dev in devices_list %}
-
-                <tr>
-                    <th scope="row">{{ dev.count }}</th>
-                    <td>{{ dev.name }} {% if dev.current_client %}<b>(cet appareil)</b>{% endif %}</td>
-                    <td>{{ dev.area }}</td>
-                    <td>
-                        <div class="text-center" role="group" aria-label="Actions">
-                            <button type="button" class="btn btn-sec-insalan modify-device-btn" data-deviceid="{{ dev.id }}" aria-label="Modifier l'appareil"><span class="fas fa-pen" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-sec-insalan delete-device-btn" data-deviceid="{{ dev.id }}" aria-label="Supprimer l'appareil"><span class="fas fa-trash" aria-hidden="true"></span></button>
-                        </div>
-                    </td>
-                </tr>
-
-            {% endfor %}
-
-            </tbody>
-        </table>
-    </div>
+    {% csrf_token %} <!-- Token needed for AJAX calls -->
 
     {% if too_many_devices %}
-        {% include 'portal/modal_too_many_devices.html' %}
+
+        <div class="text-white text-center pt-5">
+            <h2>Oops!</h2>
+            <p class="pt-1"><b>Vous êtes connecté sur plus de 3 appareils sur le réseau.</b></p>
+            <p>Vous devez déconnecter au moins un appareil du réseau avant de pouvoir accéder à internet sur cet appareil.<br>Attention, les appareils déconnectés du réseau ne peuvent plus accéder à internet et vous redirigeront sur ce portail.</p>
+        </div>
+
+        <div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
+            <p class="text-center">Pour déconnecter un appareil existant, cliquez sur l'icône supprimer (poubelle) à la ligne correspondante du tableau ci-dessous :</p>
+            <table class="table table-sm table-insalan table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col" class="align-middle">#</th>
+                    <th scope="col" class="align-middle">Nom de l'appareil</th>
+                    <th scope="col" class="align-middle">Réseau</th>
+                    <th scope="col" class="align-middle" style="width: 110px;">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="device-table">
+
+                </tbody>
+            </table>
+        </div>
+
+
+    {% else %}
+
+        <div class="text-white text-center pt-5">
+            <h2>Bon jeu, {{ user.username }}</h2>
+            <p class="pt-2">Vous êtes désormais connecté au réseau de l'InsaLan.</p>
+            <p>Si vous rencontrez des difficultés concernant le réseau, n'hésitez pas à consulter la <a
+                    href="{% url 'faq' %}">FAQ</a> qui réponds aux questions fréquemmement posées.</p>
+        </div>
+
+        <div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
+            <p class="text-center">Sachez que vous pouvez connecter au maximum 3 appareils sur le réseau.<br>L'ensemble des
+                appareils actuellement connectés avec votre compte apparaissent ci-dessous :</p>
+            <table class="table table-sm table-insalan table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col" class="align-middle">#</th>
+                    <th scope="col" class="align-middle">Nom de l'appareil</th>
+                    <th scope="col" class="align-middle">Réseau</th>
+                    <th scope="col" class="align-middle" style="width: 110px;">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="device-table">
+
+                </tbody>
+            </table>
+        </div>
+
+
     {% endif %}
 
     <!-- Modal Remove Device -->
@@ -93,7 +104,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sec-insalan" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                     <button type="button" class="btn btn-insalan" id="modify-device-confirm-btn">Valider</button>
                 </div>
             </div>
@@ -103,9 +114,13 @@
 
     <script>
         $(document).on("click", ".delete-device-btn", function (e) {
-            $("#delete-device-confirm-btn").data("deviceid", $(this).data("deviceid"));
-            $("#delete-device-name").text($(this).data("deviceid"));
-            $("#delete-device-modal").modal("show");
+            id = $(this).data("deviceid");
+            $("#delete-device-confirm-btn").data("deviceid", id);
+
+            $.getJSON( "/api/user_devices/"+id, function( data ) {
+               $("#delete-device-name").text(data["name"]);
+               $("#delete-device-modal").modal("show");
+            });
         });
 
         $(document).on("click", ".modify-device-btn", function (e) {
@@ -113,13 +128,44 @@
             $("#modify-device-modal").modal("show");
         });
 
+        current_ip = "{{ current_ip }}";
+        {% if too_many_devices %} too_many_devices = true; {% else %} too_many_devices = false; {% endif %}
 
-        let csrftoken = $("[name=csrfmiddlewaretoken]").val();
+
+        function reload_device_table() {
+
+            $("#device-table").empty();
+
+            $.getJSON( "/api/user_devices/", function( data ) {
+                i = 1;
+
+                $.each(data, function (k, dev) {
+
+                    dev_hint = (dev.ip == current_ip) ? " <b>(cet appareil)</b>" : "";
+
+                    $("#device-table").append("<tr>\n" +
+                        "                    <th scope=\"row\">"+i+"</th>\n" +
+                        "                    <td>"+dev.name+dev_hint+"</td>\n" +
+                        "                    <td>"+dev.area+"</td>\n" +
+                        "                    <td>\n" +
+                        "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
+                        "                            <button type=\"button\" class=\"btn btn-sec-insalan modify-device-btn\" data-deviceid=\""+dev.id+"\" aria-label=\"Modifier l'appareil\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
+                        "                            <button type=\"button\" class=\"btn btn-sec-insalan delete-device-btn\" data-deviceid=\""+dev.id+"\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                        "                        </div>\n" +
+                        "                    </td>\n" +
+                        "                </tr>");
+
+                    i++;
+
+                });
+            });
+        }
 
         $.ajaxSetup({
 
             beforeSend: function(xhr, settings) {
                 if (!this.crossDomain) {
+                    csrftoken = $("[name=csrfmiddlewaretoken]").val();
                     xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 }
             }
@@ -135,9 +181,22 @@
                 type: 'DELETE',
 
                 success: function(result) {
-                    $("#delete-device-modal").modal('hide');
+
+                    if (too_many_devices) {
+                        location.reload();
+                    }
+
+                    else {
+                        reload_device_table();
+                    }
                 }
+
+                // TODO: Handle errors
             });
+
+
+            $("#delete-device-modal").modal('hide');
+
 
         });
 
@@ -151,11 +210,20 @@
                 data: "name="+encodeURI($("#modify-device-name").val()),
 
                 success: function(result) {
-                    $("#modify-device-modal").modal('hide');
-                    location.reload();
+                    reload_device_table();
                 }
+
+                // TODO: Handle errors
             });
 
+            $("#modify-device-modal").modal('hide');
+
+
+        });
+
+
+        $(document).ready(function() {
+            reload_device_table();
         });
 
 

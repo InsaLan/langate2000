@@ -15,8 +15,8 @@ class UserDeviceListView(APIView):
 
     def get(self, request):
         qs = Device.objects.filter(user=request.user)
-        sz = DeviceSerializer(qs, many=True)
-        return Response(sz.data)
+        serializer = DeviceSerializer(qs, many=True)
+        return Response(serializer.data)
 
 
 class UserDeviceView(APIView):
@@ -30,14 +30,19 @@ class UserDeviceView(APIView):
         # If the API call is made by the device owner or an admin, we should proceed, otherwise we should abort
         if (dev.user == user) or user.is_staff():
             return dev
-
         else:
-                raise PermissionDenied
+            raise PermissionDenied
+
+    def get(self, request, ident):
+        dev = self.get_device(ident, request.user)
+        serializer = DeviceSerializer(dev)
+        return Response(serializer.data)
 
     def put(self, request, ident, format=None):
         dev = self.get_device(ident, request.user)
 
         serializer = DeviceSerializer(dev, data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
