@@ -13,6 +13,10 @@ html, body {
     color: #AFB3AA; /* by default, all text is grey */
 }
 
+hr {
+    border-top: .5px solid rgba(255, 255, 255, .3);
+}
+
 /* Navbar */
 
 .navbar-insalan {
@@ -27,12 +31,16 @@ html, body {
     color: #AFB3AA; /* white-grey for unselected links */
 }
 
-.navbar-brand img {
+.navbar-insalan .navbar-brand img {
     margin-right: 0.45rem;
 }
 
-.navbar-brand {
+.navbar-insalan .navbar-brand {
     margin-right: 0.7rem !important;
+}
+
+.navbar-dark .navbar-brand:hover, .navbar-dark .navbar-brand, .navbar-dark .navbar-brand:active, .navbar-dark .navbar-brand:focus {
+    color: #AFB3AA;
 }
 
 /* Forms */
@@ -229,4 +237,14 @@ a:hover, a:active {
 
 .faq-question .material-icons {
     vertical-align: middle;
+}
+
+/* Jumbotron */
+
+.jumbotron {
+    background-color: #b9bbbe;
+}
+
+.jumbotron p, .jumbotron h1 {
+    color: #212529 !important;
 }
