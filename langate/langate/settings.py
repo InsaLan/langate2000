@@ -127,8 +127,31 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-# Authentification
+# Authentication
 
 LOGIN_REDIRECT_URL = "/connected"
-
 AUTHENTICATION_BACKENDS = ('langate.insalan_auth.insalan_backend.InsalanBackend',)
+
+# Widgets content
+
+WIDGETS = {
+    "PIZZA": {
+        "visible": True,
+        "link": "https://www.insalan.fr/pizza",
+        "schedule": ["18h-20h, livraison à 21h30.", "20h-22h, livraison à 22h30."],
+    },
+
+    "ANNOUNCE": {
+        "visible": True,
+        "content": 'Nous rencontrons actuellement des problèmes de stabilité de notre accès internet.\n' +
+                   'Nos équipes sont à pied d\'oeuvre pour résoudre ce problème dans les plus brefs délais.\n' +
+                   'Nous vous remercions de votre patience.'
+    },
+
+    "STATUS": {
+        "visible": True,
+        "network_up": True,
+        "internet_up": False,
+        "csgo_up": True
+    }
+}

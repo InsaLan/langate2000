@@ -29,8 +29,8 @@ class Profile(models.Model):
     )
 
     # Relevant if player :
-    tournament = models.CharField(max_length=100)
-    team = models.CharField(max_length=100)
+    tournament = models.CharField(max_length=100, null=True)
+    team = models.CharField(max_length=100, null=True)
 
     def remove_user(self):
         User.delete(self.user)
@@ -48,7 +48,7 @@ class Device(models.Model):
     ip = models.CharField(max_length=15)
 
     # MAC address of the device
-    mac = models.CharField(max_length=17)
+    mac = models.CharField(max_length=17, unique=True)
 
     # Area of the device, i.e. LAN or WiFi
     area = models.CharField(max_length=4, default="LAN")
@@ -57,7 +57,7 @@ class Device(models.Model):
         # On creating a new device, we need to use the networking module to retrieve
         # some information : for example the MAC address or the area of the device based on the IP.
 
-        mac = "ff:ff:ff:ff:ff:ff"  # FIXME: replace with a call to the networking module
+        mac = "ff:ff:ff:ff:ff:ff"  # FIXME: replace with a call to the networking module : network.get_mac(ip)
         area = "LAN"  # FIXME: replace with a call to the networking module
 
         return Device(mac=mac, area=area, **validated_data)

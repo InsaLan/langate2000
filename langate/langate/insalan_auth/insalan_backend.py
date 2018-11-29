@@ -40,7 +40,7 @@ class InsalanBackend(ModelBackend):
             # User exists in local database
             if not (user.check_password(password) and self.user_can_authenticate(user)):
                 # Wrong password
-                raise BadCredentialsException
+                raise ValidationError("Wrong username or password.")
             else:
                 # Credentials are ok
                 return user
@@ -69,7 +69,7 @@ class InsalanBackend(ModelBackend):
 
             if request_result.status_code == 401:  # 401 = Unauthorized
                 # Bad credentials
-                raise BadCredentialsException
+                raise ValidationError("Wrong username or password.")
 
             if request_result.status_code != 200:  # 200 = OK
                 # The request failed because of something else

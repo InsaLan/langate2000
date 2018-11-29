@@ -4,6 +4,8 @@
 
     {% include 'portal/modal_create_user.html' %}
 
+    {% csrf_token %} <!-- Token needed for AJAX calls -->
+
     <div class="pt-3 col-sm-12 col-md-11 col-lg-10 col-xl-9 text-white mx-auto">
         <h1 class="display-5">Page d'aministration</h1>
         <hr class="mt-2 mb-5">
@@ -18,7 +20,7 @@
         </nav>
 
 
-        <table class="table table-sm table-insalan table-bordered">
+        <table id="user-table" class="table table-sm table-insalan table-bordered">
             <thead>
             <tr>
                 <th scope="col">#</th>
@@ -26,7 +28,7 @@
                 <th scope="col">Adresse mail</th>
                 <th scope="col">Rôle</th>
                 <th scope="col" class="col-account-admin-insalan">Compte</th>
-                <th scope="col">Inscription tournois</th>
+                <th scope="col">Tournois</th>
                 <th scope="col" class="col-actions-admin-insalan">Actions</th>
             </tr>
             </thead>
@@ -41,22 +43,24 @@
                         {% if player.isInDatabse %}
                             <span class="badge badge-primary badge-admin-insalan"><span class="fas fa-database"></span></span>
                         {% endif %}
-                        {% if player.isStaff %}
+                        {% if player.is_staff    %}
                             <span class="badge badge-light badge-admin-insalan"><span class="fas fa-user"></span></span>
                         {% endif %}
                     </td>
-                    <td>{{ player.tournament }}</td>
+                    <td>{% if not player.tournament %}
+                        Aucun
+                        {% else %}
+                        {{ player.tournament }}
+                        {% endif %}
+                    </td>
                     <td>
                         <div role="group" class="btn-group" aria-label="Actions">
-                            <button type="button" class="btn btn-sec-insalan" aria-label="Modifier l'utilisateur"><span
-                                    class="fas fa-pen" aria-hidden="true">&nbsp;</span>Modifier
-                            </button>
-                            <button type="button" class="btn btn-sec-insalan" aria-label="Appareils enregistrés"><span
-                                    class="fas fa-globe" aria-hidden="true">&nbsp;</span>Appareils
-                            </button>
-                            <button type="button" class="btn btn-sec-insalan" aria-label="Supprimer l'utilisateur"><span
-                                    class="fas fa-trash" aria-hidden="true">&nbsp;</span>Supprimer
-                            </button>
+
+                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Modifier l'utilisateur" class="btn btn-sec-insalan modify-user-btn" data-userid="{{ player.id }}"><span class="fas fa-pen" aria-hidden="true"></span></button>
+                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Générer le mot de passe" class="btn btn-sec-insalan user-password-btn" data-userid="{{ player.id }}"><span class="fas fa-key" aria-hidden="true"></span></button>
+                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Appareils enregistrés" class="btn btn-sec-insalan" data-userid="{{ player.id }}"><span class="fas fa-globe" aria-hidden="true"></span></button>
+                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Supprimer l'utilisateur" class="btn btn-sec-insalan delete-user-btn" data-userid="{{ player.id }}"><span class="fas fa-trash" aria-hidden="true"></span></button>
+
                         </div>
                     </td>
                 </tr>
@@ -65,5 +69,146 @@
         </table>
 
     </div>
+
+    <!-- Modal Remove User -->
+
+    <div class="modal modal-insalan" id="delete-user-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Supprimer ?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-white">
+                    <p>Voulez-vous vraiment supprimer l'utilisateur <b id="delete-user-name"></b> ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                    <button type="button" class="btn btn-danger" id="delete-user-confirm-btn">Oui</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Generated User Password -->
+
+    <div class="modal modal-insalan" id="user-password-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Mot de passe généré</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-white">
+                    <p class="display-3" id="user-password-field"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        $(".delete-user-btn").click(function (e) {
+            let id = $(this).data("userid");
+            $("#delete-user-confirm-btn").data("userid", id);
+
+            $.getJSON("/api/user_details/" + id, function (data) {
+                $("#delete-user-name").text(data["username"]);
+                $("#delete-user-modal").modal("show");
+            });
+        });
+
+        $(".user-password-btn").click(function () {
+            let id = $(this).data("userid");
+
+            $.getJSON("/api/user_password/" + id, function (data) {
+                $("#user-password-field").text(data["password"]);
+                $("#user-password-modal").modal("show");
+            });
+
+        });
+
+
+
+        $.ajaxSetup({
+
+            beforeSend: function(xhr, settings) {
+                if (!this.crossDomain) {
+                    csrftoken = $("[name=csrfmiddlewaretoken]").val();
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+
+        });
+
+        $("#delete-user-confirm-btn").click( function () {
+
+            let id = $(this).data("userid");
+
+            $.ajax({
+                url: '/api/user_details/'+id,
+                type: 'DELETE',
+
+                success: function(result) {
+                    location.reload()
+                }
+
+                // TODO: Handle errors
+            });
+
+
+            $("#delete-user-modal").modal('hide');
+
+
+        });
+
+        $("#create-user-btn").click( function () {
+
+            let data = {
+                "email": $("#create-user-email").val(),
+                "username": $("#create-user-username").val(),
+                "is_staff": ($("#create-user-role").val() == "Role.A"),
+                "is_active": true,
+                "profile": {
+                    "role": $("#create-user-role").val(),
+                    "tournament": null,
+                    "team": null
+                }
+            }
+
+            $.ajax({
+                url: '/api/user_list/',
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify(data),
+
+                success: function(result) {
+                    location.reload()
+                }
+
+                // TODO: Handle errors
+            });
+
+
+            $("#delete-user-modal").modal('hide');
+
+
+        });
+
+        $(document).ready(function () {
+            $("#user-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]'});
+        });
+
+
+
+
+
+    </script>
+
 
 {% endblock %}

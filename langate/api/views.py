@@ -1,16 +1,21 @@
 from django.core.exceptions import PermissionDenied
 
-from .serializers import DeviceSerializer
+from .serializers import DeviceSerializer, UserSerializer
 from portal.models import Device
+from django.contrib.auth.models import User
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import status
+from rest_framework import generics
+
+import random
 
 # Create your views here.
 
 
-class UserDeviceListView(APIView):
+class UserDeviceList(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
@@ -19,7 +24,7 @@ class UserDeviceListView(APIView):
         return Response(serializer.data)
 
 
-class UserDeviceView(APIView):
+class UserDevice(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_device(self, ident, user):
@@ -55,3 +60,32 @@ class UserDeviceView(APIView):
         dev.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserList(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserPasswordGenerator(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get(self, request, ident):
+
+        # FIXME: This can raise User.DoesNotExist exception, not sure whether we should catch this...
+        user = User.objects.get(id=ident)
+        p = random.randint(1000, 9999)
+
+        user.set_password(p)
+        user.save()
+
+        return Response({"password": p})

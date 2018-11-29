@@ -2,6 +2,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 from .models import Device
 
@@ -37,7 +38,7 @@ def connected(request):
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('REMOTE_ADDR')
 
-    context = {"page_name": "connected", "too_many_devices": False, "current_ip": client_ip}
+    context = {"page_name": "connected", "too_many_devices": False, "current_ip": client_ip, "widgets": settings.WIDGETS}
 
     # Checking if the device accessing the gate is already in user devices
 
@@ -48,7 +49,7 @@ def connected(request):
             # We will let him choose to remove one of them.
 
             context["too_many_devices"] = True
-
+            
         else:
             # We can add the client device to the user devices.
             # FIXME: MAC address should be filled by a model receiver call to the networking module.
@@ -60,7 +61,7 @@ def connected(request):
 
 
 def faq(request):
-    context = {"page_name": "faq"}
+    context = {"page_name": "faq", "widgets": settings.WIDGETS}
     return render(request, 'portal/faq.html', context)
 
 

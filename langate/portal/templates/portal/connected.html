@@ -7,13 +7,12 @@
     {% if too_many_devices %}
 
         <div class="text-white text-center pt-5">
-            <h2>Oops!</h2>
+            <h2>Attention !</h2>
             <p class="pt-1"><b>Vous êtes connecté sur plus de 3 appareils sur le réseau.</b></p>
-            <p>Vous devez déconnecter au moins un appareil du réseau avant de pouvoir accéder à internet sur cet appareil.<br>Attention, les appareils déconnectés du réseau ne peuvent plus accéder à internet et vous redirigeront sur ce portail.</p>
+            <p>Vous devez déconnecter au moins un appareil du réseau avant de pouvoir accéder à internet sur cet appareil.</p>
         </div>
 
         <div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
-            <p class="text-center">Pour déconnecter un appareil existant, cliquez sur l'icône supprimer (poubelle) à la ligne correspondante du tableau ci-dessous :</p>
             <table class="table table-sm table-insalan table-bordered">
                 <thead>
                 <tr>
@@ -35,13 +34,10 @@
         <div class="text-white text-center pt-5">
             <h2>Bon jeu, {{ user.username }}</h2>
             <p class="pt-2">Vous êtes désormais connecté au réseau de l'InsaLan.</p>
-            <p>Si vous rencontrez des difficultés concernant le réseau, n'hésitez pas à consulter la <a
-                    href="{% url 'faq' %}">FAQ</a> qui réponds aux questions fréquemmement posées.</p>
         </div>
 
         <div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
-            <p class="text-center">Sachez que vous pouvez connecter au maximum 3 appareils sur le réseau.<br>L'ensemble des
-                appareils actuellement connectés avec votre compte apparaissent ci-dessous :</p>
+            <p class="text-center">Sachez que vous pouvez connecter au maximum 3 appareils sur le réseau.<br>Voici la liste de vos appareils connectés au réseau :</p>
             <table class="table table-sm table-insalan table-bordered">
                 <thead>
                 <tr>
@@ -149,8 +145,8 @@
                         "                    <td>"+dev.area+"</td>\n" +
                         "                    <td>\n" +
                         "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                        "                            <button type=\"button\" class=\"btn btn-sec-insalan modify-device-btn\" data-deviceid=\""+dev.id+"\" aria-label=\"Modifier l'appareil\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
-                        "                            <button type=\"button\" class=\"btn btn-sec-insalan delete-device-btn\" data-deviceid=\""+dev.id+"\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                        "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'appareil\" class=\"btn btn-sec-insalan modify-device-btn\" data-deviceid=\""+dev.id+"\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
+                        "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-sec-insalan delete-device-btn\" data-deviceid=\""+dev.id+"\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
                         "                        </div>\n" +
                         "                    </td>\n" +
                         "                </tr>");
@@ -224,6 +220,10 @@
 
         $(document).ready(function() {
             reload_device_table();
+        });
+
+        $(document).ready(function() {
+            $("#device-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]' });
         });
 
 

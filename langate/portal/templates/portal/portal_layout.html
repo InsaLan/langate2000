@@ -16,42 +16,54 @@
 
         {# widget bar #}
 
+        {% if widgets.STATUS.visible %}
+
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">État du réseau</h5>
                 <p class="card-text">
-                    Réseau local : <span class="text-success">ok</span><br>
-                    Accès internet : <span class="text-warning">instable</span><br>
-                    Serveur CS:GO : <span class="text-danger">incident</span><br>
-                    Serveur TeamSpeak : <span class="text-success">ok</span>
+                    Réseau local : {% if widgets.STATUS.network_up %}<span class="text-success">ok</span>{% else %}<span class="text-danger">incident</span>{% endif %}<br>
+                    Accès internet : {% if widgets.STATUS.internet_up %}<span class="text-success">ok</span>{% else %}<span class="text-danger">incident</span>{% endif %}<br>
+                    Serveur CS:GO : {% if widgets.STATUS.csgo_up %}<span class="text-success">ok</span>{% else %}<span class="text-danger">incident</span>{% endif %}<br>
                 </p>
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Annonce</h5>
-                <p class="card-text">
-                    Nous rencontrons actuellement des problèmes de stabilité de notre accès internet.<br>Nos équipes
-                    sont à pied d'oeuvre pour résoudre ce problème dans les plus brefs délais.<br>Nous vous remercions
-                    de votre patience.
-                </p>
-            </div>
-        </div>
+        {% endif %}
 
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Pizzas</h5>
-                <p class="card-text">Voici les crénaux auxquels vous pouvez commander :</p>
-                <ul>
-                    <li>18h-20h, livraison à 21h30.</li>
-                    <li>20h-22h, livraison à 22h30.</li>
-                </ul>
-                <p class="card-text">Vous pouvez commander en ligne (règlement CB) ou à la buvette (chèques,
-                    espèces)</p>
-                <a href="#" class="card-link">Commander en ligne</a>
+        {% if widgets.ANNOUNCE.visible %}
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Annonce</h5>
+                    <p class="card-text">
+                        {{ widgets.ANNOUNCE.content }}
+                    </p>
+                </div>
             </div>
-        </div>
+
+        {% endif %}
+
+        {% if widgets.PIZZA.visible %}
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Pizzas</h5>
+                    <p class="card-text">Voici les crénaux auxquels vous pouvez commander :</p>
+                    <ul>
+                        {% for h in widgets.PIZZA.schedule %}
+                        <li>{{ h }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p class="card-text">Vous pouvez commander en ligne (règlement CB) ou à la buvette (chèques,
+                        espèces)</p>
+                    <a href="{{ widgets.PIZZA.link }}" class="card-link">Commander en ligne</a>
+                </div>
+            </div>
+
+        {% endif %}
+
     </div>
+
 
 {% endblock %}
