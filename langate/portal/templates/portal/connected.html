@@ -1,4 +1,5 @@
 {% extends 'portal/portal_layout.html' %}
+{% load static %}
 
 {% block main %}
 
@@ -6,7 +7,9 @@
 
     {% if too_many_devices %}
 
-        <div class="text-white text-center pt-5">
+        <img src="{% static "logo_red.png" %}" class="logo-connected pt-3 mx-auto d-block animated slow pulse" />
+
+        <div class="text-white text-center pt-4">
             <h2>Attention !</h2>
             <p class="pt-1"><b>Vous êtes connecté sur plus de 3 appareils sur le réseau.</b></p>
             <p>Vous devez déconnecter au moins un appareil du réseau avant de pouvoir accéder à internet sur cet appareil.</p>
@@ -31,8 +34,10 @@
 
     {% else %}
 
-        <div class="text-white text-center pt-5">
-            <h2>Bon jeu, {{ user.username }}</h2>
+        <img src="{% static "logo_green.png" %}" class="logo-connected pt-3 mx-auto d-block animated slow pulse" />
+
+        <div class="text-white text-center pt-4">
+            <h2>Bon jeu, {{ user.username }} !</h2>
             <p class="pt-2">Vous êtes désormais connecté au réseau de l'InsaLan.</p>
         </div>
 
@@ -113,7 +118,7 @@
             id = $(this).data("deviceid");
             $("#delete-device-confirm-btn").data("deviceid", id);
 
-            $.getJSON( "/api/user_devices/"+id, function( data ) {
+            $.getJSON( "/api/device_details/"+id, function( data ) {
                $("#delete-device-name").text(data["name"]);
                $("#delete-device-modal").modal("show");
             });
@@ -132,7 +137,7 @@
 
             $("#device-table").empty();
 
-            $.getJSON( "/api/user_devices/", function( data ) {
+            $.getJSON( "/api/devices_list/{{ user.id }}", function( data ) {
                 i = 1;
 
                 $.each(data, function (k, dev) {
@@ -173,7 +178,7 @@
             let id = $(this).data("deviceid");
 
             $.ajax({
-                url: '/api/user_devices/'+id+'/',
+                url: '/api/device_details/'+id+'/',
                 type: 'DELETE',
 
                 success: function(result) {
@@ -201,7 +206,7 @@
             let id = $(this).data("deviceid");
 
             $.ajax({
-                url: '/api/user_devices/'+id+'/',
+                url: '/api/device_details/'+id+'/',
                 type: 'PUT',
                 data: "name="+encodeURI($("#modify-device-name").val()),
 

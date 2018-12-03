@@ -4,6 +4,7 @@ from .serializers import DeviceSerializer, UserSerializer
 from portal.models import Device
 from django.contrib.auth.models import User
 
+from rest_framework.exceptions import APIException
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
@@ -15,16 +16,27 @@ import random
 # Create your views here.
 
 
-class UserDeviceList(APIView):
+class DeviceList(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, request):
-        qs = Device.objects.filter(user=request.user)
-        serializer = DeviceSerializer(qs, many=True)
-        return Response(serializer.data)
+    def get(self, request, pk):
+        u = User.objects.get(id=pk)
+
+        if u == request.user or request.user.is_staff:
+            # A normal user should only have access to the list of its devices,
+            # So, we check that the request user matches the ID passed in parameter.
+            # Admin users have the right to consult anyone's list of devices.
+
+            qs = Device.objects.filter(user=u)
+            serializer = DeviceSerializer(qs, many=True)
+
+            return Response(serializer.data)
+
+        else:
+            raise PermissionDenied
 
 
-class UserDevice(APIView):
+class DeviceDetails(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_device(self, ident, user):
@@ -33,7 +45,7 @@ class UserDevice(APIView):
         dev = Device.objects.get(id=ident)
 
         # If the API call is made by the device owner or an admin, we should proceed, otherwise we should abort
-        if (dev.user == user) or user.is_staff():
+        if (dev.user == user) or user.is_staff:
             return dev
         else:
             raise PermissionDenied
@@ -56,10 +68,27 @@ class UserDevice(APIView):
 
     def delete(self, request, ident, format=None):
 
-        dev = self.get_device(ident, request.user)
-        dev.delete()
+        # Deleting the device you are currently on is not allowed via the API.
+        # Instead the user can log out from the portal.
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        client_ip = request.META.get('REMOTE_ADDR')
+        dev = self.get_device(ident, request.user)
+
+        if dev.ip == client_ip:
+            raise APIException("Deleting your current device is not allowed via the API.")
+
+        else:
+            dev.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class DeviceStatus(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get(self, request, ident):
+        up = random.randint(0, 100)
+        down = random.randint(0, 100)
+        return Response({"status": "up", "upload": up, "download": down})
 
 
 class UserList(generics.ListCreateAPIView):
@@ -79,13 +108,14 @@ class UserDetails(generics.RetrieveUpdateDestroyAPIView):
 class UserPasswordGenerator(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
-    def get(self, request, ident):
+    def get(self, request, pk):
 
         # FIXME: This can raise User.DoesNotExist exception, not sure whether we should catch this...
-        user = User.objects.get(id=ident)
+        user = User.objects.get(id=pk)
         p = random.randint(1000, 9999)
 
         user.set_password(p)
         user.save()
 
         return Response({"password": p})
+

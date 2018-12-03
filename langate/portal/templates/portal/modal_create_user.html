@@ -5,26 +5,40 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Créer un nouvel utilisateur local</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button tabindex="-1" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="container">
-                    <form>
+
+                    <div id="create-user-feedback" class="pt-2 pb-3 hidden"></div>
+
+                    <form id="create-user-form">
+                        <div class="form-group row" id="create-user-last-name-g">
+                            <label for="create-user-last-name" class="col-sm-4 col-form-label">Nom : </label>
+                            <input tabindex="1" type="text" class="form-control col-sm-8" id="create-user-last-name">
+                        </div>
+
+                        <div class="form-group row" id="create-user-first-name-g">
+                            <label for="create-user-first-name" class="col-sm-4 col-form-label">Prénom : </label>
+                            <input tabindex="2" type="text" class="form-control col-sm-8" id="create-user-first-name">
+                        </div>
+
+
                         <div class="form-group row" id="create-user-username-g">
                             <label for="create-user-username" class="col-sm-4 col-form-label">Pseudo : </label>
-                            <input type="text" class="form-control col-sm-8" id="create-user-username">
+                            <input tabindex="3" type="text" class="form-control col-sm-8" id="create-user-username">
                         </div>
 
                         <div class="form-group row" id="create-user-email-g">
                             <label for="create-user-email" class="col-sm-4 col-form-label">Adresse mail : </label>
-                            <input type="email" class="form-control col-sm-8" id="create-user-email">
+                            <input tabindex="4" type="email" class="form-control col-sm-8" id="create-user-email">
                         </div>
 
                         <div class="form-group row" id="create-user-role-g">
                             <label for="create-user-role" class="col-sm-4 col-form-label">Rôle : </label>
-                            <select class="form-control col-sm-8" id="create-user-role">
+                            <select tabindex="5" class="form-control col-sm-8" id="create-user-role">
                                 <option value="Role.A">Administrateur</option>
                                 <option value="Role.A">Staff</option>
                                 <option value="Role.P" selected>Joueur</option>
@@ -32,54 +46,27 @@
                         </div>
 
                         <div class="form-group row" id="create-user-tournament-g">
-                            <label for="create-user-tournament" class="col-sm-4 col-form-label">Tournoi : </label>
-                            <div class="col-sm-8" id="create-user-tournament">
-                                <div class="form-check">
-                                    <input class="form-check-input" name="create-user-tournament" type="radio"
-                                           value="csgo">
-                                    <label class="form-check-label" for="csgo">
-                                        Counter Strike Global Offensive
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" name="create-user-tournament" type="radio"
-                                           value="dota2">
-                                    <label class="form-check-label" for="dota2">
-                                        Dota 2
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" name="create-user-tournament" type="radio"
-                                           value="hs">
-                                    <label class="form-check-label" for="hs">
-                                        Heartstone
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" name="create-user-tournament" type="radio"
-                                           value="lol">
-                                    <label class="form-check-label" for="lol">
-                                        League Of Legends
-                                    </label>
-                                </div>
-                            </div>
+                            <label for="create-user-role" class="col-sm-4 col-form-label">Tournoi : </label>
+                            <select tabindex="6" class="form-control col-sm-8" id="create-user-tournament">
+                                <option value="no">Aucun</option>
+                                <option value="cs">Counter Strike Global Offensive</option>
+                                <option value="ftn">Fortnite</option>
+                                <option value="hs">Heartstone</option>
+                                <option value="lol">League Of Legends</option>
+                            </select>
                         </div>
 
-                        <!--<div class="form-check" id="create-user-payment-g">
-                            <input class="form-check-input" type="checkbox" value="" id="create-user-payment">
-                            <label class="form-check-label" for="create-user-payment">
-                                Paiement enregistré
-                            </label>
-                        </div>-->
-
-
+                        <div class="form-group row" id="create-user-team-g">
+                            <label for="create-user-team" class="col-sm-4 col-form-label">Équipe tournoi : </label>
+                            <input tabindex="7" type="text" class="form-control col-sm-8" id="create-user-team">
+                        </div>
 
                     </form>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-insalan" id="create-user-btn">Valider</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" tabindex="-1">Fermer</button>
+                <button tabindex="8" type="button" class="btn btn-insalan" id="create-user-btn">Enregistrer</button>
             </div>
         </div>
     </div>

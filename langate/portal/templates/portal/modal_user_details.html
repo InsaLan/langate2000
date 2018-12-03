@@ -1,0 +1,70 @@
+<!-- Modal User Details -->
+
+<div class="modal modal-insalan" id="user-details-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Détails de l'utilisateur</h5>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="col-auto text-white">
+                        <div class="faq-cat">
+                            <p class="faq-cat-header">Informations générales</p>
+                            <div class="row">
+                            <div class="col-md-6">
+                                <table>
+                                    <tr>
+                                        <th>Nom : </th>
+                                        <td id="user-last-name"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Pseudo : </th>
+                                        <td id="user-username"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table>
+                                    <tr>
+                                        <th>Prénom : </th>
+                                        <td id="user-first-name"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Rôle : </th>
+                                        <td id="user-role"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            </div>
+                            <br/>
+                            <p class="faq-cat-header">Périphériques enregistrés</p>
+
+                            <table class="table table-dark" style="border-radius: .4rem;">
+                                <thead>
+                                <tr>
+                                    <th>Nom de l'appareil</th>
+                                    <th>Réseau</th>
+                                    <th>Adresse IP</th>
+                                    <th>Adresse MAC</th>
+                                    <th>État</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody id="device-table">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="col-auto hidden">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>

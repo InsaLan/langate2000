@@ -9,8 +9,8 @@ class DeviceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Device
-        fields = ["id", "ip", "area", "name"]
-        read_only_fields = ["id", "ip", "area"]
+        fields = ["id", "ip", "mac", "area", "name"]
+        read_only_fields = ["id", "ip", "mac", "area"]
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -64,4 +64,4 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'is_staff', 'is_active', 'profile')
+        fields = ('id', 'first_name', 'last_name', 'username', 'email', 'is_staff', 'is_active', 'profile')

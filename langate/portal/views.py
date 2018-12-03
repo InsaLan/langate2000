@@ -63,15 +63,3 @@ def connected(request):
 def faq(request):
     context = {"page_name": "faq", "widgets": settings.WIDGETS}
     return render(request, 'portal/faq.html', context)
-
-
-def test(request):
-    user = {"name": "Imusho", "realname": "Trinity Pointard"}
-    devices = [
-            {"type": "Windows", "connexion": "Wired", "connected": True,
-                "ip": "127.0.0.1", "mac": "FF:FF:FF:FF:FF:FF"},
-            {"type": "Android", "connexion": "Wifi", "connected": False,
-                "ip": "127.0.0.2", "mac": "FF:FF:FF:FF:FF:FE"},
-        ]
-    context = {"page_name": "User details", "user": user, "devices": devices}
-    return render(request, 'portal/userDetails.html', context)

@@ -17,6 +17,10 @@ hr {
     border-top: .5px solid rgba(255, 255, 255, .3);
 }
 
+.logo-connected {
+    width: 17rem;
+}
+
 /* Navbar */
 
 .navbar-insalan {
@@ -210,6 +214,12 @@ a:hover, a:active {
     color: #fff;
 }
 
+@media (min-width: 1200px) {
+    .modal-xl {
+        max-width: 1000px;
+    }
+}
+
 /* FAQ */
 
 .faq-cat {
@@ -247,4 +257,12 @@ a:hover, a:active {
 
 .jumbotron p, .jumbotron h1 {
     color: #212529 !important;
+}
+
+/* Alerts */
+
+.alert-success-insalan {
+    background-color: transparent;
+    color: #00ae18;
+    border: 2px solid #2da73dcc !important;
 }

@@ -48,19 +48,14 @@ class Device(models.Model):
     ip = models.CharField(max_length=15)
 
     # MAC address of the device
-    mac = models.CharField(max_length=17, unique=True)
+    mac = models.CharField(max_length=17)
 
     # Area of the device, i.e. LAN or WiFi
     area = models.CharField(max_length=4, default="LAN")
 
-    def create(self, validated_data, **kwargs):
-        # On creating a new device, we need to use the networking module to retrieve
-        # some information : for example the MAC address or the area of the device based on the IP.
+    def create(self, **validated_data):
 
-        mac = "ff:ff:ff:ff:ff:ff"  # FIXME: replace with a call to the networking module : network.get_mac(ip)
-        area = "LAN"  # FIXME: replace with a call to the networking module
-
-        return Device(mac=mac, area=area, **validated_data)
+        return Device(**validated_data)
 
     # FIXME : we should consider also the case when an user deletes its last device !
 
@@ -77,3 +72,17 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+@receiver(post_save, sender=Device)
+def create_device(sender, instance, created, **kwargs):
+    # On creating a new device, we need to use the networking module to retrieve
+    # some information : for example the MAC address or the area of the device based on the IP.
+
+    if created:
+        instance.mac = "ff:ff:ff:ff:ff:ff"  # FIXME: replace with a call to the networking module : network.get_mac(ip)
+        instance.area = "LAN"  # FIXME: replace with a call to the networking module
+
+        instance.save()
+
+    # FIXME: we should check if the mac address of the device already exists in the db
