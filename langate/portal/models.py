@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from django.conf import settings
+from modules import network
 
 # Create your models here.
 
@@ -53,9 +54,6 @@ class Device(models.Model):
     # Area of the device, i.e. LAN or WiFi
     area = models.CharField(max_length=4, default="LAN")
 
-    def create(self, **validated_data):
-
-        return Device(**validated_data)
 
     # FIXME : we should consider also the case when an user deletes its last device !
 
@@ -80,9 +78,12 @@ def create_device(sender, instance, created, **kwargs):
     # some information : for example the MAC address or the area of the device based on the IP.
 
     if created:
-        instance.mac = "ff:ff:ff:ff:ff:ff"  # FIXME: replace with a call to the networking module : network.get_mac(ip)
+        ip = instance.ip
+        
+        instance.mac = network.get_mac(ip)
         instance.area = "LAN"  # FIXME: replace with a call to the networking module
 
+        settings.NETWORK.connect_user(instance.mac)
         instance.save()
 
     # FIXME: we should check if the mac address of the device already exists in the db

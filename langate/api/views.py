@@ -71,7 +71,8 @@ class DeviceDetails(APIView):
         # Deleting the device you are currently on is not allowed via the API.
         # Instead the user can log out from the portal.
 
-        client_ip = request.META.get('REMOTE_ADDR')
+        client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+
         dev = self.get_device(ident, request.user)
 
         if dev.ip == client_ip:

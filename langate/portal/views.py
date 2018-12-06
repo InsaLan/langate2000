@@ -36,7 +36,7 @@ def management(request):
 def connected(request):
 
     user_devices = Device.objects.filter(user=request.user)
-    client_ip = request.META.get('REMOTE_ADDR')
+    client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
 
     context = {"page_name": "connected", "too_many_devices": False, "current_ip": client_ip, "widgets": settings.WIDGETS}
 
