@@ -77,11 +77,11 @@ class Ipset:
 
         :param name: Name of the set.
         :param default_timeout: Timeout by default.
-        :param counter: #TODO
-        :param marking: #TODO
-        :param mark: #TODO
-        :param multi_vpn_mark: #TODO
-        :param fixed_vpn_timeout: #TODO
+        :param counter: Enable bandwith counters
+        :param marking: Enable packet marking
+        :param mark: First mark and number of mark to use. Useless if marking=False
+        :param multi_vpn_mark: Mark for devices mapped to multiple marks. Useless if marking=False
+        :param fixed_vpn_timeout: Number of seconds without network usage before a user may change of vpn
         """
         self.name = name
         self.timeout = default_timeout
@@ -131,9 +131,9 @@ class Ipset:
 
         :param mac: Mac of the user.
         :param timeout: (Optional) Timeout after which the user will be disconnected.
-        :param mark: #TODO
-        :param counter: #TODO
-        :param multi_vpn: #TODO
+        :param mark: Mark to use for this entry, None for automatic
+        :param counter: Value to initialize bandwith counter to
+        :param multi_vpn: True if device should be mapped to multiple vpn (caching server...)
         """
 
         if not verify_mac(mac):
@@ -244,7 +244,7 @@ class Ipset:
         Get all entries from the set, with how much bytes they transferred and what is their mark.
         Equivalent to the command : 'sudo ipset list langate"
 
-        :return: #TODO
+        :return: Dictionary mapping device MAC to their bandwith usage and mark
         """
         list_args = ["sudo", "ipset", "list", self.name]
         result = run(list_args, stdout=PIPE, stderr=PIPE, timeout=2)
@@ -331,8 +331,8 @@ class Ipset:
         """
         Get logs by users, sorted by date.
 
-        :return: Tuple containing date and bytes transferred by mac since previous entry.
-        #TODO clarify return type : what is the srt inside the dictionary ?
+        :return: List sorted by date of tuple of date and dictionary, itself mapping device's
+        Mac to it's bandwith usage since last entry
         """
         if not self.counter:
             raise FeatureDisabledError("Feature counter is disabled for this set")
@@ -342,8 +342,8 @@ class Ipset:
         """
         Get logs by vpn sorted by date.
 
-        :return: Tuple containing date and bytes transferred by vpn since previous entry.
-        #TODO clarify return type : what is the each int inside the dictionary ?
+        :return: List sorted by date of tuple of date and dictionary, itself mapping vpn mark
+        to it's bandwith usage since last entry
         """
         if not self.counter:
             raise FeatureDisabledError("Feature counter is disabled for this set")
@@ -355,7 +355,7 @@ class Ipset:
         """
         Clear internal logs (logs are never cleared otherwise, taking memory indefinitely).
 
-        :param after: Time after which the cleaning must be done, none if not set.
+        :param after: Time after which the cleaning must be done, now if not set.
         """
         if not self.counter:
             raise FeatureDisabledError("Feature counter is disabled for this set")
@@ -374,8 +374,7 @@ class Ipset:
 
     def try_balance(self):
         """
-        Try to auto-balance vpn usage by switching some user of vpn. Equivalent to the command:
-        'sudo ipset list langate"
+        Try to auto-balance vpn usage by switching some user of vpn.
         """
 
         if self.counter and self.skbinfo:
