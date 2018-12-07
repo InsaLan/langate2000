@@ -266,3 +266,16 @@ a:hover, a:active {
     color: #00ae18;
     border: 2px solid #2da73dcc !important;
 }
+
+/* Pagination */
+
+.page-item.disabled .page-link {
+    background-color: #313339;
+    color: #fff;
+}
+
+.page-link {
+    color: #fff;
+    background-color: #545b62;
+    border: .2px solid rgba(0, 0, 0, .3) !important;
+}

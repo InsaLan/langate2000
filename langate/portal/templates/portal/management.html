@@ -12,7 +12,7 @@
         <h1 class="display-5">Page d'aministration</h1>
         <hr class="mt-2 mb-5">
 
-        <nav id="navbar-title" class="navbar navbar-dark bg-dark">
+        <nav id="navbar-title" class="navbar navbar-dark bg-dark pb-4">
             <a class="navbar-brand" href="#">Joueurs enregistrés :</a>
             <ul class="nav nav-pills">
                 <li class="nav-item">
@@ -22,52 +22,17 @@
         </nav>
 
 
-        <table id="user-table" class="table table-sm table-insalan table-bordered">
+        <table id="user-table" class="table table-sm table-insalan">
             <thead>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Pseudo</th>
                 <th scope="col">Adresse mail</th>
                 <th scope="col">Rôle</th>
-                <th scope="col" class="col-account-admin-insalan">Compte</th>
                 <th scope="col">Tournois</th>
                 <th scope="col" class="col-actions-admin-insalan">Actions</th>
             </tr>
             </thead>
-            <tbody>
-            {% for player in players_list %}
-                <tr>
-                    <th scope="row">{{ player.id }}</th>
-                    <td>{{ player.name }}</td>
-                    <td>{{ player.email }}</td>
-                    <td><span class="text-danger">{{ player.role }}</span></td>
-                    <td>
-                        {% if player.isInDatabse %}
-                            <span class="badge badge-primary badge-admin-insalan"><span class="fas fa-database"></span></span>
-                        {% endif %}
-                        {% if player.is_staff    %}
-                            <span class="badge badge-light badge-admin-insalan"><span class="fas fa-user"></span></span>
-                        {% endif %}
-                    </td>
-                    <td>{% if not player.tournament %}
-                        Aucun
-                        {% else %}
-                        {{ player.tournament }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        <div role="group" class="btn-group" aria-label="Actions">
-
-                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Modifier l'utilisateur" class="btn btn-sec-insalan modify-user-btn" data-userid="{{ player.id }}"><span class="fas fa-pen" aria-hidden="true"></span></button>
-                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Regénérer le mot de passe" class="btn btn-sec-insalan user-password-btn" data-userid="{{ player.id }}"><span class="fas fa-key" aria-hidden="true"></span></button>
-                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Appareils enregistrés" class="btn btn-sec-insalan user-details-btn" data-userid="{{ player.id }}"><span class="fas fa-globe" aria-hidden="true"></span></button>
-                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Supprimer l'utilisateur" class="btn btn-sec-insalan delete-user-btn" data-userid="{{ player.id }}"><span class="fas fa-trash" aria-hidden="true"></span></button>
-
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
         </table>
 
     </div>
@@ -193,7 +158,7 @@
 
         /* User delete button onclick handler */
 
-        $(".delete-user-btn").click(function (e) {
+        $(document).on("click", ".delete-user-btn", function () {
             let id = $(this).data("userid");
             $("#delete-user-confirm-btn").data("userid", id);
 
@@ -205,7 +170,7 @@
 
         /* User modify button onclick handler */
 
-        $(".modify-user-btn").click( function () {
+        $(document).on("click", ".modify-user-btn", function () {
 
             let id = $(this).data("userid");
             $("#modify-user-confirm-btn").data("userid", id);
@@ -233,7 +198,8 @@
 
         /* User confirm generate password button onclick handler */
 
-        $("#user-password-warning-confirm-btn").click(function () {
+        $(document).on("click", ".user-password-btn", function () {
+
             let id = $(this).data("userid");
 
             $.getJSON("/api/user_password/" + id, function (data) {
@@ -262,7 +228,7 @@
 
         /* User details button onclick handler */
 
-        $(".user-details-btn").click(function () {
+        $(document).on("click", ".user-details-btn", function () {
             let id = $(this).data("userid");
 
             $("#device-table").empty();
@@ -581,7 +547,48 @@
 
 
         $(document).ready(function () {
+
+            $("#user-table").dataTable({
+
+                "ajax": {
+                    url: '/api/user_list',
+                    dataSrc: ''
+                },
+
+                "columns": [
+                    { "data": "id" },
+                    { "data": "username" },
+                    { "data": "email" },
+                    { "data": "profile.role" },
+                    { "data": "profile.tournament" },
+                    { "data": null}
+                ],
+
+                "columnDefs": [
+                    {
+                        "render": function ( data, type, row ) {
+
+                            let html = "<div role=\"group\" class=\"btn-group\" aria-label=\"Actions\">\n" +
+                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'utilisateur\" class=\"btn btn-sec-insalan modify-user-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
+                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Regénérer le mot de passe\" class=\"btn btn-sec-insalan user-password-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-key\" aria-hidden=\"true\"></span></button>\n" +
+                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Appareils enregistrés\" class=\"btn btn-sec-insalan user-details-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-globe\" aria-hidden=\"true\"></span></button>\n" +
+                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'utilisateur\" class=\"btn btn-sec-insalan delete-user-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                                    "</div>";
+
+                            return html;
+                        },
+
+                        "orderable": false,
+
+                        "targets": 5
+                    },
+                ],
+
+                "order": [[1, 'asc']]
+            });
+
             $("#user-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]'});
+
         });
 
 
