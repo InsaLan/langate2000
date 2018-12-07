@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 from portal.models import Device, Role, Profile
+from langate.settings import Tournament
 
 
 class DeviceSerializer(serializers.ModelSerializer):
@@ -15,11 +16,22 @@ class DeviceSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(choices=[(tag, tag.value) for tag in Role])
+    tournament = serializers.ChoiceField(choices=[(tag, tag.value) for tag in Tournament], allow_null=True)
 
     def validate_role(self, value):
         # By default, DRF does not handle natively Enums in Choice Fields,
         # getting round this by passing the value of the Enum when validating the field
         return value.value
+
+    def validate_tournament(self, value):
+        # By default, DRF does not handle natively Enums in Choice Fields,
+        # getting round this by passing the value of the Enum when validating the field
+
+        if value == None: # Value can be none because an user can have no tournament if he's admin or staff member
+            return None
+
+        else:
+            return value.value
 
     class Meta:
         model = Profile

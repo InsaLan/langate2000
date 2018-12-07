@@ -3,6 +3,7 @@
 {% block content %}
 
     {% include 'portal/modal_create_user.html' %}
+    {% include 'portal/modal_modify_user.html' %}
     {% include 'portal/modal_user_details.html' %}
 
     {% csrf_token %} <!-- Token needed for AJAX calls -->
@@ -58,7 +59,7 @@
                         <div role="group" class="btn-group" aria-label="Actions">
 
                             <button type="button" data-toggle="tooltip" data-placement="bottom" title="Modifier l'utilisateur" class="btn btn-sec-insalan modify-user-btn" data-userid="{{ player.id }}"><span class="fas fa-pen" aria-hidden="true"></span></button>
-                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Générer le mot de passe" class="btn btn-sec-insalan user-password-btn" data-userid="{{ player.id }}"><span class="fas fa-key" aria-hidden="true"></span></button>
+                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Regénérer le mot de passe" class="btn btn-sec-insalan user-password-btn" data-userid="{{ player.id }}"><span class="fas fa-key" aria-hidden="true"></span></button>
                             <button type="button" data-toggle="tooltip" data-placement="bottom" title="Appareils enregistrés" class="btn btn-sec-insalan user-details-btn" data-userid="{{ player.id }}"><span class="fas fa-globe" aria-hidden="true"></span></button>
                             <button type="button" data-toggle="tooltip" data-placement="bottom" title="Supprimer l'utilisateur" class="btn btn-sec-insalan delete-user-btn" data-userid="{{ player.id }}"><span class="fas fa-trash" aria-hidden="true"></span></button>
 
@@ -93,7 +94,30 @@
         </div>
     </div>
 
-    <!-- Modal Generated User Password -->
+    <!-- Modal Warning User Password -->
+
+    <div class="modal modal-insalan" id="user-password-warning-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Avertissement</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-white">
+                    <p>Vous allez regénérer le mot de passe de l'utilisateur <strong id="user-password-warning-username"></strong>.<br>
+                    N'utilisez cette fonctionalité que sur demande de l'utilisateur !</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="user-password-warning-confirm-btn">Je sais ce que je fais</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Regenerate User Password -->
 
     <div class="modal modal-insalan" id="user-password-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -105,7 +129,11 @@
                     </button>
                 </div>
                 <div class="modal-body text-white">
-                    <p class="display-3" id="user-password-field"></p>
+                    <p>Vous pouvez communiquer à l'utilisateur le mot de passe :</p>
+                    <p class="display-3 text-center" id="user-password-field"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>
@@ -175,15 +203,59 @@
             });
         });
 
-        /* User generate password button onclick handler */
+        /* User modify button onclick handler */
 
-        $(".user-password-btn").click(function () {
+        $(".modify-user-btn").click( function () {
+
+            let id = $(this).data("userid");
+            $("#modify-user-confirm-btn").data("userid", id);
+
+            $("#modify-user-last-name").empty();
+            $("#modify-user-first-name").empty();
+            $("#modify-user-email").empty();
+            $("#modify-user-team").empty();
+            $("#modify-user-username").empty();
+
+            $.getJSON("/api/user_details/" + id, function (data) {
+                $("#modify-user-last-name").val(data["last_name"]);
+                $("#modify-user-first-name").val(data["first_name"]);
+                $("#modify-user-email").val(data["email"]);
+                $("#modify-user-team").val(data["profile"]["team"]);
+                $("#modify-user-username").val(data["username"]);
+                $("#modify-user-tournament option").each(function() { this.selected = (this.text == data["profile"]["tournament"]); });
+                $("#modify-user-role option").each(function() { this.selected = (this.text == data["profile"]["role"]); });
+            });
+
+
+            $("#modify-user-modal").modal('show');
+
+        });
+
+        /* User confirm generate password button onclick handler */
+
+        $("#user-password-warning-confirm-btn").click(function () {
             let id = $(this).data("userid");
 
             $.getJSON("/api/user_password/" + id, function (data) {
                 $("#user-password-field").text(data["password"]);
+                $("#user-password-warning-modal").modal("hide");
                 $("#user-password-modal").modal("show");
             });
+
+
+        });
+
+        /* User generate password button onclick handler */
+
+        $(".user-password-btn").click(function () {
+            let id = $(this).data("userid");
+            $("#user-password-warning-confirm-btn").data("userid", id);
+
+            $.getJSON("/api/user_details/" + id, function (data) {
+                $("#user-password-warning-username").text(data["username"]);
+                $("#user-password-warning-modal").modal("show");
+            });
+
 
         });
 
@@ -448,10 +520,45 @@
             });
 
 
-            $("#delete-user-modal").modal('hide');
+        });
+
+        $("#modify-user-confirm-btn").click( function () {
+
+            let id = $(this).data("userid");
+
+            let data = {
+                "first_name": $("#modify-user-first-name").val(),
+                "last_name": $("#modify-user-last-name").val(),
+                "username": $("#modify-user-username").val(),
+                "email": $("#modify-user-email").val(),
+                "is_staff": ($("#modify-user-role").val() == "Role.A"),
+                "is_active": true,
+                "profile": {
+                    "role": $("#modify-user-role").val(),
+                    "tournament": ($("#modify-user-tournament").val() != "no") ? $("#modify-user-tournament").val() : null,
+                    "team": ($("#modify-user-team").val() != "") ? $("#modify-user-team").val() : null
+                }
+            };
+
+            $.ajax({
+                url: '/api/user_details/'+id,
+                type: 'PUT',
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify(data),
+
+                success: function(result) {
+                    $("#modify-user-modal").modal('hide');
+                }
+
+                // TODO: Handle errors
+            });
+
+
 
 
         });
+
+
 
         $("#delete-device-confirm-btn").click(function () {
 

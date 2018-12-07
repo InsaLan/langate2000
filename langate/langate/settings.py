@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
+from enum import Enum
 import os
+
 from modules import network
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -29,7 +32,9 @@ except ModuleNotFoundError:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','172.16.1.197']
+SERVER_IP = '172.16.1.197'
+
+ALLOWED_HOSTS = ['localhost', SERVER_IP]
 
 # Application definition
 
@@ -132,6 +137,10 @@ STATICFILES_DIRS = (
 LOGIN_REDIRECT_URL = "/connected"
 AUTHENTICATION_BACKENDS = ('langate.insalan_auth.insalan_backend.InsalanBackend',)
 
+# Network management
+
+#netmgt = Ipset()
+
 # Widgets content
 
 WIDGETS = {
@@ -142,7 +151,7 @@ WIDGETS = {
     },
 
     "ANNOUNCE": {
-        "visible": True,
+        "visible": False,
         "content": 'Nous rencontrons actuellement des problèmes de stabilité de notre accès internet.\n' +
                    'Nos équipes sont à pied d\'oeuvre pour résoudre ce problème dans les plus brefs délais.\n' +
                    'Nous vous remercions de votre patience.'
@@ -151,9 +160,21 @@ WIDGETS = {
     "STATUS": {
         "visible": True,
         "network_up": True,
-        "internet_up": False,
+        "internet_up": True,
         "csgo_up": True
     }
 }
+
+
+# Tournament list
+
+class Tournament(Enum):
+    cs = "Counter Strike Global Offensive"
+    ftn = "Fortnite"
+    hs = "Heartstone"
+    lol = "League Of Legends"
+
+
+# Network management interface
 
 NETWORK = network.Ipset()

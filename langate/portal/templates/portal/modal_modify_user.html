@@ -1,0 +1,71 @@
+<!-- Modal modify User -->
+
+<div class="modal modal-insalan fade" id="modify-user-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier un nouvel utilisateur local</h5>
+                <button tabindex="-1" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+
+                    <form id="modify-user-form">
+                        <div class="form-group row" id="modify-user-last-name-g">
+                            <label for="modify-user-last-name" class="col-sm-4 col-form-label">Nom : </label>
+                            <input tabindex="1" type="text" class="form-control col-sm-8" id="modify-user-last-name">
+                        </div>
+
+                        <div class="form-group row" id="modify-user-first-name-g">
+                            <label for="modify-user-first-name" class="col-sm-4 col-form-label">Prénom : </label>
+                            <input tabindex="2" type="text" class="form-control col-sm-8" id="modify-user-first-name">
+                        </div>
+
+
+                        <div class="form-group row" id="modify-user-username-g">
+                            <label for="modify-user-username" class="col-sm-4 col-form-label">Pseudo : </label>
+                            <input tabindex="3" type="text" class="form-control col-sm-8" id="modify-user-username">
+                        </div>
+
+                        <div class="form-group row" id="modify-user-email-g">
+                            <label for="modify-user-email" class="col-sm-4 col-form-label">Adresse mail : </label>
+                            <input tabindex="4" type="email" class="form-control col-sm-8" id="modify-user-email">
+                        </div>
+
+                        <div class="form-group row" id="modify-user-role-g">
+                            <label for="modify-user-role" class="col-sm-4 col-form-label">Rôle : </label>
+                            <select tabindex="5" class="form-control col-sm-8" id="modify-user-role">
+                                <option value="Role.P">Player</option>
+                                <option value="Role.A">Staff</option>
+                                <option value="Role.A">Administrator</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group row" id="modify-user-tournament-g">
+                            <label for="modify-user-role" class="col-sm-4 col-form-label">Tournoi : </label>
+                            <select tabindex="6" class="form-control col-sm-8" id="modify-user-tournament">
+                                <option value="no">Aucun</option>
+                                <option value="Tournament.cs">Counter Strike Global Offensive</option>
+                                <option value="Tournament.ftn">Fortnite</option>
+                                <option value="Tournament.hs">Heartstone</option>
+                                <option value="Tournament.lol">League Of Legends</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group row" id="modify-user-team-g">
+                            <label for="modify-user-team" class="col-sm-4 col-form-label">Équipe tournoi : </label>
+                            <input tabindex="7" type="text" class="form-control col-sm-8" id="modify-user-team">
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" tabindex="-1">Fermer</button>
+                <button tabindex="8" type="button" class="btn btn-insalan" id="modify-user-confirm-btn">Modifier</button>
+            </div>
+        </div>
+    </div>
+</div>

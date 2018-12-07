@@ -5,9 +5,11 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
+
 from modules import network
 
 # Create your models here.
+
 
 class Role(Enum):
     P = "Player"
@@ -53,7 +55,6 @@ class Device(models.Model):
 
     # Area of the device, i.e. LAN or WiFi
     area = models.CharField(max_length=4, default="LAN")
-
 
     # FIXME : we should consider also the case when an user deletes its last device !
 
