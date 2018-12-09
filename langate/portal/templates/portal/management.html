@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -152,9 +153,11 @@
 
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script src="{% static "js/Chart.bundle.min.js" %}"></script>
 
     <script>
+
+	var table = null;
 
         /* User delete button onclick handler */
 
@@ -198,7 +201,7 @@
 
         /* User confirm generate password button onclick handler */
 
-        $(document).on("click", ".user-password-btn", function () {
+        $(document).on("click", "#user-password-warning-confirm-btn", function () {
 
             let id = $(this).data("userid");
 
@@ -213,7 +216,7 @@
 
         /* User generate password button onclick handler */
 
-        $(".user-password-btn").click(function () {
+        $(document).on("click", ".user-password-btn", function () {
             let id = $(this).data("userid");
             $("#user-password-warning-confirm-btn").data("userid", id);
 
@@ -226,10 +229,7 @@
         });
 
 
-        /* User details button onclick handler */
-
-        $(document).on("click", ".user-details-btn", function () {
-            let id = $(this).data("userid");
+	function reload_user_details(id) {
 
             $("#device-table").empty();
             $("#user-username").empty();
@@ -298,8 +298,18 @@
 
 
             });
+		
+	}
 
-            $("#user-details-modal").modal("show");
+
+        /* User details button onclick handler */
+
+        $(document).on("click", ".user-details-btn", function () {
+            let id = $(this).data("userid");
+	    
+	    reload_user_details(id);
+
+	    $("#user-details-modal").modal("show");
 
         });
 
@@ -436,7 +446,7 @@
                 type: 'DELETE',
 
                 success: function(result) {
-                    location.reload()
+                    table.ajax.reload();
                 }
 
                 // TODO: Handle errors
@@ -479,7 +489,7 @@
                     });
 
                     $("#create-user-last-name").focus();
-
+		    table.ajax.reload();
                 }
 
                 // TODO: Handle errors
@@ -535,7 +545,7 @@
                 type: 'DELETE',
 
                 success: function (result) {
-                    location.reload();
+                	reload_user_details(id);
                 }
 
                 // TODO: Handle errors
@@ -548,14 +558,14 @@
 
         $(document).ready(function () {
 
-            $("#user-table").dataTable({
+            table = $("#user-table").DataTable({
 
-                "ajax": {
+                ajax: {
                     url: '/api/user_list',
                     dataSrc: ''
                 },
 
-                "columns": [
+                columns: [
                     { "data": "id" },
                     { "data": "username" },
                     { "data": "email" },
@@ -564,7 +574,7 @@
                     { "data": null}
                 ],
 
-                "columnDefs": [
+                columnDefs: [
                     {
                         "render": function ( data, type, row ) {
 
@@ -584,7 +594,7 @@
                     },
                 ],
 
-                "order": [[1, 'asc']]
+                order: [[1, 'asc']]
             });
 
             $("#user-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]'});

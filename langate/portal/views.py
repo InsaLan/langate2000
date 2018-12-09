@@ -1,7 +1,8 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.conf import settings
 
 from .models import Device
@@ -12,22 +13,8 @@ from .models import Device
 
 @staff_member_required
 def management(request):
-    users = User.objects.all()
-    players_list = []
-
-    for u in users:
-        player = {
-            "id": u.id,
-            "name": u.username,
-            "email": u.email,
-            "role": u.profile.role,
-            "tournament": u.profile.tournament,
-            "team": u.profile.team
-        }
-        players_list.append(player)
-
-    context = {"page_name": "management",
-               "players_list": players_list}
+    
+    context = {"page_name": "management" }
 
     return render(request, 'portal/management.html', context)
 
@@ -52,14 +39,34 @@ def connected(request):
             
         else:
             # We can add the client device to the user devices.
-            # FIXME: MAC address should be filled by a model receiver call to the networking module.
+            # See the networking functions in the receivers in portal/models.py
 
             dev = Device(user=request.user, ip=client_ip)
             dev.save()
+    
+    # TODO: What shall we do if an user attempts to connect with a device that has the same IP that another device already registered
+    # (ie in the Device array) but from a different user account ?
 
     return render(request, 'portal/connected.html', context)
 
 
+@login_required
+def disconnect(request):
+    
+    user_devices = Device.objects.filter(user=request.user)
+    client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+
+    if user_devices.filter(ip=client_ip).exists():
+        # When the user decides to disconnect from the portal from a device,
+        # we remove the Device from the array (if it still exists) and then we log the user out.
+
+        user_devices.filter(ip=client_ip).delete()
+        logout(request)
+    
+    return redirect(settings.LOGIN_URL)
+
 def faq(request):
+    
     context = {"page_name": "faq", "widgets": settings.WIDGETS}
+    
     return render(request, 'portal/faq.html', context)

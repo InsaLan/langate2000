@@ -134,7 +134,7 @@ STATICFILES_DIRS = (
 
 # Authentication
 
-LOGIN_REDIRECT_URL = "/connected"
+LOGIN_REDIRECT_URL = "/"
 AUTHENTICATION_BACKENDS = ('langate.insalan_auth.insalan_backend.InsalanBackend',)
 
 # Network management

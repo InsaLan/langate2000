@@ -1,8 +1,9 @@
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.models import User
+from django.conf import settings
 
 from .serializers import DeviceSerializer, UserSerializer
 from portal.models import Device
-from django.contrib.auth.models import User
 
 from rest_framework.exceptions import APIException
 from rest_framework.views import APIView
@@ -86,10 +87,29 @@ class DeviceDetails(APIView):
 class DeviceStatus(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
+    def get_device(self, ident, user):
+
+        # FIXME: This can raise Device.DoesNotExist exception, not sure whether we should catch this...
+        dev = Device.objects.get(id=ident)
+
+        # If the API call is made by the device owner or an admin, we should proceed, otherwise we should abort
+        if (dev.user == user) or user.is_staff:
+            return dev
+        else:
+            raise PermissionDenied
+
+
     def get(self, request, ident):
-        up = random.randint(0, 100)
-        down = random.randint(0, 100)
-        return Response({"status": "up", "upload": up, "download": down})
+
+        dev = self.get_device(ident, request.user)
+        info = settings.NETWORK.get_user_info(dev.mac)
+        
+        status = "up" if info[0] else "down"
+        up = info[1][1]
+        down = info[1][0]
+        mark = info[2]
+
+        return Response({"status": status, "upload": up, "download": down, "vpn": mark})
 
 
 class UserList(generics.ListCreateAPIView):
