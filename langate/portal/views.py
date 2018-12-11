@@ -34,7 +34,7 @@ def connected(request):
     
         same_mac_devices = Device.objects.filter(mac=client_mac)
 
-        if len(same_mac_devices) > 0
+        if len(same_mac_devices) > 0:
             # If the device MAC is already registered on the network but with a different IP,
             # we remove the device already registered.
             # This could happen if the DHCP somehow decides to change the IP of one client or
