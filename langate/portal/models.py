@@ -51,7 +51,7 @@ class Device(models.Model):
     ip = models.CharField(max_length=15, blank=False) # One device should have at least an IP, the MAC is filled later based on it.
 
     # MAC address of the device
-    mac = models.CharField(max_length=17, unique=True) # One user = one device, two users cannot have the same device !
+    mac = models.CharField(max_length=17) # One device = 1 MAC = One User, two users cannot have the same device !
 
     # Area of the device, i.e. LAN or WiFi
     area = models.CharField(max_length=4, default="LAN")
@@ -81,7 +81,8 @@ def create_device(sender, instance, created, **kwargs):
     if created:
         ip = instance.ip # FIXME : IP should exist at this stage but it will fail really bad if it doesn't, should we handle this ?
 
-        instance.mac = network.get_mac(ip) 
+        instance.mac = network.get_mac(ip)
+                
         instance.area = "LAN"  # FIXME: replace with a call to the networking module
 
         settings.NETWORK.connect_user(instance.mac)

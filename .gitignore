@@ -124,6 +124,7 @@ celerybeat-schedule
 .venv
 venv/
 ENV/
+venv3/
 
 # Spyder project settings
 .spyderproject
@@ -155,3 +156,6 @@ nbproject
 .settings
 composer.lock
 deployment-config.json
+
+# Django migrations
+langate/*/migrations/
