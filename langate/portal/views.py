@@ -70,3 +70,4 @@ def faq(request):
     context = {"page_name": "faq", "widgets": settings.WIDGETS}
     
     return render(request, 'portal/faq.html', context)
+

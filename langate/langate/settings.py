@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'portal',
     'bootstrap4',
     'rest_framework',
+    'helpdesk'
 ]
 
 MIDDLEWARE = [
