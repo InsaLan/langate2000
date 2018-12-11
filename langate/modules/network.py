@@ -5,6 +5,7 @@ from collections import defaultdict
 from typing import Dict, Set, List, Tuple
 from time import time
 from subprocess import run, PIPE, TimeoutExpired
+from random import randint
 import re
 
 
@@ -128,6 +129,28 @@ class Ipset:
             result = run(creation_args, stderr=PIPE, timeout=2)
             if result.returncode != 0:
                 raise UnknownInitializationError(result.stderr.decode("UTF-8"))
+
+    def generate_iptables(self, match_internal: str = "-s 172.16.0.0/255.252.0.0", stop: bool = False) -> str:
+        """
+        def __init__(self, name="langate", default_timeout=0, counter=True, marking=True, mark=(0, 1),
+                     multi_vpn_mark=4294967295, fixed_vpn_timeout=30):
+        """
+        if stop:
+            A="D"
+        else:
+            A="A"
+        res = "# Portal rules :\n"
+        res+= "iptables -" + A + " FORWARD " + match_internal + " -m set ! --match-set " + self.name + " src ! --update-counters -j REJECT\n"
+        res+= "iptables -t nat -" + A + " PREROUTING " + match_internal + " -p tcp --dport 80 -m set ! --match-set " + self.name + " src ! --update-counters -j REDIRECT --to-ports 80\n"
+        res+= "\n\n# Marking and accounting rules\n"
+        # accounting is done automatically when no ! --update-counters is provided
+        res+= "iptables -t mangle -" + A + " FORWARD -m set --match-set " + self.name + " src ! --update-counters -j SET --map-set " + self.name + " src --map-mark\n"
+        res+= "iptables -t mangle -" + A + " FORWARD -m set --match-set " + self.name + " src -j SET --add-set " + self.name + "-recent src --exist\n"
+        res+= "iptables -t mangle -" + A + " FORWARD -m set --match-set " + self.name + "-download dst -j SET --add-set " + self.name + "-recent dst --exist\n"
+        res+= "\n\n# Map single device to any number of vpns\n"
+        res+= "iptables -t mangle -" + A + " FORWARD -m mark --mark " + str(self.multi_vpn_mark) + " -j HMARK --hmark-tuple src,dst,sport,dport "
+        res+= "--hmark-offset " + str(self.mark_start) + " --hmark-mod " + str(self.mark_mod) + " --hmark-rnd " + str(randint(0, 2**32))
+        return res
 
     def connect_user(self, mac: str, timeout: int = None, mark: int = None, counter: Tuple[int,int] = (0,0), multi_vpn: bool = False):
         """
