@@ -140,3 +140,12 @@ class UserPasswordGenerator(APIView):
 
         return Response({"password": p})
 
+    def post(self, request, pk):
+
+        # FIXME: This can raise Usser.DoesNotExist exception, not sure whether we should catch this...
+        user = User.objects.get(id=pk)
+
+        user.set_password(request.data["password"])
+        user.save()
+
+        return Response({"status": "ok"})

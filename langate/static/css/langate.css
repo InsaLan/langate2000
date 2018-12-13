@@ -279,3 +279,7 @@ a:hover, a:active {
     background-color: #545b62;
     border: .2px solid rgba(0, 0, 0, .3) !important;
 }
+
+form-control:disabled, .form-control[readonly] {
+    background-color: #2A2A2A !important;
+}

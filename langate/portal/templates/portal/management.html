@@ -157,7 +157,7 @@
 
     <script>
 
-	var table = null;
+	    var table = null;
 
         /* User delete button onclick handler */
 
@@ -229,7 +229,7 @@
         });
 
 
-	function reload_user_details(id) {
+        function reload_user_details(id) {
 
             $("#device-table").empty();
             $("#user-username").empty();
@@ -306,10 +306,10 @@
 
         $(document).on("click", ".user-details-btn", function () {
             let id = $(this).data("userid");
-	    
-	    reload_user_details(id);
 
-	    $("#user-details-modal").modal("show");
+            reload_user_details(id);
+
+            $("#user-details-modal").modal("show");
 
         });
 
@@ -458,6 +458,24 @@
 
         });
 
+        $('#create-user-role').on('change', function() {
+           if (this.value == "Role.A") {
+
+               if ($("#create-user-password").hasClass("disabled")){
+                   $("#create-user-password").removeClass("disabled");
+               }
+
+           }
+
+           else {
+
+               if (!$("#create-user-password").hasClass("disabled")){
+                   $("#create-user-password").addClass("disabled");
+               }
+
+           }
+        });
+
         $("#create-user-btn").click( function () {
 
             let data = {
@@ -472,7 +490,7 @@
                     "tournament": ($("#create-user-tournament").val() != "no") ? $("#create-user-tournament").val() : null,
                     "team": ($("#create-user-team").val() != "") ? $("#create-user-team").val() : null
                 }
-            }
+            };
 
             $.ajax({
                 url: '/api/user_list/',
@@ -481,15 +499,34 @@
                 data : JSON.stringify(data),
 
                 success: function(result) {
+
+                    if (($("#create-user-password").val() == "" || $("#create-user-role").val() != "Role.A")) {
+                        $.getJSON("/api/user_password/" + result["id"], function (data) {
+                            $("#create-user-feedback").append("<div class=\"alert alert-success-insalan\" role=\"alert\"><strong>Utilisateur " + result["username"] + " créé avec succès !</strong><br>Mot de passe de connexion : <strong>" + data["password"] + "</strong>.</div>")
+                        });
+                    }
+
+                    else {
+                        $.ajax({
+                            url: '/api/user_password/'+result["id"],
+                            type: 'POST',
+                            contentType: "application/json; charset=utf-8",
+                            data : JSON.stringify({ "password" : $("#create-user-password").val() }),
+
+                            success: function(data) {
+                                $("#create-user-feedback").append("<div class=\"alert alert-success-insalan\" role=\"alert\"><strong>Utilisateur " + result["username"] + " créé avec succès !</strong></div>")
+                            }
+
+                            // TODO: Handle errors
+                        });
+
+                    }
+
                     $("#create-user-form")[0].reset();
                     $("#create-user-feedback").empty();
 
-                    $.getJSON("/api/user_password/" + result["id"], function (data) {
-                        $("#create-user-feedback").append("<div class=\"alert alert-success-insalan\" role=\"alert\"><strong>Utilisateur "+result["username"]+" créé avec succès !</strong><br>Mot de passe de connexion : <strong>"+data["password"]+"</strong>.</div>")
-                    });
-
                     $("#create-user-last-name").focus();
-		    table.ajax.reload();
+		            table.ajax.reload();
                 }
 
                 // TODO: Handle errors

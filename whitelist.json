@@ -1,0 +1,17 @@
+[
+	{
+		"name": "larousse",
+		"mac": "00:19:99:83:11:70"
+	},
+	
+	{
+		"name": "masterpiece",
+		"mac": "d4:3d:7e:b9:b0:b6"
+	},
+
+	{                                 	
+        	"name": "slavepiece",
+        	"mac": "14:da:e9:dd:93:30"
+        }
+
+]
