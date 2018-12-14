@@ -11,5 +11,5 @@ urlpatterns = [
     path('device_status/<int:ident>/', DeviceStatus.as_view()),
     path('user_list/', UserList.as_view()),
     path('user_details/<int:pk>', UserDetails.as_view()),
-    path('user_password/<int:pk>', UserPasswordGenerator.as_view())
+    path('user_password/<int:pk>', UserPasswordManager.as_view())
 ]

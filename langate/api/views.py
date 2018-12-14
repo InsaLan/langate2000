@@ -126,7 +126,7 @@ class UserDetails(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
 
 
-class UserPasswordGenerator(APIView):
+class UserPasswordManager(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
     def get(self, request, pk):
@@ -142,7 +142,7 @@ class UserPasswordGenerator(APIView):
 
     def post(self, request, pk):
 
-        # FIXME: This can raise Usser.DoesNotExist exception, not sure whether we should catch this...
+        # FIXME: This can raise User.DoesNotExist exception, not sure whether we should catch this...
         user = User.objects.get(id=pk)
 
         user.set_password(request.data["password"])

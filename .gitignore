@@ -159,3 +159,5 @@ deployment-config.json
 
 # Django migrations
 langate/*/migrations/
+
+whitelist.json

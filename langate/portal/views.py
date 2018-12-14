@@ -31,19 +31,30 @@ def connected(request):
     # Checking if the device accessing the gate is already in user devices
 
     if not user_devices.filter(ip=client_ip).exists():
-    
-        same_mac_devices = Device.objects.filter(mac=client_mac)
 
-        if len(same_mac_devices) > 0:
+        if Device.objects.filter(mac=client_mac).count() > 0:
             # If the device MAC is already registered on the network but with a different IP,
-            # we remove the device already registered.
-            # This could happen if the DHCP somehow decides to change the IP of one client or
-            # if an user connects itself on the LAN and on the WiFi (which we do not allow cause it is useless).
-            
-            same_mac_devices.delete()
+            # * If the registered device is owned by the requesting user, we change the IP of the registered device.
+            # * If the registered device is owned by another user, we delete the old device and we register the new one.
+            # This could happen if the DHCP has changed the IP of the client.
 
+            # The following should never raise a MultipleObjectsReturned exception
+            # because it would mean that there are more than one devices
+            # already registered with the same MAC.
 
-        if len(user_devices) > 2:
+            dev = Device.objects.get(mac=client_mac)
+
+            if request.user != dev.user:
+                dev.delete()
+
+                new_dev = Device(user=request.user, ip=client_ip)
+                new_dev.save()
+
+            else:
+                dev.ip = client_ip  # We edit the IP to reflect the change.
+                dev.save()
+
+        elif len(user_devices) > 2:
             # If user has too much devices already registered, then we can't connect the device to the internet.
             # We will let him choose to remove one of them.
 
