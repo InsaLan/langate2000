@@ -128,18 +128,3 @@ def delete_device(sender, instance, **kwargs):
     event_logger.info("Disconnected device {} (owned by {}) at {} of the internet.".format(instance.mac, instance.user.username, instance.ip))
 
     settings.NETWORK.disconnect_user(instance.mac)
-
-
-@receiver(user_logged_in)
-def user_logged_in_callback(sender, request, user, **kwargs):
-    client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-
-    event_logger.info("User {} logged in from device at {}.".format(user.username, client_ip))
-
-
-@receiver(user_logged_out)
-def user_logged_out_callback(sender, request, user, **kwargs):
-    client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-
-    event_logger.info("User {} logged out from device at {}.".format(user.username, client_ip))
-

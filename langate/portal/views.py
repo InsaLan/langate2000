@@ -100,6 +100,8 @@ def connected(request):
     # We could either kick out the already registered user from the network or refuse the connection of
     # the device that attempts to connect.
 
+
+
     return render(request, 'portal/connected.html', context)
 
 

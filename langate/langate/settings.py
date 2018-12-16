@@ -34,7 +34,7 @@ DEBUG = True
 
 SERVER_IP = 'gate.insalan'
 
-ALLOWED_HOSTS = ['localhost', SERVER_IP]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', SERVER_IP]
 
 # Application definition
 
@@ -48,9 +48,10 @@ INSTALLED_APPS = [
     'portal',
     'bootstrap4',
     'rest_framework',
-    'helpdesk'
+    'helpdesk',
+    'crispy_forms'
 ]
-
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
