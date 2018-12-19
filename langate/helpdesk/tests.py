@@ -35,4 +35,8 @@ class ModelsTests(TestCase):
         self.msg.save()
         self.assertEquals(self.test_ticket.is_read, False)
     def test_selector(self):
-        pass
+        self.test_ticket.save()
+        self.user2.save()
+        self.msg.save()
+        print(self.test_ticket.last_read)
+        self.test_ticket.get_unread()
