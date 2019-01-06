@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 {% load static %}
+{% load helpdesk_tags %}
 <head>
     <title>{% block title %}{% endblock %} - Insalan Langate</title>
     <meta charset="utf-8">
@@ -59,7 +60,8 @@
                         {% if user.is_authenticated %}
                         {% block navitem-helpdesk %}
                             <li class="nav-item {% if page_name == "helpdesk" %}active{% endif %}">
-                                <a class="nav-link" href="{% url 'helpdesk' %}">demande d'assistance</a>
+                                <a class="nav-link" href="{% url 'helpdesk' %}">demande d'assistance  <span class="badge badge-light"> {% unread_notifications user %}</span></a>
+                                
                             </li>
                         {% endblock %}
                         {% endif %}

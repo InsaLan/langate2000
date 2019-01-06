@@ -6,6 +6,8 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-   path('', views.helpdesk, name='helpdesk'),
-   path('admin', views.admin, name='helpdesk-admin')
+   path('new', views.open_ticket, name='open-ticket'),
+   path('admin', views.admin, name='helpdesk-admin'),
+   path('', views.view_tickets, name='helpdesk'),
+   path('view/<int:ticket_id>', views.show_ticket, name='ticket_view')
 ]

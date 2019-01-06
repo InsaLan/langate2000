@@ -50,6 +50,7 @@ def widgets(request):
 
 @login_required
 def connected(request):
+
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
     client_mac = network.get_mac(client_ip)
@@ -67,7 +68,7 @@ def connected(request):
             # This could happen if the DHCP has changed the IP of the client.
 
             # The following should never raise a MultipleObjectsReturned exception
-            # because it would mean that there are more than one device
+            # because it would mean that there are more than one devices
             # already registered with the same MAC.
 
             dev = Device.objects.get(mac=client_mac)
@@ -94,7 +95,7 @@ def connected(request):
 
             dev = Device(user=request.user, ip=client_ip)
             dev.save()
-
+    
     # TODO: What shall we do if an user attempts to connect with a device that has the same IP 
     # that another device already registered (ie in the Device array) but from a different user account ?
     # We could either kick out the already registered user from the network or refuse the connection of
@@ -107,8 +108,11 @@ def connected(request):
 
 @login_required
 def disconnect(request):
+    
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+    if client_ip is None:
+        client_ip = request.META.get("REMOTE_ADDR")
 
     if user_devices.filter(ip=client_ip).exists():
         # When the user decides to disconnect from the portal from a device,
@@ -124,3 +128,4 @@ def faq(request):
     context = {"page_name": "faq", "widgets": get_widgets()}
 
     return render(request, 'portal/faq.html', context)
+

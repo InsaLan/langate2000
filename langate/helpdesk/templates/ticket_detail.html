@@ -1,9 +1,11 @@
-{% extends 'layout.html' %}
+{% extends 'helpdesk.html' %}
 {% load crispy_forms_tags %}
-
 {% block content %}
-<div class="pt-3 col-sm-12 col-md-11 col-lg-10 col-xl-9 text-white mx-auto">
-    <h1 class="display-5">Ouvrir un ticket</h1>
+    <ul>
+    {% for message in messages %}
+        <li>{{message}} - {{message.sender}}</li>
+    {% endfor %}
+    </ul>
     <form method="post">
         {% csrf_token %}
         {{ form | crispy }}
@@ -11,5 +13,4 @@
             <button type="submit" class="btn btn-success btn-block">envoyer</button>
         </div>
     </form>
-</div>
 {% endblock %}

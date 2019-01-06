@@ -1,0 +1,26 @@
+{% extends 'helpdesk.html' %}
+
+{% block content %}
+
+{% if sent %}<p>test</p>{% endif %}
+<div class="pt-3 col-sm-12 col-md-11 col-lg-10 col-xl-9 text-white mx-auto">
+    <h1 class="display-5">Liste des tickets ouverts</h1>
+    <table class="table table-sm table-insalan table-bordered">
+        <thead>
+        <tr>
+            <th scope="col" class="align-middle">Ticket</th>
+            <th scope="col" class="align-middle">Accéder au ticket</th>
+        </tr>
+        </thead>
+        <tbody id="device-table">
+            {% for ticket in tickets %}
+            <tr>
+                <td>{{ticket}}</td>
+                <td><center><a href="{% url 'ticket_view'  ticket_id=ticket.id %}">répondre</a></center></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'open-ticket' %}">ouvrir un ticket</a>
+</div>
+{% endblock %}
