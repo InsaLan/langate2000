@@ -1,5 +1,6 @@
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
 from django.conf import settings
 
 from .serializers import DeviceSerializer, UserSerializer
@@ -69,15 +70,18 @@ class DeviceDetails(APIView):
 
     def delete(self, request, ident, format=None):
 
-        # Deleting the device you are currently on is not allowed via the API.
-        # Instead the user can log out from the portal.
-
         client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
 
         dev = self.get_device(ident, request.user)
 
         if dev.ip == client_ip:
-            raise APIException("Deleting your current device is not allowed via the API.")
+            # If the user decides to remove the device he is currently on,
+            # We remove the device and log him out.
+
+            dev.delete()
+            logout(request)
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         else:
             dev.delete()
@@ -97,7 +101,6 @@ class DeviceStatus(APIView):
             return dev
         else:
             raise PermissionDenied
-
 
     def get(self, request, ident):
 

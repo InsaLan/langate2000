@@ -83,6 +83,7 @@
         </div>
     </div>
 
+    <!-- Modal Modify Device -->
 
     <div class="modal modal-insalan" id="modify-device-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -95,7 +96,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="container">
-                        <form>
+                        <form id="modify-device-form" action="javascript:void(0);">
                             <div class="form-group row" id="create_account_nickname_g">
                                 <label for="modify-device-name" class="col-sm-4 col-form-label">Nom de l'appareil : </label>
                                 <input type="text" class="form-control col-sm-8" id="modify-device-name">
@@ -115,8 +116,11 @@
 
     <script>
         $(document).on("click", ".delete-device-btn", function (e) {
-            id = $(this).data("deviceid");
+            let id = $(this).data("deviceid");
+            let iscurrent = $(this).data("iscurrent");
+
             $("#delete-device-confirm-btn").data("deviceid", id);
+            $("#delete-device-confirm-btn").data("iscurrent", iscurrent);
 
             $.getJSON( "/api/device_details/"+id, function( data ) {
                $("#delete-device-name").text(data["name"]);
@@ -126,6 +130,7 @@
 
         $(document).on("click", ".modify-device-btn", function (e) {
             $("#modify-device-confirm-btn").data("deviceid", $(this).data("deviceid"));
+            $("#modify-device-name").val("");
             $("#modify-device-modal").modal("show");
         });
 
@@ -138,11 +143,12 @@
             $("#device-table").empty();
 
             $.getJSON( "/api/devices_list/{{ user.id }}", function( data ) {
-                i = 1;
+                let i = 1;
 
                 $.each(data, function (k, dev) {
 
-                    dev_hint = (dev.ip == current_ip) ? " <b>(cet appareil)</b>" : "";
+                    let dev_hint = (dev.ip == current_ip) ? " <b>(cet appareil)</b>" : "";
+                    let current_dev = (dev.ip == current_ip) ? "yes" : "no";
 
                     $("#device-table").append("<tr>\n" +
                         "                    <th scope=\"row\">"+i+"</th>\n" +
@@ -150,8 +156,8 @@
                         "                    <td>"+dev.area+"</td>\n" +
                         "                    <td>\n" +
                         "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                        "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'appareil\" class=\"btn btn-sec-insalan modify-device-btn\" data-deviceid=\""+dev.id+"\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
-                        "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-sec-insalan delete-device-btn\" data-deviceid=\""+dev.id+"\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                        "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'appareil\" class=\"btn btn-sec-insalan modify-device-btn\" data-deviceid=\""+dev.id+"\" data-iscurrent=\""+current_dev+"\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
+                        "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-sec-insalan delete-device-btn\" data-deviceid=\""+dev.id+"\" data-iscurrent=\""+current_dev+"\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
                         "                        </div>\n" +
                         "                    </td>\n" +
                         "                </tr>");
@@ -176,25 +182,28 @@
         $("#delete-device-confirm-btn").click( function () {
 
             let id = $(this).data("deviceid");
+            let iscurrent = $(this).data("iscurrent") == "yes";
 
             $.ajax({
-                url: '/api/device_details/'+id+'/',
+                url: '/api/device_details/' + id + '/',
                 type: 'DELETE',
 
-                success: function(result) {
+                success: function (result) {
 
-                    if (too_many_devices) {
+                    if (too_many_devices || iscurrent) {
                         location.reload();
                     }
 
                     else {
                         reload_device_table();
                     }
+                },
+
+                error: function (xhr, textStatus, errorThrown) {
+                    handle_error(textStatus, errorThrown, xhr.responseText);
                 }
 
-                // TODO: Handle errors
             });
-
 
             $("#delete-device-modal").modal('hide');
 
@@ -203,19 +212,31 @@
 
         $("#modify-device-confirm-btn").click( function () {
 
-            let id = $(this).data("deviceid");
 
-            $.ajax({
-                url: '/api/device_details/'+id+'/',
-                type: 'PUT',
-                data: "name="+encodeURI($("#modify-device-name").val()),
+            if (!/^[a-zA-Z0-9 _]+$/.test($("#modify-device-name").val())){
+                create_error_modal("Oops", "<p>Le nom d'un appareil doit faire au moins un caractère et ne se compose que de caractères alphanumériques non accentués et d'espaces.</p>");
+            }
 
-                success: function(result) {
-                    reload_device_table();
-                }
+            else {
 
-                // TODO: Handle errors
-            });
+                let id = $(this).data("deviceid");
+
+                $.ajax({
+                    url: '/api/device_details/' + id + '/',
+                    type: 'PUT',
+                    data: "name=" + encodeURI($("#modify-device-name").val()),
+
+                    success: function (result) {
+                        reload_device_table();
+                    },
+
+                    error: function (xhr, textStatus, errorThrown) {
+                        handle_error(textStatus, errorThrown, xhr.responseText);
+                    }
+                });
+
+
+            }
 
             $("#modify-device-modal").modal('hide');
 
@@ -225,9 +246,7 @@
 
         $(document).ready(function() {
             reload_device_table();
-        });
 
-        $(document).ready(function() {
             $("#device-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]' });
         });
 

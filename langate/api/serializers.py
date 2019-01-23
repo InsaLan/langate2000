@@ -6,7 +6,7 @@ from langate.settings import Tournament
 
 
 class DeviceSerializer(serializers.ModelSerializer):
-    name = serializers.SlugField(max_length=100)
+    name = serializers.RegexField("^[a-zA-Z0-9 _]+$", max_length=100)
 
     class Meta:
         model = Device

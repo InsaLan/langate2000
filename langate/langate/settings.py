@@ -179,3 +179,49 @@ class Tournament(Enum):
 # Network management interface
 
 NETWORK = network.Ipset()
+
+
+# Logging settings
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} [{levelname}] [{module}] {message}',
+            'style': '{',
+        },
+    },
+
+    'handlers': {
+        'django_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
+        },
+
+        'langate_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': os.path.join(BASE_DIR, 'logs/langate.log'),
+        },
+    },
+
+    'loggers': {
+        'django': {
+            'handlers': ['django_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+
+        'langate.events': {
+            'handlers': ['langate_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
+    },
+}

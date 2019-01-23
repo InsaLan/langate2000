@@ -1,5 +1,6 @@
 from enum import Enum
 
+import logging
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save, post_delete
@@ -10,6 +11,7 @@ from modules import network
 
 # Create your models here.
 
+event_logger = logging.getLogger('langate.events')
 
 class Role(Enum):
     P = "Player"
@@ -56,15 +58,17 @@ class Device(models.Model):
     # Area of the device, i.e. LAN or WiFi
     area = models.CharField(max_length=4, default="LAN")
 
-    # FIXME : we should consider also the case when an user deletes its last device !
 
 # Functions listening modifications of user
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        if(instance.is_staff):
+
+        if instance.is_staff:
+            event_logger.info("Added new user {} (with Administrator role).".format(instance.username))
             Profile.objects.create(user=instance, role=Role.A.value)
         else:
+            event_logger.info("Added new user {}.".format(instance.username))
             Profile.objects.create(user=instance)
 
 
@@ -73,25 +77,34 @@ def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 
+@receiver(post_delete, sender=User)
+def delete_user(sender, instance, **kwargs):
+    event_logger.info("Removed user {}.".format(instance.username))
+
+
 @receiver(post_save, sender=Device)
 def create_device(sender, instance, created, **kwargs):
     # On creating a new device, we need to use the networking module to retrieve
     # some information : for example the MAC address or the area of the device based on the IP.
 
     if created:
-        ip = instance.ip # FIXME : IP should exist at this stage but it will fail really bad if it doesn't, should we handle this ?
+        ip = instance.ip  # IP should exist at this stage and it will fail really bad if it doesn't.
 
         instance.mac = network.get_mac(ip)
                 
         instance.area = "LAN"  # FIXME: replace with a call to the networking module
 
         settings.NETWORK.connect_user(instance.mac)
+
+        event_logger.info("Connected device {} at {} to the internet.".format(instance.mac, instance.ip))
+
         instance.save()
 
-    
 
 @receiver(post_delete, sender=Device)
 def delete_device(sender, instance, **kwargs):
     # When deleting a device, we need to unregister it from the network.
+
+    event_logger.info("Disconnected device {} at {} of the internet.".format(instance.mac, instance.ip))
 
     settings.NETWORK.disconnect_user(instance.mac)
