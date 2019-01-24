@@ -65,7 +65,10 @@ class InsalanBackend(ModelBackend):
             """
 
             # Request with authentication
-            request_result = requests.get("https://www.insalan.fr/api/user/me", auth=(username, password))
+            try:
+                request_result = requests.get("https://www.insalan.fr/api/user/me", auth=(username, password), timeout=1)
+            except requests.exceptions.Timeout:
+                raise ValidationError("User not registered locally and remote API unreachable.")
 
             if request_result.status_code == 401:  # 401 = Unauthorized
                 # Bad credentials
@@ -93,6 +96,7 @@ class InsalanBackend(ModelBackend):
                                                     password=password)
                     return user
             except ValidationError:
+		# FIXME
                 raise ValidationError
             except:
                 # TODO : should be more precise (PEP 8 : do not use bare except)
@@ -137,3 +141,4 @@ class NotAllowedException(LoginException, PermissionDenied):
     def __init__(self, username: str, message: str):
         self.username = username
         self.message = message
+
