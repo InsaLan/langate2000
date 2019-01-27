@@ -2,6 +2,7 @@ from enum import Enum
 
 import logging
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
@@ -13,12 +14,19 @@ from modules import network
 
 event_logger = logging.getLogger('langate.events')
 
+
 class Role(Enum):
     P = "Player"
     M = "Manager"
     G = "Guest"
     S = "Staff Member"
     A = "Administrator"
+
+
+class Status(Enum):
+    O = "ok"
+    U = "unstable"
+    F = "fail"
 
 
 class Profile(models.Model):
@@ -50,7 +58,7 @@ class Device(models.Model):
     name = models.CharField(max_length=100, default="Computer")
 
     # IP address of the device
-    ip = models.CharField(max_length=15, blank=False) # One device should have at least an IP, the MAC is filled later based on it.
+    ip = models.CharField(max_length=15, blank=False)  # One device should have an IP, the MAC is filled based on it.
 
     # MAC address of the device
     mac = models.CharField(max_length=17) # One device = 1 MAC = One User, two users cannot have the same device !
@@ -59,27 +67,43 @@ class Device(models.Model):
     area = models.CharField(max_length=4, default="LAN")
 
 
+class RealtimeStatusWidget(models.Model):
+    visible = models.BooleanField(default=False)
+    lan = models.CharField(max_length=1, default=Status.O.value, choices=[(tag, tag.value) for tag in Status])
+    wan = models.CharField(max_length=1, default=Status.O.value, choices=[(tag, tag.value) for tag in Status])
+    csgo = models.CharField(max_length=1, default=Status.O.value, choices=[(tag, tag.value) for tag in Status])
+
+
+class AnnounceWidget(models.Model):
+    title = models.CharField(max_length=50, blank=False)
+    content = models.TextField(blank=False)
+
+
+class PizzaSlot(models.Model):
+    orders_begin = models.TimeField()
+    orders_end = models.TimeField()
+    delivery = models.TimeField()
+
+
+class PizzaWidget(models.Model):
+    visible = models.BooleanField(default=False)
+    online_order_url = models.URLField()
+
+
 # Functions listening modifications of user
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
 
         if instance.is_staff:
-            event_logger.info("Added new user {} (with Administrator role).".format(instance.username))
             Profile.objects.create(user=instance, role=Role.A.value)
         else:
-            event_logger.info("Added new user {}.".format(instance.username))
             Profile.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
-
-
-@receiver(post_delete, sender=User)
-def delete_user(sender, instance, **kwargs):
-    event_logger.info("Removed user {}.".format(instance.username))
 
 
 @receiver(post_save, sender=Device)
@@ -96,7 +120,7 @@ def create_device(sender, instance, created, **kwargs):
 
         settings.NETWORK.connect_user(instance.mac)
 
-        event_logger.info("Connected device {} at {} to the internet.".format(instance.mac, instance.ip))
+        event_logger.info("Connected device {} (owned by {}) at {} to the internet.".format(instance.mac, instance.user.username, instance.ip))
 
         instance.save()
 
@@ -105,6 +129,21 @@ def create_device(sender, instance, created, **kwargs):
 def delete_device(sender, instance, **kwargs):
     # When deleting a device, we need to unregister it from the network.
 
-    event_logger.info("Disconnected device {} at {} of the internet.".format(instance.mac, instance.ip))
+    event_logger.info("Disconnected device {} (owned by {}) at {} of the internet.".format(instance.mac, instance.user.username, instance.ip))
 
     settings.NETWORK.disconnect_user(instance.mac)
+
+
+@receiver(user_logged_in)
+def user_logged_in_callback(sender, request, user, **kwargs):
+    client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+
+    event_logger.info("User {} logged in from device at {}.".format(user.username, client_ip))
+
+
+@receiver(user_logged_out)
+def user_logged_out_callback(sender, request, user, **kwargs):
+    client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+
+    event_logger.info("User {} logged out from device at {}.".format(user.username, client_ip))
+

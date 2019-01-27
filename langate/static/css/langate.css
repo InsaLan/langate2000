@@ -47,6 +47,14 @@ hr {
     color: #AFB3AA;
 }
 
+.navbar-insalan .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgb(185, 187, 190)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.navbar-insalan .navbar-toggler {
+  border-color: #AFB3AA;
+}
+
 /* Forms */
 
 .form-control, .form-control:hover, .form-control:focus {
@@ -113,15 +121,6 @@ hr {
     box-shadow: none; /* temporary */
 }
 
-.table-insalan.table-sm .fas {
-    font-size: .85rem; /* icons in buttons have to be smaller when used in a small table */
-}
-
-.footer-insalan {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, .5); /* understated grey for the footer */
-}
-
 /* Tables */
 
 .table-insalan td, .table-insalan th {
@@ -141,6 +140,10 @@ hr {
 
 .table-insalan th, td {
     vertical-align: middle !important;
+}
+
+.table-insalan.table-sm .fas {
+    font-size: .85rem; /* icons in buttons have to be smaller when used in a small table */
 }
 
 /* Right widget bar displayed on the home pages */
@@ -282,4 +285,54 @@ a:hover, a:active {
 
 form-control:disabled, .form-control[readonly] {
     background-color: #2A2A2A !important;
+}
+
+/* Tabs */
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #fff3cd;
+    background-color: #495057;
+    border-color: rgb(128, 128, 128) rgb(128, 128, 128) rgb(128, 128, 128);
+}
+
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+    border-color: rgb(128, 128, 128) rgb(128, 128, 128) rgb(128, 128, 128);
+}
+
+.nav-tabs {
+    border-bottom: 1px solid rgb(128, 128, 128);
+}
+
+/* Footer */
+
+.footer-insalan {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, .5); /* understated grey for the footer */
+}
+
+.footer-insalan a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-insalan a:hover, a:active {
+    color: #b9bbbe;
+    text-decoration: none;
+}
+
+.footer-insalan > ul li
+{
+    display: inline-block;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-left-style: solid;
+    border-left-width: 1px;
+    line-height: 1em;
+    border-color: #9a9a9a;
+}
+
+.footer-insalan > ul
+{
+    list-style-type: none;
+    padding: 0 !important;
 }

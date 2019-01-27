@@ -2,9 +2,10 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.conf import settings
+import logging
 
-from .serializers import DeviceSerializer, UserSerializer
-from portal.models import Device
+from .serializers import *
+from portal.models import *
 
 from rest_framework.exceptions import APIException
 from rest_framework.views import APIView
@@ -16,6 +17,7 @@ from rest_framework import generics
 import random
 
 # Create your views here.
+event_logger = logging.getLogger("langate.events")
 
 
 class DeviceList(APIView):
@@ -128,6 +130,11 @@ class UserDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    def delete(self, request, *args, **kwargs):
+        u = self.get_object()
+        event_logger.info("User {} ({}) was removed by {}.".format(u.username, u.profile.role, request.user.username))
+        return super().delete(request, args, kwargs)
+
 
 class UserPasswordManager(APIView):
     permission_classes = (permissions.IsAdminUser,)
@@ -151,4 +158,104 @@ class UserPasswordManager(APIView):
         user.set_password(request.data["password"])
         user.save()
 
-        return Response({"status": "ok"})
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AnnounceWidgetList(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    queryset = AnnounceWidget.objects.all()
+    serializer_class = AnnounceWidgetSerializer
+
+
+class AnnounceWidgetDetails(generics.RetrieveDestroyAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    queryset = AnnounceWidget.objects.all()
+    serializer_class = AnnounceWidgetSerializer
+
+
+class RealtimeStatusWidgetManager(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get(self, request):
+
+        if RealtimeStatusWidget.objects.count() == 0:
+            RealtimeStatusWidget.objects.create()
+
+        s = RealtimeStatusWidget.objects.first()
+
+        r = {
+            "visible": s.visible,
+            "lan": s.lan,
+            "wan": s.wan,
+            "csgo": s.csgo,
+        }
+
+        return Response(r)
+
+    def post(self, request):
+
+        if RealtimeStatusWidget.objects.count() == 0:
+            w = RealtimeStatusWidget.objects.create()
+
+        else:
+            w = RealtimeStatusWidget.objects.first()
+
+        serializer = RealtimeStatusWidgetSerializer(w, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PizzaWidgetManager(APIView):
+
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get(self, request):
+
+        if PizzaWidget.objects.count() == 0:
+            PizzaWidget.objects.create()
+
+        s = PizzaWidget.objects.first()
+
+        r = {
+            "visible": s.visible,
+            "online_order_url": s.online_order_url
+        }
+
+        return Response(r)
+
+    def post(self, request):
+
+        if PizzaWidget.objects.count() == 0:
+            w = PizzaWidget.objects.create()
+
+        else:
+            w = PizzaWidget.objects.first()
+
+        serializer = PizzaWidgetSerializer(w, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PizzaSlotList(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    queryset = PizzaSlot.objects.all()
+    serializer_class = PizzaSlotSerializer
+
+
+class PizzaSlotDetails(generics.RetrieveDestroyAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    queryset = PizzaSlot.objects.all()
+    serializer_class = PizzaSlotSerializer
+

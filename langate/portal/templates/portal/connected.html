@@ -212,9 +212,10 @@
 
         $("#modify-device-confirm-btn").click( function () {
 
+            let name = $("#modify-device-name").val();
 
-            if (!/^[a-zA-Z0-9 _]+$/.test($("#modify-device-name").val())){
-                create_error_modal("Oops", "<p>Le nom d'un appareil doit faire au moins un caractère et ne se compose que de caractères alphanumériques non accentués et d'espaces.</p>");
+            if (!/^[^<>]+$/.test(name) || name.length > 100) {
+                create_error_modal("Oops", "<p>Le nom d'un appareil doit faire de 1 à 100 caractères et peut contenir n'importe quel caractère à l'exception des caractères <b>&lt;</b> et <b>&gt;</b>.</p>");
             }
 
             else {
@@ -224,7 +225,7 @@
                 $.ajax({
                     url: '/api/device_details/' + id + '/',
                     type: 'PUT',
-                    data: "name=" + encodeURI($("#modify-device-name").val()),
+                    data: "name=" + encodeURI(name),
 
                     success: function (result) {
                         reload_device_table();

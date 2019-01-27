@@ -138,34 +138,6 @@ STATICFILES_DIRS = (
 LOGIN_REDIRECT_URL = "/"
 AUTHENTICATION_BACKENDS = ('langate.insalan_auth.insalan_backend.InsalanBackend',)
 
-# Network management
-
-#netmgt = Ipset()
-
-# Widgets content
-
-WIDGETS = {
-    "PIZZA": {
-        "visible": True,
-        "link": "https://www.insalan.fr/pizza",
-        "schedule": ["18h-20h, livraison à 21h30.", "20h-22h, livraison à 22h30."],
-    },
-
-    "ANNOUNCE": {
-        "visible": False,
-        "content": 'Nous rencontrons actuellement des problèmes de stabilité de notre accès internet.\n' +
-                   'Nos équipes sont à pied d\'oeuvre pour résoudre ce problème dans les plus brefs délais.\n' +
-                   'Nous vous remercions de votre patience.'
-    },
-
-    "STATUS": {
-        "visible": True,
-        "network_up": True,
-        "internet_up": True,
-        "csgo_up": True
-    }
-}
-
 
 # Tournament list
 
@@ -190,7 +162,7 @@ LOGGING = {
 
     'formatters': {
         'verbose': {
-            'format': '{asctime} [{levelname}] [{module}] {message}',
+            'format': '{asctime} [{levelname}] {message}',
             'style': '{',
         },
     },

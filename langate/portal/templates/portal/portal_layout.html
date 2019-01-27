@@ -3,67 +3,78 @@
 {% block content %}
 
 
-    <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9 main">
+    <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9 main mx-auto">
 
-        {# main content (forms, infos...) goes there #}
+        {# main content (forms, infos...) goes there d-none d-md-block d-lg-block d-xl-block #}
         {% block main %}
         {% endblock %}
 
     </div>
 
 
-    <div class="d-none d-md-block d-lg-block d-xl-block col-md-4 col-lg-3 col-xl-3 widget-bar-insalan pt-4">
+    {% if widgets.status.visible or widgets.announces.visible or widgets.pizza.visible %} {# if there is any widget to show #}
 
-        {# widget bar #}
+        <div class="col-sm-12 col-xs-12 col-md-4 col-lg-3 col-xl-3 pt-4 mb-sm-5 widget-bar-insalan" >
 
-        {% if widgets.STATUS.visible %}
+            <hr class="d-md-none d-sm-block pb-3">
+            <h2 class="d-md-none d-sm-block text-white mb-4 text-center">En direct de la LAN : </h2>
 
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">État du réseau</h5>
-                <p class="card-text">
-                    Réseau local : {% if widgets.STATUS.network_up %}<span class="text-success">ok</span>{% else %}<span class="text-danger">incident</span>{% endif %}<br>
-                    Accès internet : {% if widgets.STATUS.internet_up %}<span class="text-success">ok</span>{% else %}<span class="text-danger">incident</span>{% endif %}<br>
-                    Serveur CS:GO : {% if widgets.STATUS.csgo_up %}<span class="text-success">ok</span>{% else %}<span class="text-danger">incident</span>{% endif %}<br>
-                </p>
-            </div>
-        </div>
+            {# widget bar #}
 
-        {% endif %}
-
-        {% if widgets.ANNOUNCE.visible %}
+            {% if widgets.status.visible %}
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Annonce</h5>
+                    <h5 class="card-title">État du réseau</h5>
                     <p class="card-text">
-                        {{ widgets.ANNOUNCE.content }}
+                        Réseau local : {% if widgets.status.lan == "O" %}<span class="text-success">ok</span>{% elif widgets.status.lan == "U" %}<span class="text-warning">instable</span>{% else %}<span class="text-danger">incident</span>{% endif %}<br>
+                        Accès internet : {% if widgets.status.wan == "O" %}<span class="text-success">ok</span>{% elif widgets.status.wan == "U" %}<span class="text-warning">instable</span>{% else %}<span class="text-danger">incident</span>{% endif %}<br>
+                        Serveur CS:GO : {% if widgets.status.csgo == "O" %}<span class="text-success">ok</span>{% elif widgets.status.csgo == "U" %}<span class="text-warning">instable</span>{% else %}<span class="text-danger">incident</span>{% endif %}<br>
                     </p>
                 </div>
             </div>
 
-        {% endif %}
+            {% endif %}
 
-        {% if widgets.PIZZA.visible %}
+            {% if widgets.announces.visible %}
 
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Pizzas</h5>
-                    <p class="card-text">Voici les crénaux auxquels vous pouvez commander :</p>
-                    <ul>
-                        {% for h in widgets.PIZZA.schedule %}
-                        <li>{{ h }}</li>
-                        {% endfor %}
-                    </ul>
-                    <p class="card-text">Vous pouvez commander en ligne (règlement CB) ou à la buvette (chèques,
-                        espèces)</p>
-                    <a href="{{ widgets.PIZZA.link }}" class="card-link">Commander en ligne</a>
+                {% for w in widgets.announces.items %}
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ w.title }}</h5>
+                            <p class="card-text">
+                                {{ w.content }}
+                            </p>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+            {% if widgets.pizzas.visible %}
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Pizzas</h5>
+                        <p class="card-text">Voici les crénaux auxquels vous pouvez commander :</p>
+                        <ul>
+                            {% for h in widgets.pizzas.slots %}
+                            <li>{{ h.orders_begin | date:'H:i' }} - {{ h.orders_end | date:'H:i' }}, livraison à {{ h.delivery | date:'H:i' }}</li>
+                            {% endfor %}
+                        </ul>
+                        <p class="card-text">Vous pouvez commander en ligne (règlement CB) ou à la buvette (chèques,
+                            espèces)</p>
+                        <a href="{{ widgets.pizzas.online_order_url }}" target="_blank" class="card-link">Commander en ligne</a>
+                    </div>
                 </div>
-            </div>
 
-        {% endif %}
+            {% endif %}
 
-    </div>
+        </div>
+
+    {% endif %}
 
 
 {% endblock %}

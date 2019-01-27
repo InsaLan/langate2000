@@ -5,10 +5,31 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
 
-from .models import Device
+from .models import *
 from modules import network
 
 # Create your views here.
+
+
+def get_widgets():
+
+    return {
+        "announces": {
+            "visible": AnnounceWidget.objects.count() > 0,
+            "items": AnnounceWidget.objects.all()
+        },
+        "status": {
+            "visible": RealtimeStatusWidget.objects.first().visible,
+            "lan": RealtimeStatusWidget.objects.first().lan,
+            "wan": RealtimeStatusWidget.objects.first().wan,
+            "csgo": RealtimeStatusWidget.objects.first().csgo
+        },
+        "pizzas": {
+            "visible": PizzaWidget.objects.first().visible,
+            "online_order_url": PizzaWidget.objects.first().online_order_url,
+            "slots": PizzaSlot.objects.all()
+        }
+    }
 
 
 @staff_member_required
@@ -19,6 +40,13 @@ def management(request):
     return render(request, 'portal/management.html', context)
 
 
+@staff_member_required
+def widgets(request):
+    context = { "page_name": "management_widgets" }
+
+    return render(request, 'portal/management_widgets.html', context)
+
+
 @login_required
 def connected(request):
 
@@ -26,7 +54,7 @@ def connected(request):
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
     client_mac = network.get_mac(client_ip)
 
-    context = {"page_name": "connected", "too_many_devices": False, "current_ip": client_ip, "widgets": settings.WIDGETS}
+    context = {"page_name": "connected", "too_many_devices": False, "current_ip": client_ip, "widgets": get_widgets() }
 
     # Checking if the device accessing the gate is already in user devices
 
@@ -39,7 +67,7 @@ def connected(request):
             # This could happen if the DHCP has changed the IP of the client.
 
             # The following should never raise a MultipleObjectsReturned exception
-            # because it would mean that there are more than one devices
+            # because it would mean that there are more than one device
             # already registered with the same MAC.
 
             dev = Device.objects.get(mac=client_mac)
@@ -93,7 +121,8 @@ def disconnect(request):
 
 def faq(request):
     
-    context = {"page_name": "faq", "widgets": settings.WIDGETS}
+    context = {"page_name": "faq", "widgets": get_widgets() }
     
     return render(request, 'portal/faq.html', context)
+
 
