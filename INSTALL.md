@@ -48,7 +48,7 @@
 
         # reverse proxy redirecting requests to the gunicorn WSGI server
         location / {
-	        gzip off;
+                gzip off;
 		
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; # used by the gate to know the IP of the clients on the LAN
@@ -99,9 +99,13 @@
 	- `SERVER_IP` : the main IP of the server (on the management VLAN)
 	- `STATIC_ROOT` : should point to the folder from where the static assets are served by the nginx server
 	- `NETWORK` : you need to precisely modify the parameter `mark=(a,b)` of the Ipset object. The first element of the tuple (a) is the first mark number (for instance 100) and the second element of the tuple (b) is the number of marks (usually it's equal to your number of network exits/VPNs endpoints)
-	- `LOGGING` : langate2000 generates 2 different log files : one containing django standard log messages and another logging information more specific to the langate (Creation/Removal of users, lotgins/logouts from the gate, registration of devices on the Ipset...), you may want to modify the paths of these log or the log level. See https://docs.djangoproject.com/en/2.1/topics/logging/ for more information.
+	- `LOGGING` : langate2000 generates 2 different log files : one containing django standard log messages and another with more langate specific logging information (creation/removal of users, logins/logouts from the gate, registration of devices on the internet...), you may want to modify the paths of these logs or the log level. See https://docs.djangoproject.com/en/2.1/topics/logging/ for more information.
 
 ## Ready, steady, go !
 
-You can launch the gate using the langate.py script in the main folder. 
+You can launch the gate using the langate.py script in the main folder.
 To start the gate, simply run : `./langate.py start` and to stop it `./langate.py stop`.
+This will take care of :
+* Applying the iptables required by the gate (mangle & portal redirection).
+* Creating the Ipset and adding the whitelisted devices.
+* Launching gunicorn as a daemon.
