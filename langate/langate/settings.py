@@ -150,8 +150,7 @@ class Tournament(Enum):
 
 # Network management interface
 
-NETWORK = network.Ipset()
-
+NETWORK = network.Ipset(mark=(100,4))
 
 # Logging settings
 
