@@ -15,18 +15,18 @@ def get_widgets():
 
     return {
         "announces": {
-            "visible": AnnounceWidget.objects.count() > 0,
+            "visible": False, 
             "items": AnnounceWidget.objects.all()
         },
         "status": {
-            "visible": RealtimeStatusWidget.objects.first().visible,
-            "lan": RealtimeStatusWidget.objects.first().lan,
-            "wan": RealtimeStatusWidget.objects.first().wan,
-            "csgo": RealtimeStatusWidget.objects.first().csgo
+            "visible": False,
+            "lan": False,
+            "wan": False, 
+            "csgo": False, 
         },
         "pizzas": {
-            "visible": PizzaWidget.objects.first().visible,
-            "online_order_url": PizzaWidget.objects.first().online_order_url,
+            "visible": False, 
+            "online_order_url": "", 
             "slots": PizzaSlot.objects.all()
         }
     }

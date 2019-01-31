@@ -32,9 +32,9 @@ except ModuleNotFoundError:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-SERVER_IP = 'gate.insalan'
+SERVER_IP = '172.16.1.197'
 
-ALLOWED_HOSTS = ['localhost', SERVER_IP]
+ALLOWED_HOSTS = ['localhost', 'gate.insalan']
 
 # Application definition
 
@@ -136,7 +136,35 @@ STATICFILES_DIRS = (
 # Authentication
 
 LOGIN_REDIRECT_URL = "/"
-AUTHENTICATION_BACKENDS = ('langate.insalan_auth.insalan_backend.InsalanBackend', 'langate.insalan_auth.insalan_newApiBackend.InsalanNewApiBackend')
+AUTHENTICATION_BACKENDS = ('langate.insalan_auth.insalan_backend.InsalanBackend',)
+
+# Network management
+
+#netmgt = Ipset()
+
+# Widgets content
+
+WIDGETS = {
+    "PIZZA": {
+        "visible": True,
+        "link": "https://www.insalan.fr/pizza",
+        "schedule": ["jusqu'à 18h, livraison à 19h.", "18h-20h, livraison à 21h.","20h-21h, livraison à 22h."],
+    },
+
+    "ANNOUNCE": {
+        "visible": False,
+        "content": 'Nous rencontrons actuellement des problèmes de stabilité de notre accès internet.\n' +
+                   'Nos équipes sont à pied d\'oeuvre pour résoudre ce problème dans les plus brefs délais.\n' +
+                   'Nous vous remercions de votre patience.'
+    },
+
+    "STATUS": {
+        "visible": True,
+        "network_up": True,
+        "internet_up": True,
+        "csgo_up": False
+    }
+}
 
 
 # Tournament list
@@ -151,48 +179,3 @@ class Tournament(Enum):
 # Network management interface
 
 NETWORK = network.Ipset(mark=(100,4))
-
-# Logging settings
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-
-
-    'formatters': {
-        'verbose': {
-            'format': '{asctime} [{levelname}] {message}',
-            'style': '{',
-        },
-    },
-
-    'handlers': {
-        'django_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'formatter': 'verbose',
-            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
-        },
-
-        'langate_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'formatter': 'verbose',
-            'filename': os.path.join(BASE_DIR, 'logs/langate.log'),
-        },
-    },
-
-    'loggers': {
-        'django': {
-            'handlers': ['django_file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-
-        'langate.events': {
-            'handlers': ['langate_file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        }
-    },
-}

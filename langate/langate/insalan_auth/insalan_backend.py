@@ -40,7 +40,7 @@ class InsalanBackend(ModelBackend):
             # User exists in local database
             if not (user.check_password(password) and self.user_can_authenticate(user)):
                 # Wrong password
-                raise ValidationError("Wrong username or password.")
+                return None
             else:
                 # Credentials are ok
                 return user
@@ -72,11 +72,11 @@ class InsalanBackend(ModelBackend):
 
             if request_result.status_code == 401:  # 401 = Unauthorized
                 # Bad credentials
-                raise ValidationError("Wrong username or password.")
+                return None
 
             if request_result.status_code != 200:  # 200 = OK
                 # The request failed because of something else
-                raise LoginException
+                raise ValidationError("Request code is not OK")
 
             # Credentials are ok in remote database
             try:
@@ -95,13 +95,12 @@ class InsalanBackend(ModelBackend):
                                                     email=None,
                                                     password=password)
                     return user
-            except ValidationError:
-		# FIXME
-                raise ValidationError
+            except ValidationError as e:
+                raise ValidationError(e.message)
             except:
                 # TODO : should be more precise (PEP 8 : do not use bare except)
                 # Wrong JSON object
-                raise LoginException
+                raise ValidationError("Wrong JSON object")
 
     def get_user_id(self, attributes):
         # TODO : why is this function not implemented ? It is really useful ?
@@ -117,16 +116,6 @@ class LoginException(Exception):
     Base class for exceptions in this module.
     """
     pass
-
-
-class BadCredentialsException(LoginException):
-    """
-    Exception raised when the login or password doesn't match.
-    """
-
-    def __init__(self):
-        pass
-
 
 class NotAllowedException(LoginException, PermissionDenied):
     """
