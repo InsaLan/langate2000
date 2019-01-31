@@ -12,8 +12,7 @@ UserModel = get_user_model()
 
 class InsalanBackend(ModelBackend):
     """
-    A class extending ModelBackend to authenticate remote users from insalan.fr if they
-    are not locals users.
+    A class extending ModelBackend to authenticate remote users from insalan.fr if they are not local users (using the new API).
     """
 
     # README : related documentation :
@@ -29,78 +28,105 @@ class InsalanBackend(ModelBackend):
         :param kwargs: could contain the username at the key 'username'
         :return user : the user found if username and password are corrects and if he has the right to connect
         """
-        if username is None:
-            username = kwargs.get(UserModel.USERNAME_FIELD)
+        # if username is None:
+        #     username = kwargs.get(UserModel.USERNAME_FIELD)
 
+        # try:
+        #     # Try to find user in local database
+        #     # TODO : to simplify, by using two backend (the default one of django, as well as this one in fallback)
+        #     user = UserModel._default_manager.get_by_natural_key(username)
+
+        #     # User exists in local database
+        #     if not (user.check_password(password) and self.user_can_authenticate(user)):
+        #         # Wrong password
+        #         raise ValidationError("Wrong username or password.")
+        #     else:
+        #         # Credentials are ok
+        #         return user
+
+        # except UserModel.DoesNotExist:
+        #     # User is missing from local database, we need to check insalan.fr
+        """
+        API optional request data
+        { "tournaments": "t1,t2,..." }
+
+        API response
+        {
+            "user": {
+                "username": username,
+                "name": name,
+                "email": email
+            },
+            "err":  "registration_not_found",   (player not found)
+                    "no_paid_place",            (player found but he has not paid)
+                    None,                       (player found and he has paid)
+            "tournament":   "manager"   (the person is a manager of one of the tournaments t1, t2, ...)
+                            "t1"        (he is a player and registered in tournament t1)
+                            None
+        }
+        For now we are not using tournament data, but we might use it in the future.
+
+
+        {
+            "user":
+                {
+                    "username":"Staff2019",
+                    "name":"Staff First",
+                    "email":"Staff2019@live.fr"
+                },
+            "err":null,
+            "tournament":
+                [
+                    {
+                        "shortname":"fbr2019",
+                        "game_name":"Staff2019",
+                        "team":"Staff",
+                        "manager":false,
+                        "has_paid":true
+                    }
+                ]
+        }
+        """
+
+        # Request with authentication
         try:
-            # Try to find user in local database
-            # TODO : to simplify, by using two backend (the default one of django, as well as this one in fallback)
-            user = UserModel._default_manager.get_by_natural_key(username)
+            request_result = requests.get("https://www.insalan.fr/api/user/2me", auth=(username, password), timeout=1)
+        except requests.exceptions.Timeout:
+            raise ValidationError("User not registered locally and remote API unreachable.")
 
-            # User exists in local database
-            if not (user.check_password(password) and self.user_can_authenticate(user)):
-                # Wrong password
-                return None
+        if request_result.status_code == 401:  # 401 = Unauthorized
+            # Bad credentials
+            raise ValidationError("Wrong username or password.")
+
+        if request_result.status_code != 200:  # 200 = OK
+            # The request failed because of something else
+            raise ValidationError("Request status code is not OK.")
+
+        # Credentials are ok in remote database
+        try:
+            json_result = request_result.json()
+            paid_status = json_result["err"]
+            if paid_status == "registration_not_found":
+                # The player is not registered in a tournament
+                # TODO : what to return ? failure ?
+                raise ValidationError("This player is not registered in any tournament.")
+            elif paid_status == "no_paid_place":
+                # The player is registered but has not paid
+                raise ValidationError("This player is registered but has not paid.")
             else:
-                # Credentials are ok
+                # The player has paid, we can return the object
+                email = json_result["user"]["email"]
+
+                user = User.objects.create_user(username=username,
+                                                email=email,
+                                                password=password)
                 return user
-
-        except UserModel.DoesNotExist:
-            # User is missing from local database, we need to check insalan.fr
-            """
-            API optional request data
-            { "tournaments": "t1,t2,..." }
-
-            API response
-            {
-                "user": { "username": username },
-                "err":  "registration_not_found",   (player not found)
-                        "no_paid_place",            (player found but he has not paid)
-                        None,                       (player found and he has paid)
-                "tournament":   "manager"   (the person is a manager of one of the tournaments t1, t2, ...)
-                                "t1"        (he is a player and registered in tournament t1)
-                                None
-            }
-            For now we are not using tournament data, but we might use it in the future.            
-            """
-
-            # Request with authentication
-            try:
-                request_result = requests.get("https://www.insalan.fr/api/user/me", auth=(username, password), timeout=1)
-            except requests.exceptions.Timeout:
-                raise ValidationError("User not registered locally and remote API unreachable.")
-
-            if request_result.status_code == 401:  # 401 = Unauthorized
-                # Bad credentials
-                return None
-
-            if request_result.status_code != 200:  # 200 = OK
-                # The request failed because of something else
-                raise ValidationError("Request code is not OK")
-
-            # Credentials are ok in remote database
-            try:
-                json_result = request_result.json()
-                paid_status = json_result["err"]
-                if paid_status == "registration_not_found":
-                    # The player is not registered in a tournament
-                    # TODO : what to return ? failure ?
-                    raise ValidationError("This player is not registered in any tournament.")
-                elif paid_status == "no_paid_place":
-                    # The player is registered but has not paid
-                    raise ValidationError("This player is registered but has not paid.")
-                else:
-                    # The player has paid, we can return the object
-                    user = User.objects.create_user(username=username,
-                                                    email=None,
-                                                    password=password)
-                    return user
-            except ValidationError as e:
-                raise ValidationError(e.message)
-            except:
-                # TODO : should be more precise (PEP 8 : do not use bare except)
-                # Wrong JSON object
-                raise ValidationError("Wrong JSON object")
+        except ValidationError as e:
+            raise ValidationError(e.message)
+        except:
+            # TODO : should be more precise (PEP 8 : do not use bare except)
+            # Wrong JSON object
+            raise ValidationError("Wrong JSON object.")
 
     def get_user_id(self, attributes):
         # TODO : why is this function not implemented ? It is really useful ?
@@ -109,25 +135,3 @@ class InsalanBackend(ModelBackend):
         :param attributes:
         """
         NotImplemented
-
-
-class LoginException(Exception):
-    """
-    Base class for exceptions in this module.
-    """
-    pass
-
-class NotAllowedException(LoginException, PermissionDenied):
-    """
-    Exception raised when the user entered good credentials but
-        - was a player and didn't pay
-        - was banned
-    Attributes:
-        username -- username related to the unsuccessful transaction
-        message -- message related to the error
-    """
-
-    def __init__(self, username: str, message: str):
-        self.username = username
-        self.message = message
-

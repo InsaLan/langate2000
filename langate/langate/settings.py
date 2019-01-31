@@ -136,7 +136,7 @@ STATICFILES_DIRS = (
 # Authentication
 
 LOGIN_REDIRECT_URL = "/"
-AUTHENTICATION_BACKENDS = ('langate.insalan_auth.insalan_backend.InsalanBackend', 'langate.insalan_auth.insalan_newApiBackend.InsalanNewApiBackend')
+AUTHENTICATION_BACKENDS = ('langate.insalan_auth.insalan_backend.InsalanBackend',)
 
 
 # Tournament list
