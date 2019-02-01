@@ -9,7 +9,6 @@ from django.http import HttpRequest
 
 UserModel = get_user_model()
 
-
 class InsalanBackend(ModelBackend):
     """
     A class extending ModelBackend to authenticate remote users from insalan.fr if they are not local users (using the new API).
@@ -18,7 +17,8 @@ class InsalanBackend(ModelBackend):
     # README : related documentation :
     # https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
 
-    def authenticate(self, request: HttpRequest, username: str = None, password: str = None, **kwargs):
+    def authenticate(self, request: HttpRequest, username: str = None,
+                     password: str = None, **kwargs):
         """
         authenticate() should check the credentials it gets and return a user object that matches those credentials
         if the credentials are valid. If they’re not valid, it should return None
@@ -57,42 +57,34 @@ class InsalanBackend(ModelBackend):
                 "name": name,
                 "email": email
             },
-            "err":  "registration_not_found",   (player not found)
-                    "no_paid_place",            (player found but he has not paid)
-                    None,                       (player found and he has paid)
-            "tournament":   "manager"   (the person is a manager of one of the tournaments t1, t2, ...)
-                            "t1"        (he is a player and registered in tournament t1)
-                            None
+            "err":  "registration_not_found", (player not found)
+                    "no_paid_place", (player found but he has not paid)
+                    null, (player found and he has paid)
+            "tournament": [
+                {
+                    "shortname": (...),
+                    "game_name": (...),
+                    "team": (...),
+                    "manager": true / false,
+                    "has_paid": true / false
+                }
+            ]
         }
         For now we are not using tournament data, but we might use it in the future.
-
-
-        {
-            "user":
-                {
-                    "username":"Staff2019",
-                    "name":"Staff First",
-                    "email":"Staff2019@live.fr"
-                },
-            "err":null,
-            "tournament":
-                [
-                    {
-                        "shortname":"fbr2019",
-                        "game_name":"Staff2019",
-                        "team":"Staff",
-                        "manager":false,
-                        "has_paid":true
-                    }
-                ]
-        }
         """
+
+        # Raising ValidationError exceptions
 
         # Request with authentication
         try:
-            request_result = requests.get("https://www.insalan.fr/api/user/2me", auth=(username, password), timeout=1)
+            request_result =
+                requests.get(
+                    "https://www.insalan.fr/api/user/2me",
+                    auth = (username, password),
+                    timeout = 1)
         except requests.exceptions.Timeout:
-            raise ValidationError("User not registered locally and remote API unreachable.")
+            raise ValidationError(
+                "User not registered locally and remote API unreachable.")
 
         if request_result.status_code == 401:  # 401 = Unauthorized
             # Bad credentials
@@ -109,17 +101,21 @@ class InsalanBackend(ModelBackend):
             if paid_status == "registration_not_found":
                 # The player is not registered in a tournament
                 # TODO : what to return ? failure ?
-                raise ValidationError("This player is not registered in any tournament.")
+                raise ValidationError(
+                    "This player is not registered in any tournament.")
             elif paid_status == "no_paid_place":
                 # The player is registered but has not paid
-                raise ValidationError("This player is registered but has not paid.")
+                raise ValidationError(
+                    "This player is registered but has not paid.")
             else:
                 # The player has paid, we can return the object
                 email = json_result["user"]["email"]
 
-                user = User.objects.create_user(username=username,
-                                                email=email,
-                                                password=password)
+                user =
+                    User.objects.create_user(
+                        username = username,
+                        email = email,
+                        password = password)
                 return user
         except ValidationError as e:
             raise ValidationError(e.message)

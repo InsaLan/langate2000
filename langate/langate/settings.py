@@ -136,7 +136,10 @@ STATICFILES_DIRS = (
 # Authentication
 
 LOGIN_REDIRECT_URL = "/"
-AUTHENTICATION_BACKENDS = ('langate.insalan_auth.insalan_backend.InsalanBackend',)
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'langate.insalan_auth.insalan_backend.InsalanBackend'
+)
 
 
 # Tournament list
