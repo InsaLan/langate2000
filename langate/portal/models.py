@@ -94,11 +94,7 @@ class PizzaWidget(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-
-        if instance.is_staff:
-            Profile.objects.create(user=instance, role=Role.A.value)
-        else:
-            Profile.objects.create(user=instance)
+        Profile.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)

@@ -8,32 +8,26 @@ from django.conf import settings
 from .models import *
 from modules import network
 
+
 # Create your views here.
 
 
 def get_widgets():
 
-    if RealtimeStatusWidget.objects.count() == 0:
-        AnnounceWidget.objects.create()
-
-    if RealtimeStatusWidget.objects.count() == 0:
-        RealtimeStatusWidget.objects.create()
-
     return {
-         "announces": {
-            "visible": AnnounceWidget.objects.count() > 0,
+        "announces": {
+            "visible": AnnounceWidget.objects.filter(visible=True).count() > 0,
             "items": AnnounceWidget.objects.all()
         },
-        
         "status": {
-            "visible": RealtimeStatusWidget.objects.first().visible,
-            "lan": RealtimeStatusWidget.objects.first().lan,
-            "wan": RealtimeStatusWidget.objects.first().wan,
-            "csgo": RealtimeStatusWidget.objects.first().csgo
+            "visible": RealtimeStatusWidget.objects.count() > 0 and RealtimeStatusWidget.objects.first().visible,
+            "lan": RealtimeStatusWidget.objects.first().lan if (RealtimeStatusWidget.objects.count() > 0) else "",
+            "wan": RealtimeStatusWidget.objects.first().wan if (RealtimeStatusWidget.objects.count() > 0) else "",
+            "csgo": RealtimeStatusWidget.objects.first().csgo if (RealtimeStatusWidget.objects.count() > 0) else ""
         },
 
         "pizzas": {
-            "visible": PizzaWidget.objects.first().visible,
+            "visible": PizzaWidget.objects.count() > 0 and PizzaWidget.objects.first().visible,
             "online_order_url": settings.PIZZA_ONLINE_ORDER_URL,
             "slots": PizzaSlot.objects.all()
         }
@@ -42,27 +36,25 @@ def get_widgets():
 
 @staff_member_required
 def management(request):
-    
-    context = {"page_name": "management" }
+    context = {"page_name": "management"}
 
     return render(request, 'portal/management.html', context)
 
 
 @staff_member_required
 def widgets(request):
-    context = { "page_name": "management_widgets" }
+    context = {"page_name": "management_widgets"}
 
     return render(request, 'portal/management_widgets.html', context)
 
 
 @login_required
 def connected(request):
-
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
     client_mac = network.get_mac(client_ip)
 
-    context = {"page_name": "connected", "too_many_devices": False, "current_ip": client_ip, "widgets": get_widgets() }
+    context = {"page_name": "connected", "too_many_devices": False, "current_ip": client_ip, "widgets": get_widgets()}
 
     # Checking if the device accessing the gate is already in user devices
 
@@ -102,7 +94,7 @@ def connected(request):
 
             dev = Device(user=request.user, ip=client_ip)
             dev.save()
-    
+
     # TODO: What shall we do if an user attempts to connect with a device that has the same IP 
     # that another device already registered (ie in the Device array) but from a different user account ?
     # We could either kick out the already registered user from the network or refuse the connection of
@@ -113,7 +105,6 @@ def connected(request):
 
 @login_required
 def disconnect(request):
-    
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
 
@@ -123,14 +114,11 @@ def disconnect(request):
 
         user_devices.filter(ip=client_ip).delete()
         logout(request)
-    
+
     return redirect(settings.LOGIN_URL)
 
 
 def faq(request):
-    
-    context = {"page_name": "faq", "widgets": get_widgets() }
-    
+    context = {"page_name": "faq", "widgets": get_widgets()}
+
     return render(request, 'portal/faq.html', context)
-
-

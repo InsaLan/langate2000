@@ -12,7 +12,7 @@
     </div>
 
 
-    {% if widgets.status.visible or widgets.announces.visible or widgets.pizza.visible %} {# if there is any widget to show #}
+    {% if widgets.status.visible or widgets.announces.visible or widgets.pizzas.visible %} {# if there is any widget to show #}
 
         <div class="col-sm-12 col-xs-12 col-md-4 col-lg-3 col-xl-3 pt-4 mb-sm-5 widget-bar-insalan" >
 
@@ -36,9 +36,9 @@
 
             {% endif %}
 
-            {% if widgets.announces.visible %}
+            {% for w in widgets.announces.items %}
 
-                {% for w in widgets.announces.items %}
+                {% if w.visible %}
 
                     <div class="card">
                         <div class="card-body">
@@ -49,9 +49,9 @@
                         </div>
                     </div>
 
-                {% endfor %}
+                {% endif %}
 
-            {% endif %}
+            {% endfor %}
 
             {% if widgets.pizzas.visible %}
 

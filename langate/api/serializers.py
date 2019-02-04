@@ -50,13 +50,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile')
-        user = User.objects.create(**validated_data)
+
+        is_staff = profile_data.get('role', Role.P.value) == Role.A.value
+
+        user = User.objects.create(**validated_data, is_staff=is_staff)
         user.save()
 
         profile = Profile.objects.get(user=user)
-        profile.role = profile_data.get('role', profile.role)
-        profile.tournament = profile_data.get('tournament', profile.tournament)
-        profile.team = profile_data.get('team', profile.team)
+
+        profile.role = profile_data.get('role', Role.P.value)
+        profile.tournament = profile_data.get('tournament', None)
+        profile.team = profile_data.get('team', None)
         profile.save()
 
         creator = self.context['request'].user  # https://stackoverflow.com/a/30203950
@@ -70,7 +74,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         instance.username = validated_data.get('username', instance.username)
         instance.email = validated_data.get('email', instance.email)
-        instance.is_staff = validated_data.get('is_staff', instance.is_staff)
+        instance.is_staff = profile_data.get('role', profile.role) == Role.A.value
         instance.save()
 
         profile.role = profile_data.get('role', profile.role)
@@ -83,7 +87,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'username', 'email', 'is_staff', 'is_active', 'profile')
+        fields = ('id', 'first_name', 'last_name', 'username', 'email', 'is_active', 'profile')
 
 
 class AnnounceWidgetSerializer(serializers.ModelSerializer):
