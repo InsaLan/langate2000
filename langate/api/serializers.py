@@ -92,7 +92,7 @@ class AnnounceWidgetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AnnounceWidget
-        fields = ('id', 'title', 'content')
+        fields = ('id', 'visible', 'title', 'content')
 
 
 class RealtimeStatusWidgetSerializer(serializers.ModelSerializer):
@@ -135,4 +135,4 @@ class PizzaSlotSerializer(serializers.ModelSerializer):
 class PizzaWidgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = PizzaWidget
-        fields = ('visible', 'online_order_url')
+        fields = ["visible"]

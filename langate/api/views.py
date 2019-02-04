@@ -114,7 +114,7 @@ class DeviceStatus(APIView):
         down = info[1][0]
         mark = info[2]
 
-        return Response({"status": status, "upload": up, "download": down, "vpn": mark})
+        return Response({"status": status, "upload": up, "download": down, "mark": mark})
 
 
 class UserList(generics.ListCreateAPIView):
@@ -223,8 +223,7 @@ class PizzaWidgetManager(APIView):
         s = PizzaWidget.objects.first()
 
         r = {
-            "visible": s.visible,
-            "online_order_url": s.online_order_url
+            "visible": s.visible
         }
 
         return Response(r)

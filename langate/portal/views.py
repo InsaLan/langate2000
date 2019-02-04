@@ -13,20 +13,28 @@ from modules import network
 
 def get_widgets():
 
+    if RealtimeStatusWidget.objects.count() == 0:
+        AnnounceWidget.objects.create()
+
+    if RealtimeStatusWidget.objects.count() == 0:
+        RealtimeStatusWidget.objects.create()
+
     return {
-        "announces": {
-            "visible": False, 
+         "announces": {
+            "visible": AnnounceWidget.objects.count() > 0,
             "items": AnnounceWidget.objects.all()
         },
+        
         "status": {
-            "visible": False,
-            "lan": False,
-            "wan": False, 
-            "csgo": False, 
+            "visible": RealtimeStatusWidget.objects.first().visible,
+            "lan": RealtimeStatusWidget.objects.first().lan,
+            "wan": RealtimeStatusWidget.objects.first().wan,
+            "csgo": RealtimeStatusWidget.objects.first().csgo
         },
+
         "pizzas": {
-            "visible": False, 
-            "online_order_url": "", 
+            "visible": PizzaWidget.objects.first().visible,
+            "online_order_url": settings.PIZZA_ONLINE_ORDER_URL,
             "slots": PizzaSlot.objects.all()
         }
     }

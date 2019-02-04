@@ -101,6 +101,14 @@
 	- `NETWORK` : you need to precisely modify the parameter `mark=(a,b)` of the Ipset object. The first element of the tuple (a) is the first mark number (for instance 100) and the second element of the tuple (b) is the number of marks (usually it's equal to your number of network exits/VPNs endpoints)
 	- `LOGGING` : langate2000 generates 2 different log files : one containing django standard log messages and another with more langate specific logging information (creation/removal of users, logins/logouts from the gate, registration of devices on the internet...), you may want to modify the paths of these logs or the log level. See https://docs.djangoproject.com/en/2.1/topics/logging/ for more information.
 
+* Finally, you'll probably to execute the following commands to create or update the database. Note that you will need to execute those commands each time you will change the code of one of the models.
+
+    ```bash
+    cd langate
+    ./manage.py makemigrations
+    ./manage.py migrate
+    ```
+
 ## Ready, steady, go !
 
 You can launch the gate using the langate.py script in the main folder.

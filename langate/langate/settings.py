@@ -153,7 +153,7 @@ class Tournament(Enum):
 
 # Network management interface
 
-NETWORK = network.Ipset(mark=(100,4))
+NETWORK = network.Ipset(mark=(100, 4))
 
 # Logging settings
 
@@ -199,3 +199,5 @@ LOGGING = {
         }
     },
 }
+
+PIZZA_ONLINE_ORDER_URL = "https://www.insalan.fr/pizza"

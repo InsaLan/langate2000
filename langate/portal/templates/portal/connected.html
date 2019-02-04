@@ -1,6 +1,7 @@
 {% extends 'portal/portal_layout.html' %}
 {% load static %}
 
+{% block title %}Connecté{% endblock %}
 {% block main %}
 
     {% csrf_token %} <!-- Token needed for AJAX calls -->

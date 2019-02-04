@@ -183,20 +183,6 @@ a:hover, a:active {
     text-decoration: none;
 }
 
-/* Administration */
-
-.badge-admin-insalan {
-    font-size: .95rem;
-}
-
-.col-actions-admin-insalan {
-    width: 10%;
-}
-
-.col-payment-admin-insalan, .col-account-admin-insalan {
-    width: 85px;
-}
-
 /* Modals */
 
 .modal-insalan .modal-content {
@@ -335,4 +321,22 @@ form-control:disabled, .form-control[readonly] {
 {
     list-style-type: none;
     padding: 0 !important;
+}
+
+/* Management */
+
+.col-actions-admin-insalan {
+    width: 10%;
+}
+
+#management-title {
+    font-size: 2rem;
+}
+
+.management-nav-insalan .nav-link.active {
+    background-color: #2A2A2A;
+}
+
+.management-nav-insalan a {
+    color: #b9bbbe;
 }

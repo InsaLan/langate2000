@@ -1,181 +1,178 @@
 {% extends 'layout.html' %}
 {% load static %}
 
+{% block title %}Administration des widgets{% endblock %}
 {% block content %}
 
     {% csrf_token %} <!-- Token needed for AJAX calls -->
 
-    <div class="pt-3 col-sm-12 col-md-11 col-lg-10 col-xl-9 text-white mx-auto">
-        <h1 class="display-5">Widgets</h1>
-        <hr class="mt-2 mb-5">
+    {% include 'portal/management_layout.html' %}
 
-        <div class="text-white">
+    <div class="col-sm-12 col-md-9 col-lg-10 col-xl-10 text-white mx-auto">
 
-            <ul class="nav nav-tabs" role="tablist" id="widgets-categories-tab-list">
-                <li class="nav-item">
-                    <a class="nav-link active" id="widget-announces-tab" data-toggle="tab" href="#widget-announces" role="tab" aria-controls="home" aria-selected="true">Annonces</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="widget-realtime-status-tab" data-toggle="tab" href="#widget-realtime-status" role="tab" aria-controls="profile" aria-selected="false">Temps réel</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="widget-pizzas-tab" data-toggle="tab" href="#widget-pizzas" role="tab" aria-controls="contact" aria-selected="false">Pizzas</a>
-                </li>
-            </ul>
+        <ul class="nav nav-tabs" role="tablist" id="widgets-categories-tab-list">
+            <li class="nav-item">
+                <a class="nav-link active" id="widget-announces-tab" data-toggle="tab" href="#widget-announces" role="tab" aria-controls="home" aria-selected="true">Annonces</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="widget-realtime-status-tab" data-toggle="tab" href="#widget-realtime-status" role="tab" aria-controls="profile" aria-selected="false">Temps réel</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="widget-pizzas-tab" data-toggle="tab" href="#widget-pizzas" role="tab" aria-controls="contact" aria-selected="false">Pizzas</a>
+            </li>
+        </ul>
 
-            <div class="tab-content" id="widgets-categories-tab-content">
-                <div class="tab-pane fade show active" id="widget-announces" role="tabpanel" aria-labelledby="widget-announces-tab">
+        <div class="tab-content" id="widgets-categories-tab-content">
+            <div class="tab-pane fade show active" id="widget-announces" role="tabpanel" aria-labelledby="widget-announces-tab">
 
-                    <nav class="navbar navbar-dark bg-dark mt-4">
+                <nav class="navbar navbar-dark mt-4">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <button type="button" class="btn btn-insalan align-left" data-toggle="modal" data-target="#create-announce-modal">Nouvelle annonce</button>
+                        </li>
+                    </ul>
+                </nav>
+
+
+                <div class="text-white mx-auto col-md-8">
+                    <table class="table table-sm table-insalan table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col" class="align-middle">#</th>
+                            <th scope="col" class="align-middle">Titre de l'annonce</th>
+                            <th scope="col" class="align-middle">Contenu de l'annonce</th>
+                            <th scope="col" class="align-middle" style="width: 110px;">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="announces-table">
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="widget-realtime-status" role="tabpanel" aria-labelledby="widget-realtime-status-tab">
+
+                <div class="text-white mt-5 col-md-9 mx-auto">
+
+                    <div id="realtime-feedback" class="pb-md-3"></div>
+
+                    <form action="javascript:void(0);">
+
+                        <div class="form-group row">
+                            <div class="col-sm-4">Widget visible ?</div>
+                            <div class="col-sm-8">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="realtime-visible">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="realtime-lan-status" class="col-form-label col-sm-4">État du réseau local (LAN) :</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" id="realtime-lan-status">
+                                    <option value="Status.O">ok</option>
+                                    <option value="Status.U">instable</option>
+                                    <option value="Status.F">ko</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="realtime-wan-status" class="col-form-label col-sm-4">État de l'accès à internet (WAN) :</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" id="realtime-wan-status">
+                                    <option value="Status.O">ok</option>
+                                    <option value="Status.U">instable</option>
+                                    <option value="Status.F">ko</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="realtime-csgo-status" class="col-form-label col-sm-4">État des serveurs de jeu CS:GO :</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" id="realtime-csgo-status">
+                                    <option value="Status.O">ok</option>
+                                    <option value="Status.U">instable</option>
+                                    <option value="Status.F">ko</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-insalan" id="realtime-confirm-btn">Enregistrer</button>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="widget-pizzas" role="tabpanel" aria-labelledby="widget-pizzas-tab">
+
+                <div class="text-white mt-5 col-md-9 mx-auto">
+
+                    <div id="pizzas-feedback" class="pb-md-3"></div>
+
+                    <form action="javascript:void(0);">
+
+                        <div class="form-group row">
+                            <div class="col-sm-4">Widget visible ?</div>
+                            <div class="col-sm-8">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="pizzas-visible">
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <nav class="navbar navbar-dark mt-5">
                         <ul class="nav nav-pills">
                             <li class="nav-item">
-                                <button type="button" class="btn btn-insalan align-left" data-toggle="modal" data-target="#create-announce-modal">Nouvelle annonce</button>
+                                <button type="button" class="btn btn-insalan align-left" data-toggle="modal" data-target="#create-pizza-slot-modal">Nouveau créneau</button>
                             </li>
                         </ul>
                     </nav>
 
 
-                    <div class="text-white mx-auto col-md-8">
-                        <table class="table table-sm table-insalan table-bordered">
-                            <thead>
-                            <tr>
-                                <th scope="col" class="align-middle">#</th>
-                                <th scope="col" class="align-middle">Titre de l'annonce</th>
-                                <th scope="col" class="align-middle">Contenu de l'annonce</th>
-                                <th scope="col" class="align-middle" style="width: 110px;">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody id="announces-table">
+                    <table class="table table-sm table-insalan table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col" class="align-middle">#</th>
+                            <th scope="col" class="align-middle">Début des commandes</th>
+                            <th scope="col" class="align-middle">Fin des commandes</th>
+                            <th scope="col" class="align-middle">Livraison</th>
+                            <th scope="col" class="align-middle" style="width: 110px;">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="pizza-slots-table">
 
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
 
-                </div>
-                <div class="tab-pane fade" id="widget-realtime-status" role="tabpanel" aria-labelledby="widget-realtime-status-tab">
+                    <div class="pt-5">
 
-                    <div class="text-white mt-5 col-md-9 mx-auto">
                         <form action="javascript:void(0);">
-
-                            <div class="form-group row">
-                                <div class="col-sm-4">Widget visible ?</div>
-                                <div class="col-sm-8">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="realtime-visible">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="realtime-lan-status" class="col-form-label col-sm-4">État du réseau local (LAN) :</label>
-                                <div class="col-sm-8">
-                                    <select class="form-control" id="realtime-lan-status">
-                                        <option value="Status.O">ok</option>
-                                        <option value="Status.U">instable</option>
-                                        <option value="Status.F">ko</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="realtime-wan-status" class="col-form-label col-sm-4">État de l'accès à internet (WAN) :</label>
-                                <div class="col-sm-8">
-                                    <select class="form-control" id="realtime-wan-status">
-                                        <option value="Status.O">ok</option>
-                                        <option value="Status.U">instable</option>
-                                        <option value="Status.F">ko</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="realtime-csgo-status" class="col-form-label col-sm-4">État des serveurs de jeu CS:GO :</label>
-                                <div class="col-sm-8">
-                                    <select class="form-control" id="realtime-csgo-status">
-                                        <option value="Status.O">ok</option>
-                                        <option value="Status.U">instable</option>
-                                        <option value="Status.F">ko</option>
-                                    </select>
-                                </div>
-                            </div>
 
                             <div class="form-group row">
                                 <div class="col-sm-10">
-                                    <button type="submit" class="btn btn-insalan" id="realtime-confirm-btn">Enregistrer</button>
+                                    <button type="submit" class="btn btn-insalan" id="pizzas-confirm-btn">Enregistrer</button>
                                 </div>
                             </div>
 
 
                         </form>
-                    </div>
-
-                </div>
-                <div class="tab-pane fade" id="widget-pizzas" role="tabpanel" aria-labelledby="widget-pizzas-tab">
-
-
-                    <div class="text-white mt-5 col-md-9 mx-auto">
-                        <form action="javascript:void(0);">
-
-                            <div class="form-group row">
-                                <div class="col-sm-4">Widget visible ?</div>
-                                <div class="col-sm-8">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="pizzas-visible">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="pizzas-online-order-url" class="col-sm-4 col-form-label">URL de la page de commande : </label>
-                                <input type="text" class="form-control col-sm-8" id="pizzas-online-order-url">
-                            </div>
-
-                        </form>
-
-                        <nav class="navbar navbar-dark bg-dark mt-5">
-                            <ul class="nav nav-pills">
-                                <li class="nav-item">
-                                    <button type="button" class="btn btn-insalan align-left" data-toggle="modal" data-target="#create-pizza-slot-modal">Nouveau créneau</button>
-                                </li>
-                            </ul>
-                        </nav>
-
-
-                        <table class="table table-sm table-insalan table-bordered">
-                            <thead>
-                            <tr>
-                                <th scope="col" class="align-middle">#</th>
-                                <th scope="col" class="align-middle">Début des commandes</th>
-                                <th scope="col" class="align-middle">Fin des commandes</th>
-                                <th scope="col" class="align-middle">Livraison</th>
-                                <th scope="col" class="align-middle" style="width: 110px;">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody id="pizza-slots-table">
-
-                            </tbody>
-                        </table>
-
-                        <div class="pt-5">
-
-                            <form action="javascript:void(0);">
-
-                                <div class="form-group row">
-                                    <div class="col-sm-10">
-                                        <button type="submit" class="btn btn-insalan" id="pizzas-confirm-btn">Enregistrer</button>
-                                    </div>
-                                </div>
-
-
-                            </form>
-
-                        </div>
 
                     </div>
 
                 </div>
+
             </div>
-
         </div>
 
 
@@ -217,6 +214,16 @@
                 <div class="modal-body">
                     <div class="container">
                         <form id="create-announce-form" action="javascript:void(0);">
+
+                            <div class="form-group row">
+                                <div class="col-sm-4">Annonce visible ?</div>
+                                <div class="col-sm-8">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="create-announce-visible">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <label for="create-announce-title" class="col-sm-4 col-form-label">Titre de l'annonce : </label>
                                 <input type="text" class="form-control col-sm-8" id="create-announce-title">
@@ -332,25 +339,34 @@
             $("#pizza-slots-table").empty();
 
             $.getJSON( "/api/widgets/pizzas/slots/", function( data ) {
-                let i = 1;
 
-                $.each(data, function (k, a) {
+                if (data.length == 0) {
+                    $("#pizza-slots-table").append("<tr><td colspan=\"5\" class=\"text-center\">Aucun créneau n'est enregistré.</td></tr>")
+                }
 
-                    $("#pizza-slots-table").append("<tr>\n" +
-                        "                    <th scope=\"row\">"+i+"</th>\n" +
-                        "                    <td>"+a.orders_begin+"</td>\n" +
-                        "                    <td>"+a.orders_end+"</td>\n" +
-                        "                    <td>"+a.delivery+"</td>\n" +
-                        "                    <td>\n" +
-                        "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                        "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer le créneau\" class=\"btn btn-sec-insalan delete-pizza-slot-btn\" data-slotid=\""+a.id+"\" aria-label=\"Supprimer le créneau\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
-                        "                        </div>\n" +
-                        "                    </td>\n" +
-                        "                </tr>");
+                else {
 
-                    i++;
+                    let i = 1;
 
-                });
+                    $.each(data, function (k, a) {
+
+                        $("#pizza-slots-table").append("<tr>\n" +
+                            "                    <th scope=\"row\">" + i + "</th>\n" +
+                            "                    <td>" + a.orders_begin + "</td>\n" +
+                            "                    <td>" + a.orders_end + "</td>\n" +
+                            "                    <td>" + a.delivery + "</td>\n" +
+                            "                    <td>\n" +
+                            "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
+                            "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer le créneau\" class=\"btn btn-sec-insalan delete-pizza-slot-btn\" data-slotid=\"" + a.id + "\" aria-label=\"Supprimer le créneau\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                            "                        </div>\n" +
+                            "                    </td>\n" +
+                            "                </tr>");
+
+                        i++;
+
+                    });
+
+                }
             });
         }
 
@@ -360,24 +376,34 @@
             $("#announces-table").empty();
 
             $.getJSON( "/api/widgets/announce/", function( data ) {
-                let i = 1;
 
-                $.each(data, function (k, a) {
+                if (data.length == 0) {
+                    $("#announces-table").append("<tr><td colspan=\"4\" class=\"text-center\">Aucune annonce n'est enregistrée.</td></tr>")
+                }
 
-                    $("#announces-table").append("<tr>\n" +
-                        "                    <th scope=\"row\">"+i+"</th>\n" +
-                        "                    <td>"+a.title+"</td>\n" +
-                        "                    <td>"+a.content+"</td>\n" +
-                        "                    <td>\n" +
-                        "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                        "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'annonce\" class=\"btn btn-sec-insalan delete-announce-btn\" data-announceid=\""+a.id+"\" aria-label=\"Supprimer l'annonce\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
-                        "                        </div>\n" +
-                        "                    </td>\n" +
-                        "                </tr>");
+                else {
 
-                    i++;
+                    let i = 1;
 
-                });
+                    $.each(data, function (k, a) {
+
+                        $("#announces-table").append("<tr>\n" +
+                            "                    <th scope=\"row\">" + i + "</th>\n" +
+                            "                    <td>" + a.title + "</td>\n" +
+                            "                    <td>" + a.content + "</td>\n" +
+                            "                    <td>\n" +
+                            "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
+                            "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'annonce\" class=\"btn btn-sec-insalan delete-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Supprimer l'annonce\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                            "                        </div>\n" +
+                            "                    </td>\n" +
+                            "                </tr>");
+
+                        i++;
+
+                    });
+
+                }
+
             });
         }
 
@@ -442,6 +468,7 @@
         $("#create-announce-btn").click( function () {
 
             let data = {
+                "visible": $("#create-announce-visible").is(':checked'),
                 "title": $("#create-announce-title").val(),
                 "content": $("#create-announce-content").val()
             };
@@ -481,6 +508,8 @@
         });
 
         $("#realtime-confirm-btn").click(function () {
+            $("#realtime-feedback").empty();
+
             let data  = {
                 "visible": $("#realtime-visible").prop('checked'),
                 "lan": $("#realtime-lan-status").val(),
@@ -496,6 +525,9 @@
 
                 success: function (result) {
                     reload_realtime_status_settings();
+
+                    $("#realtime-feedback").append("<div class=\"alert alert-success-insalan\" role=\"alert\"><strong>Mise à jour effectuée.</strong></div>");
+                    setTimeout(function () { $("#realtime-feedback").empty() }, 6000);
                 },
 
                 error: function (xhr, textStatus, errorThrown) {
@@ -569,9 +601,10 @@
 
 
         $("#pizzas-confirm-btn").click(function () {
+            $("#pizzas-feedback").empty();
+
             let data  = {
-                "visible": $("#pizzas-visible").prop('checked'),
-                "online_order_url": $("#pizzas-online-order-url").val(),
+                "visible": $("#pizzas-visible").prop('checked')
             };
 
             $.ajax({
@@ -582,6 +615,9 @@
 
                 success: function (result) {
                     reload_pizza_slots_table();
+
+                    $("#pizzas-feedback").append("<div class=\"alert alert-success-insalan\" role=\"alert\"><strong>Mise à jour effectuée.</strong></div>");
+                    setTimeout(function () { $("#pizzas-feedback").empty() }, 6000);
                 },
 
                 error: function (xhr, textStatus, errorThrown) {
@@ -596,6 +632,7 @@
         $(document).ready(function () {
             reload_announces_table();
             $("#announces-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]'});
+            $("#pizza-slots-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]'});
         });
 
 

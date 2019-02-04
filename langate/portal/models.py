@@ -69,12 +69,13 @@ class Device(models.Model):
 
 class RealtimeStatusWidget(models.Model):
     visible = models.BooleanField(default=False)
-    lan = models.CharField(max_length=1, default=Status.O.value, choices=[(tag, tag.value) for tag in Status])
-    wan = models.CharField(max_length=1, default=Status.O.value, choices=[(tag, tag.value) for tag in Status])
-    csgo = models.CharField(max_length=1, default=Status.O.value, choices=[(tag, tag.value) for tag in Status])
+    lan = models.CharField(max_length=1, default="O", choices=[(tag, tag.value) for tag in Status])
+    wan = models.CharField(max_length=1, default="O", choices=[(tag, tag.value) for tag in Status])
+    csgo = models.CharField(max_length=1, default="O", choices=[(tag, tag.value) for tag in Status])
 
 
 class AnnounceWidget(models.Model):
+    visible = models.BooleanField(default=False)
     title = models.CharField(max_length=50, blank=False)
     content = models.TextField(blank=False)
 
@@ -87,7 +88,6 @@ class PizzaSlot(models.Model):
 
 class PizzaWidget(models.Model):
     visible = models.BooleanField(default=False)
-    online_order_url = models.URLField()
 
 
 # Functions listening modifications of user

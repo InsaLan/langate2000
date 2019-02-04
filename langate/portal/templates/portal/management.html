@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% load static %}
 
+{% block title %}Administration des joueurs{% endblock %}
 {% block content %}
 
     {% include 'portal/modal_create_user.html' %}
@@ -9,12 +10,12 @@
 
     {% csrf_token %} <!-- Token needed for AJAX calls -->
 
-    <div class="pt-3 col-sm-12 col-md-11 col-lg-10 col-xl-9 text-white mx-auto">
-        <h1 class="display-5">Page d'aministration</h1>
-        <hr class="mt-2 mb-5">
+    {% include 'portal/management_layout.html' %}
 
-        <nav id="navbar-title" class="navbar navbar-dark bg-dark pb-4">
-            <a class="navbar-brand" href="#">Joueurs enregistrés :</a>
+    <div class="col-sm-12 col-md-9 col-lg-10 col-xl-10 text-white mx-auto">
+
+        <nav id="navbar-title" class="navbar navbar-dark pb-4">
+            <a class="navbar-brand" href="#"></a>
             <ul class="nav nav-pills">
                 <li class="nav-item">
                     <button type="button" class="btn btn-insalan align-right" data-toggle="modal" data-target="#create-user-modal">Nouvel utilisateur</button>
@@ -259,7 +260,7 @@
 
                         $.getJSON("/api/device_status/" + dev["id"], function (data) {
 
-                            let devStatus = "Inconnu";
+                            let devStatus = "";
 
                             switch (data["status"]) {
 
@@ -278,10 +279,11 @@
                                 "<td>" + dev["area"] + "</td>\n" +
                                 "<td>" + dev["ip"] + "</td>\n" +
                                 "<td>" + dev["mac"].toUpperCase() + "</td>\n" +
+                                "<td>" + data["mark"] + "</td>\n" +
                                 "<td>" + devStatus + "</td>\n" +
                                 "<td>\n" +
                                 "<div aria-label=\"Actions\">" +
-                                "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Consommation données\" class=\"btn btn-sec-insalan device-usage-graph-btn\" data-deviceid=\"" + dev['id'] + "\" aria-label=\"Consommation données\"><span class=\"fas fa-chart-area\" aria-hidden=\"true\"></span></button>\n" +
+                                //"<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Consommation données\" class=\"btn btn-sec-insalan device-usage-graph-btn\" data-deviceid=\"" + dev['id'] + "\" aria-label=\"Consommation données\"><span class=\"fas fa-chart-area\" aria-hidden=\"true\"></span></button>\n" +
                                 "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-sec-insalan delete-device-btn\" data-deviceid=\"" + dev['id'] + "\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
                                 "</div>" +
                                 "</td>\n" +
@@ -315,7 +317,7 @@
 
         /* Device graph button onclick handler */
 
-        $("#device-table").on("click", ".device-usage-graph-btn", function () {
+        /*$("#device-table").on("click", ".device-usage-graph-btn", function () {
             let id = $(this).data("deviceid");
 
             //$("#user-details-modal").modal("hide");
@@ -405,11 +407,13 @@
 
         });
 
-        /* Device graph modal onHide handler */
+        // Device graph modal onHide handler
 
         $('#device-usage-graph-modal').on('hidden.bs.modal', function (e) {
             clearInterval(chartUpdate);
         });
+
+        */
 
 
         /* Delete device button onClick handler */
@@ -447,9 +451,12 @@
 
                 success: function(result) {
                     table.ajax.reload();
+                },
+
+                error: function (xhr, textStatus, errorThrown) {
+                    handle_error(textStatus, errorThrown, xhr.responseText);
                 }
 
-                // TODO: Handle errors
             });
 
 
@@ -527,9 +534,13 @@
 
                     $("#create-user-last-name").focus();
 		            table.ajax.reload();
+                },
+
+
+                error: function (xhr, textStatus, errorThrown) {
+                    handle_error(textStatus, errorThrown, xhr.responseText);
                 }
 
-                // TODO: Handle errors
             });
 
 
@@ -561,13 +572,14 @@
 
                 success: function(result) {
                     $("#modify-user-modal").modal('hide');
+                },
+
+                error: function (xhr, textStatus, errorThrown) {
+                    handle_error(textStatus, errorThrown, xhr.responseText);
                 }
 
-                // TODO: Handle errors
             });
-
-
-
+            
 
         });
 
@@ -583,9 +595,12 @@
 
                 success: function (result) {
                 	reload_user_details(id);
+                },
+
+                error: function (xhr, textStatus, errorThrown) {
+                    handle_error(textStatus, errorThrown, xhr.responseText);
                 }
 
-                // TODO: Handle errors
             });
 
             $("#delete-device-modal").modal('hide');
