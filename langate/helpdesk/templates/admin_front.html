@@ -15,11 +15,20 @@
                 <tbody id="device-table">
                     {% for ticket in tickets %}
                     <tr>
-                        <td>{{ticket}}</td>
-                        <td>{{ticket.owner}}</td>
-                        <td>{% if ticket.is_read %} lu {% else %} non lu {%endif %}</td>
-                        <td><center><a href="{% url 'ticket_view'  ticket_id=ticket.id %}">répondre</a></center></td>
-                    </tr>
+                            <td>{{ticket}}</td>
+                            <td>{{ticket.owner}}</td>
+                            <td>{% if ticket.is_closed %} réglé {% else %} en cours {% endif %}</td>
+                            <td><center>
+                                {% if ticket.is_closed %}
+                                    <a type="button" class="btn btn-primary" href="{% url 'ticket_view'  ticket_id=ticket.id %}">Réouvrir</a>
+                                {% else %}
+                                <div class="btn-group" role="group">
+                                    <a type="button" class="btn btn-success" href="{% url 'ticket_view'  ticket_id=ticket.id %}">répondre</a>
+                                    <a type="button" class="btn btn-danger" href="{% url 'ticket_close' ticket_id=ticket.id %}">fermer</a>
+                                </div>
+                                {%endif%}
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>

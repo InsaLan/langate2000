@@ -1,16 +1,27 @@
 {% extends 'helpdesk.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <ul>
-    {% for message in messages %}
-        <li>{{message}} - {{message.sender}}</li>
-    {% endfor %}
+    <div class="list-group">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ticket.title}}</h5>
+        </div>
+        {% for message in messages %}
+            <p class="mb-1">{{message}}</li>
+            <small class="text-muted">{{message.sender}}</small>
+        {% endfor %}
+        </div>
     </ul>
+    {% if sent %}
+    <div class="alert alert-success" role="alert">
+            Votre message a bien été envoyé!
+    </div>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
         {{ form | crispy }}
-        <div class="text-center">
+        <div class="btn-group text-center">
             <button type="submit" class="btn btn-success btn-block">envoyer</button>
+            <a type="button" class="btn btn-danger" href="{% url 'ticket_close' ticket_id=ticket.id %}">fermer</a>
         </div>
     </form>
 {% endblock %}

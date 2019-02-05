@@ -7,6 +7,10 @@ register = template.Library()
 
 @register.simple_tag
 def unread_notifications(requestUser):
-    return Ticket.objects.filter(is_read=False, owner=requestUser).count()
+    if requestUser.is_staff:
+        return Ticket.objects.filter(state='OPEN').count() + Ticket.objects.filter(owner=requestUser, state='READ_BY_OWNER').count()
+    else:
+        return Ticket.objects.filter(owner=requestUser, state='READ_BY_ADMIN').count()
+    
 
     

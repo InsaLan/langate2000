@@ -9,5 +9,6 @@ urlpatterns = [
    path('new', views.open_ticket, name='open-ticket'),
    path('admin', views.admin, name='helpdesk-admin'),
    path('', views.view_tickets, name='helpdesk'),
-   path('view/<int:ticket_id>', views.show_ticket, name='ticket_view')
+   path('view/<int:ticket_id>', views.show_ticket, name='ticket_view'),
+   path('close/<int:ticket_id>', views.close_ticket, name='ticket_close')
 ]

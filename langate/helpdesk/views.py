@@ -5,13 +5,14 @@ from django import template
 from django.contrib.auth.decorators import login_required
 from .TicketForm import MessageForm, AnwserForm
 from .models import Ticket, Message
-
+from django.core.exceptions import PermissionDenied
 @login_required
 def open_ticket(request):
-    new_ticket = Ticket(owner=request.user)
-    if request.method == 'POST':
+    new_ticket = Ticket(owner=request.user, state='OPEN')
+    if request.method =='POST':
         form = MessageForm(request.POST)
         msg = Message()
+
         if form.is_valid():
                 new_ticket.title = form.cleaned_data['title']
                 new_ticket.save()
@@ -38,6 +39,20 @@ def view_tickets(request):
     
     return render(request, 'ticket_viewer.html', {"tickets" : Ticket.objects.filter(owner=request.user) })
 
+
+@login_required
+def close_ticket(request, ticket_id):
+    ticket = Ticket.objects.get(pk=ticket_id)
+    # only admin and owner can close his tickets
+    print(ticket.owner != request.user)
+    if ticket.owner != request.user and not request.user.is_staff:
+        raise PermissionDenied
+    ticket.is_closed=True
+    ticket.state="CLOSE"
+    ticket.save()
+    return redirect('helpdesk')
+
+
 @login_required
 def show_ticket(request, ticket_id):
     ticket = Ticket.objects.get(pk=ticket_id)
@@ -48,10 +63,16 @@ def show_ticket(request, ticket_id):
                 msg.ticket = ticket
                 msg.sender = request.user
                 msg.content = form.cleaned_data['content']
+                if request.user.is_staff:
+                    ticket.state='READ_BY_ADMIN'
+                else:
+                    ticket.state='READ_BY_OWNER'
+                ticket.is_closed = False
+                ticket.save()
                 msg.save()
                 sent = True
     else:
         sent = False
         form =  AnwserForm()
     
-    return render(request, 'ticket_detail.html', {"sent": sent, "form": form, "messages": Message.objects.filter(ticket=ticket.id)})
+    return render(request, 'ticket_detail.html', {"sent": sent, "form": form, "messages": Message.objects.filter(ticket=ticket.id), "ticket": ticket})
