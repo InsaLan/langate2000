@@ -99,10 +99,10 @@ class InsalanBackend(ModelBackend):
             json_result = request_result.json()
             paid_status = json_result["err"]
             if paid_status == "registration_not_found":
-                # The player is not registered in a tournament
-                # TODO : what to return ? failure ?
+                # The insalan.fr account exists, but the player
+                # is not registered during the event
                 raise ValidationError(
-                    "This player is not registered in any tournament.")
+                    "The account exists, but this player is not registered.")
             elif paid_status == "no_paid_place":
                 # The player is registered but has not paid
                 raise ValidationError(
