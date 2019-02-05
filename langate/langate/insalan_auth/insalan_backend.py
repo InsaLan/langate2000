@@ -4,10 +4,11 @@ import requests
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import ValidationError
 from django.http import HttpRequest
 
 UserModel = get_user_model()
+
 
 class InsalanBackend(ModelBackend):
     """
@@ -77,11 +78,10 @@ class InsalanBackend(ModelBackend):
 
         # Request with authentication
         try:
-            request_result =
-                requests.get(
-                    "https://www.insalan.fr/api/user/2me",
-                    auth = (username, password),
-                    timeout = 1)
+            request_result = requests.get(
+                "https://www.insalan.fr/api/user/2me",
+                auth=(username, password),
+                timeout=1)
         except requests.exceptions.Timeout:
             raise ValidationError(
                 "User not registered locally and remote API unreachable.")
@@ -111,23 +111,12 @@ class InsalanBackend(ModelBackend):
                 # The player has paid, we can return the object
                 email = json_result["user"]["email"]
 
-                user =
-                    User.objects.create_user(
-                        username = username,
-                        email = email,
-                        password = password)
+                user = User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password)
                 return user
-        except ValidationError as e:
-            raise ValidationError(e.message)
         except:
             # TODO : should be more precise (PEP 8 : do not use bare except)
             # Wrong JSON object
             raise ValidationError("Wrong JSON object.")
-
-    def get_user_id(self, attributes):
-        # TODO : why is this function not implemented ? It is really useful ?
-        """
-        (Docstring to do)
-        :param attributes:
-        """
-        NotImplemented
