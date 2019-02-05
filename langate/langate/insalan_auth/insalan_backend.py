@@ -116,7 +116,12 @@ class InsalanBackend(ModelBackend):
                     email=email,
                     password=password)
                 return user
+        except ValidationError as e:
+            # Any validation error is rethrown
+            raise ValidationError(e.message)
         except:
-            # TODO : should be more precise (PEP 8 : do not use bare except)
-            # Wrong JSON object
+            # Any other error must be converted to a ValidationError
+            # so that the client does not crash.
+            # Any other error is due to a wrong reading phase on the JSON object
+            # i.e. a wrong format in this JSON object.
             raise ValidationError("Wrong JSON object.")
