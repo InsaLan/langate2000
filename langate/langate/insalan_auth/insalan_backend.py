@@ -18,6 +18,16 @@ class InsalanBackend(ModelBackend):
     # README : related documentation :
     # https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
 
+    short_name_table = {
+        "fbr": Tournament.ftn.value,
+        "cs": Tournament.cs.value,
+        "hs": Tournament.hs.value,
+        "lol": Tournament.lol.value
+    }
+
+    def short_name_to_tournament_enum(name):
+        return short_name_table[name[:-4]] # remove year from short name
+
     def authenticate(self, request: HttpRequest, username: str = None,
                      password: str = None, **kwargs):
         """
@@ -115,6 +125,24 @@ class InsalanBackend(ModelBackend):
                     username=username,
                     email=email,
                     password=password)
+                
+                profile = Profile.objects.get(user = user)
+
+                # taking only the first tournament of the list
+                tournament = json_result["tournament"][0]
+
+                short_name = tournament["shortname"]
+                team = tournament["team"]
+                is_manager = tournament["manager"]
+
+                profile.tournament = short_name_to_tournament_enum(short_name)
+                profile.team = team
+                
+                if is_manager:
+                    profile.manager = Role.M
+                
+                profile.save()
+
                 return user
         except ValidationError as e:
             # Any validation error is rethrown
