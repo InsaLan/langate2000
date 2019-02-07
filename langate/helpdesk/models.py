@@ -22,8 +22,9 @@ class Ticket(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     is_closed = models.BooleanField(default=False)
     state = models.CharField(max_length=1, choices=STATE, null=True)
-
-
+    last_update = models.DateTimeField(auto_now=True)
+    class Meta:
+        ordering = ['-last_update']
     def __str__(self):
         return self.title
 

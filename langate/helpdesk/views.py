@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .TicketForm import MessageForm, AnwserForm
 from .models import Ticket, Message
 from django.core.exceptions import PermissionDenied
+from datetime import datetime
 @login_required
 def open_ticket(request):
     new_ticket = Ticket(owner=request.user, state='OPEN')
@@ -15,6 +16,7 @@ def open_ticket(request):
 
         if form.is_valid():
                 new_ticket.title = form.cleaned_data['title']
+                ticket.date = datetime.now()
                 new_ticket.save()
                 msg.ticket = new_ticket
                 msg.sender = request.user
@@ -44,7 +46,6 @@ def view_tickets(request):
 def close_ticket(request, ticket_id):
     ticket = Ticket.objects.get(pk=ticket_id)
     # only admin and owner can close his tickets
-    print(ticket.owner != request.user)
     if ticket.owner != request.user and not request.user.is_staff:
         raise PermissionDenied
     ticket.is_closed=True
@@ -65,8 +66,12 @@ def show_ticket(request, ticket_id):
                 msg.content = form.cleaned_data['content']
                 if request.user.is_staff:
                     ticket.state='READ_BY_ADMIN'
+                    ticket.date = datetime.now()
+                    
                 else:
                     ticket.state='READ_BY_OWNER'
+                    ticket.date = datetime.now()
+                    
                 ticket.is_closed = False
                 ticket.save()
                 msg.save()
