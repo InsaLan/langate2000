@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 from portal.models import *
-from langate.settings import Tournament
 
 event_logger = logging.getLogger("langate.events")
 
@@ -39,7 +38,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('role', 'tournament', 'team')
+        fields = ('max_device_nb', 'role', 'tournament', 'team')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -58,6 +57,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         profile = Profile.objects.get(user=user)
 
+        profile.max_device_nb = profile_data.get('max_device_nb', 3)
         profile.role = profile_data.get('role', Role.P.value)
         profile.tournament = profile_data.get('tournament', None)
         profile.team = profile_data.get('team', None)
@@ -77,6 +77,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.is_staff = profile_data.get('role', profile.role) == Role.A.value
         instance.save()
 
+        profile.max_device_nb = profile_data.get('max_device_nb', 3)
         profile.role = profile_data.get('role', profile.role)
         profile.tournament = profile_data.get('tournament', profile.tournament)
         profile.team = profile_data.get('team', profile.team)

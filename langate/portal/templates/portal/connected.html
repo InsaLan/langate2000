@@ -12,7 +12,7 @@
 
         <div class="text-white text-center pt-4">
             <h2>Attention !</h2>
-            <p class="pt-1"><b>Vous êtes connecté sur plus de 3 appareils sur le réseau.</b></p>
+            <p class="pt-1"><b>Vous êtes connecté sur plus de {{ device_quota }} appareils sur le réseau.</b></p>
             <p>Vous devez déconnecter au moins un appareil du réseau avant de pouvoir accéder à internet sur cet appareil.</p>
         </div>
 
@@ -43,7 +43,7 @@
         </div>
 
         <div class="pt-3 col-sm-12 col-md-10 col-lg-8 col-xl-8 text-white mx-auto">
-            <p class="text-center">Sachez que vous pouvez connecter au maximum 3 appareils sur le réseau.<br>Voici la liste de vos appareils connectés au réseau :</p>
+            <p class="text-center">Vous pouvez connecter au maximum {{ device_quota }} appareils sur le réseau.<br>Voici la liste de vos appareils connectés au réseau :</p>
             <table class="table table-sm table-insalan table-bordered">
                 <thead>
                 <tr>

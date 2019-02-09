@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest
 
+from portal.models import Role, Tournament
+
 UserModel = get_user_model()
 
 
@@ -18,15 +20,21 @@ class InsalanBackend(ModelBackend):
     # README : related documentation :
     # https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
 
-    short_name_table = {
-        "fbr": Tournament.ftn.value,
-        "cs": Tournament.cs.value,
-        "hs": Tournament.hs.value,
-        "lol": Tournament.lol.value
-    }
+    def short_name_to_tournament_enum(self, short_name):
 
-    def short_name_to_tournament_enum(name):
-        return short_name_table[name[:-4]] # remove year from short name
+        short_name_table = {
+            "fbr": Tournament.ftn,
+            "cs": Tournament.cs,
+            "hs": Tournament.hs,
+            "lol": Tournament.lol
+        }
+
+        name = short_name[:-4]  # remove year from short name
+
+        if name in short_name_table:
+            return short_name_table[name].value
+        else:
+            return None
 
     def authenticate(self, request: HttpRequest, username: str = None,
                      password: str = None, **kwargs):
@@ -90,8 +98,9 @@ class InsalanBackend(ModelBackend):
         try:
             request_result = requests.get(
                 "https://www.insalan.fr/api/user/2me",
-                auth=(username, password),
+                auth=(username.encode("utf-8"), password.encode("utf-8")),
                 timeout=1)
+
         except requests.exceptions.Timeout:
             raise ValidationError(
                 "User not registered locally and remote API unreachable.")
@@ -121,35 +130,34 @@ class InsalanBackend(ModelBackend):
                 # The player has paid, we can return the object
                 email = json_result["user"]["email"]
 
-                user = User.objects.create_user(
+                user = User.objects.create(
                     username=username,
                     email=email,
                     password=password)
-                
-                profile = Profile.objects.get(user = user)
 
-                # taking only the first tournament of the list
+                # FIXME (insalan-langate2000#10) : taking only the first tournament of the list
                 tournament = json_result["tournament"][0]
 
-                short_name = tournament["shortname"]
-                team = tournament["team"]
-                is_manager = tournament["manager"]
+                short_name = tournament["shortname"] if "shortname" in tournament else None
+                is_manager = tournament["manager"] if "manager" in tournament else False
 
-                profile.tournament = short_name_to_tournament_enum(short_name)
-                profile.team = team
-                
+                user.profile.tournament = self.short_name_to_tournament_enum(short_name)
+                user.profile.team = tournament["team"] if "team" in tournament else None
+
                 if is_manager:
-                    profile.manager = Role.M
-                
-                profile.save()
+                    user.profile.role = Role.M.value
+
+                user.save()
 
                 return user
+
         except ValidationError as e:
             # Any validation error is rethrown
             raise ValidationError(e.message)
+
         except:
             # Any other error must be converted to a ValidationError
             # so that the client does not crash.
             # Any other error is due to a wrong reading phase on the JSON object
             # i.e. a wrong format in this JSON object.
-            raise ValidationError("Wrong JSON object.")
+            raise ValidationError("Unhandled error with remote API.")

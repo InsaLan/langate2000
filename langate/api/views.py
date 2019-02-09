@@ -168,7 +168,7 @@ class AnnounceWidgetList(generics.ListCreateAPIView):
     serializer_class = AnnounceWidgetSerializer
 
 
-class AnnounceWidgetDetails(generics.RetrieveDestroyAPIView):
+class AnnounceWidgetDetails(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
     queryset = AnnounceWidget.objects.all()

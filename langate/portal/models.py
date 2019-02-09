@@ -1,18 +1,37 @@
 from enum import Enum
 
-import logging
+import logging, random
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.conf import settings
+from rest_framework.compat import MinValueValidator
 
 from modules import network
 
 # Create your models here.
 
 event_logger = logging.getLogger('langate.events')
+
+
+def generate_dev_name():
+
+    try:
+        with open("misc/device_names.txt") as f:
+            lines = f.read().splitlines()
+            return random.choice(lines)
+
+    except FileNotFoundError:
+        return "Computer"
+
+
+class Tournament(Enum):
+    cs = "Counter Strike Global Offensive"
+    ftn = "Fortnite"
+    hs = "Heartstone"
+    lol = "League Of Legends"
 
 
 class Role(Enum):
@@ -33,6 +52,7 @@ class Profile(models.Model):
     # DOCU related : https://docs.djangoproject.com/en/2.0/topics/auth/customizing/#extending-user
     # and https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    max_device_nb = models.IntegerField(default=3, validators=[ MinValueValidator(limit_value=2) ])
 
     # Additional attributes
     role = models.CharField(
@@ -109,6 +129,8 @@ def create_device(sender, instance, created, **kwargs):
 
     if created:
         ip = instance.ip  # IP should exist at this stage and it will fail really bad if it doesn't.
+
+        instance.name = generate_dev_name()
 
         instance.mac = network.get_mac(ip)
                 

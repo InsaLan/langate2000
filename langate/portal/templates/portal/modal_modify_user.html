@@ -34,18 +34,26 @@
                             <input tabindex="4" type="email" class="form-control col-sm-8" id="modify-user-email">
                         </div>
 
+                        <div class="form-group row" id="modify-user-max-nb-device-g">
+                            <label for="modify-user-max-nb-device" class="col-sm-8 col-form-label">Nombre maximal d'appareils autorisés : </label>
+                            <input tabindex="5" type="number" class="form-control col-sm-2" id="modify-user-max-nb-device" value="3">
+                        </div>
+
+
                         <div class="form-group row" id="modify-user-role-g">
                             <label for="modify-user-role" class="col-sm-4 col-form-label">Rôle : </label>
-                            <select tabindex="5" class="form-control col-sm-8" id="modify-user-role">
+                            <select tabindex="6" class="form-control col-sm-8" id="modify-user-role">
                                 <option value="Role.P">Player</option>
-                                <option value="Role.A">Staff</option>
+                                <option value="Role.M">Manager</option>
+                                <option value="Role.G">Guest</option>
+                                <option value="Role.S">Staff</option>
                                 <option value="Role.A">Administrator</option>
                             </select>
                         </div>
 
                         <div class="form-group row" id="modify-user-tournament-g">
                             <label for="modify-user-role" class="col-sm-4 col-form-label">Tournoi : </label>
-                            <select tabindex="6" class="form-control col-sm-8" id="modify-user-tournament">
+                            <select tabindex="7" class="form-control col-sm-8" id="modify-user-tournament">
                                 <option value="no">Aucun</option>
                                 <option value="Tournament.cs">Counter Strike Global Offensive</option>
                                 <option value="Tournament.ftn">Fortnite</option>
@@ -56,7 +64,7 @@
 
                         <div class="form-group row" id="modify-user-team-g">
                             <label for="modify-user-team" class="col-sm-4 col-form-label">Équipe tournoi : </label>
-                            <input tabindex="7" type="text" class="form-control col-sm-8" id="modify-user-team">
+                            <input tabindex="8" type="text" class="form-control col-sm-8" id="modify-user-team">
                         </div>
 
                     </form>
@@ -64,7 +72,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" tabindex="-1">Fermer</button>
-                <button tabindex="8" type="button" class="btn btn-insalan" id="modify-user-confirm-btn">Modifier</button>
+                <button tabindex="9" type="button" class="btn btn-insalan" id="modify-user-confirm-btn">Modifier</button>
             </div>
         </div>
     </div>

@@ -54,7 +54,11 @@ def connected(request):
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
     client_mac = network.get_mac(client_ip)
 
-    context = {"page_name": "connected", "too_many_devices": False, "current_ip": client_ip, "widgets": get_widgets()}
+    context = {"page_name": "connected",
+               "too_many_devices": False,
+               "current_ip": client_ip,
+               "widgets": get_widgets(),
+               "device_quota": request.user.profile.max_device_nb}
 
     # Checking if the device accessing the gate is already in user devices
 
@@ -82,7 +86,7 @@ def connected(request):
                 dev.ip = client_ip  # We edit the IP to reflect the change.
                 dev.save()
 
-        elif len(user_devices) > 2:
+        elif len(user_devices) >= request.user.profile.max_device_nb:
             # If user has too much devices already registered, then we can't connect the device to the internet.
             # We will let him choose to remove one of them.
 

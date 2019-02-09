@@ -141,16 +141,6 @@ AUTHENTICATION_BACKENDS = (
     'langate.insalan_auth.insalan_backend.InsalanBackend'
 )
 
-
-# Tournament list
-
-class Tournament(Enum):
-    cs = "Counter Strike Global Offensive"
-    ftn = "Fortnite"
-    hs = "Heartstone"
-    lol = "League Of Legends"
-
-
 # Network management interface
 
 NETWORK = network.Ipset(mark=(100, 4))
