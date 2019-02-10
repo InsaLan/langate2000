@@ -50,9 +50,9 @@ def widgets(request):
 
 @login_required
 def connected(request):
+
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-    client_mac = network.get_mac(client_ip)
 
     context = {"page_name": "connected",
                "too_many_devices": False,
@@ -63,7 +63,7 @@ def connected(request):
     # Checking if the device accessing the gate is already in user devices
 
     if not user_devices.filter(ip=client_ip).exists():
-
+        client_mac = network.get_mac(client_ip)
         if Device.objects.filter(mac=client_mac).count() > 0:
             # If the device MAC is already registered on the network but with a different IP,
             # * If the registered device is owned by the requesting user, we change the IP of the registered device.
@@ -71,7 +71,7 @@ def connected(request):
             # This could happen if the DHCP has changed the IP of the client.
 
             # The following should never raise a MultipleObjectsReturned exception
-            # because it would mean that there are more than one device
+            # because it would mean that there are more than one devices
             # already registered with the same MAC.
 
             dev = Device.objects.get(mac=client_mac)
@@ -98,7 +98,7 @@ def connected(request):
 
             dev = Device(user=request.user, ip=client_ip)
             dev.save()
-
+    
     # TODO: What shall we do if an user attempts to connect with a device that has the same IP 
     # that another device already registered (ie in the Device array) but from a different user account ?
     # We could either kick out the already registered user from the network or refuse the connection of
@@ -109,9 +109,12 @@ def connected(request):
 
 @login_required
 def disconnect(request):
+    
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-
+    if client_ip is None:
+        client_ip = request.META.get("REMOTE_ADDR")
+    
     if user_devices.filter(ip=client_ip).exists():
         # When the user decides to disconnect from the portal from a device,
         # we remove the Device from the array (if it still exists) and then we log the user out.
@@ -126,3 +129,4 @@ def faq(request):
     context = {"page_name": "faq", "widgets": get_widgets()}
 
     return render(request, 'portal/faq.html', context)
+

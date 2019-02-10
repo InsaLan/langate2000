@@ -3,64 +3,43 @@ from enum import Enum
 from django.db import models
 from django.contrib.auth.models import User
 from django.db import models
+import datetime
 
-
-# Create your models here.
-
-class State(Enum):
-    """
-    This enum represents the possible state of a ticket
-    """
-    O = "OPEN"
-    U = "UPDATE"
-    C = "CLOSE"
-    W = "WAITING"
-
-
-class Message(models.Model):
-    pass
-
-
-class OpeningMessage(Message):
-    pass
-
-
-class CommentMessage(Message):
-    pass
-
-
-class ClosingMessage(Message):
-    pass
-
-
-
+    
+# Create your models here
 class Ticket(models.Model):
+    
     """
     A ticket is a set of messages
     """
-    message = models.TextField()
-    date = models.DateField(
-        auto_now=True
+    STATE = (
+        (0, 'OPEN'),
+        (1, 'READ_BY_OWNER'),
+        (2, 'READ_BY_ADMIN'),
+        (3, 'CLOSE')
     )
+    title = models.CharField(max_length=50, null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    is_closed = models.BooleanField(default=False)
+    state = models.CharField(max_length=1, choices=STATE, null=True)
+    last_update = models.DateTimeField(auto_now=True)
+    class Meta:
+        ordering = ['-last_update']
+    def __str__(self):
+        return self.title
 
 
-
-"""
-class Ticket(models.Model):
+class Message(models.Model):
+    content = models.TextField(blank=False, null=True)
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, null=True)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    date  = models.DateTimeField(auto_now=True)
     
-    the ticket model
-    
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    state = models.CharField(
-        max_lenght=1,
-        default=State.O.value,
-        choice=[(status, status.value) for status in State]
-    )
-    content = models.TextField()
-    creation_date = models.DateField(
-        auto_now=True)  # useful to track the ticket
+    class Meta:
+        ordering = ('date',)
 
-    def close_ticket(self):
-        self.state = State.C.value
-"""
+    def __str__(self):
+        return self.content
+    def get_author(self):
+        return self.sender

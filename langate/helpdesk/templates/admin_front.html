@@ -1,0 +1,39 @@
+{% extends 'helpdesk.html' %}
+
+{% block content %}
+    <div class="pt-3 col-sm-12 col-md-11 col-lg-10 col-xl-9 text-white mx-auto">
+        <h1 class="display-5">Page de gestion des tickets</h1>
+        <table class="table table-sm table-insalan table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col" class="align-middle">Ticket</th>
+                    <th scope="col" class="align-middle">Auteur</th>
+                    <th scope="col" class="align-middle">Etat</th>
+                    <th scope="col" class="align-middle">Accéder au ticket</th>
+                </tr>
+                </thead>
+                <tbody id="device-table">
+                    {% for ticket in tickets %}
+                    <tr>
+                            <td>{{ticket}}</td>
+                            <td>{{ticket.owner}}</td>
+                            <td>{% if ticket.is_closed %} réglé {% else %} en cours {% endif %}</td>
+                            <td><center>
+                                {% if ticket.is_closed %}
+                                    <a type="button" class="btn btn-primary" href="{% url 'ticket_view'  ticket_id=ticket.id %}">Réouvrir</a>
+                                {% else %}
+                                <div class="btn-group" role="group">
+                                    <a type="button" class="btn btn-success" href="{% url 'ticket_view'  ticket_id=ticket.id %}">répondre</a>
+                                    <a type="button" class="btn btn-danger" href="{% url 'ticket_close' ticket_id=ticket.id %}">fermer</a>
+                                </div>
+                                {%endif%}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        
+        </ul>
+    </div>
+
+{% endblock %}
