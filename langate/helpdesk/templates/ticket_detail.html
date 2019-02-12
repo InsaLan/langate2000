@@ -1,32 +1,32 @@
 {% extends 'helpdesk.html' %}
 {% load crispy_forms_tags %}
 
+{% block title %}Détail du ticket{% endblock %}
+
 {% block content %}
 <div class="container">
-    <center><h1 class="display-5" style="color: #FFF">{{ticket.title}}</h1></center>
+    <h1 class="text-center display-5" style="color: #FFF">{{ticket.title}}</h1>
     {% if sent %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-               <center>Votre message a bien été envoyé!</center>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            Votre message a bien été envoyé !
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
     {% endif %}
        
         {% for message in messages %}
-        <center><p class="mb-1">{{message}}</li>
+        <div class="text-center">
+            <p class="mb-1">{{message}}</p>
             <small class="text-muted">{{message.sender}} - ({{message.date|date:"l - H:m"}})</small>
-        </p></center>
+        </div>
         {% endfor %}
 
     <form method="post">
         {% csrf_token %}
         {{ form | crispy }}
-        <center>
         <div class="btn-group text-center">
-            <button type="submit" class="btn btn-success btn-block">envoyer</button>
-            <a type="button" class="btn btn-danger" href="{% url 'ticket_close' ticket_id=ticket.id %}">fermer</a>
+            <button type="submit" class="btn btn-success btn-block">Envoyer</button>
+            <a type="button" class="btn btn-danger" href="{% url 'ticket_close' ticket_id=ticket.id %}">Fermer</a>
         </div>
-        </center>
     </form>
 </div>
 {% endblock %}

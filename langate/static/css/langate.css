@@ -340,3 +340,14 @@ form-control:disabled, .form-control[readonly] {
 .management-nav-insalan a {
     color: #b9bbbe;
 }
+
+/* InsaLan pulsing logo */
+
+.logo-connected, logo {
+    animation: beat 2s infinite alternate;
+    transform-origin: center;
+}
+
+@keyframes beat {
+    to { transform: scale(1.05) }
+}

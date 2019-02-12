@@ -472,18 +472,18 @@
         });
 
         $('#create-user-role').on('change', function() {
-           if (this.value == "Role.A") {
+           if (this.value != "Role.P") {
 
-               if ($("#create-user-password").hasClass("disabled")){
-                   $("#create-user-password").removeClass("disabled");
+               if ($("#create-user-max-nb-device-g").hasClass("d-none")){
+                   $("#create-user-max-nb-device-g").removeClass("d-none");
                }
 
            }
 
            else {
 
-               if (!$("#create-user-password").hasClass("disabled")){
-                   $("#create-user-password").addClass("disabled");
+               if (!$("#create-user-max-nb-device-g").hasClass("d-none")){
+                   $("#create-user-max-nb-device-g").addClass("d-none");
                }
 
            }

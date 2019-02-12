@@ -60,7 +60,7 @@
                         {% if user.is_authenticated %}
                         {% block navitem-helpdesk %}
                             <li class="nav-item {% if page_name == "helpdesk" %}active{% endif %}">
-                                <a class="nav-link" href="{% url 'helpdesk' %}">demande d'assistance  <span class="badge badge-light"> {% unread_notifications user %}</span></a>
+                                <a class="nav-link" href="{% url 'helpdesk' %}">Demande d'assistance  <span class="badge badge-light"> {% unread_notifications user %}</span></a>
                                 
                             </li>
                         {% endblock %}

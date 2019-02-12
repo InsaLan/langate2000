@@ -107,7 +107,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                     <button type="button" class="btn btn-insalan" id="modify-device-confirm-btn">Valider</button>
                 </div>
             </div>
@@ -130,8 +129,13 @@
         });
 
         $(document).on("click", ".modify-device-btn", function (e) {
-            $("#modify-device-confirm-btn").data("deviceid", $(this).data("deviceid"));
-            $("#modify-device-name").val("");
+            let id = $(this).data("deviceid");
+            $("#modify-device-confirm-btn").data("deviceid", id);
+
+            $.getJSON( "/api/device_details/"+id, function( data ) {
+                $("#modify-device-name").val(data["name"]);
+            });
+
             $("#modify-device-modal").modal("show");
         });
 

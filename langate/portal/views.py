@@ -63,8 +63,11 @@ def connected(request):
     # Checking if the device accessing the gate is already in user devices
 
     if not user_devices.filter(ip=client_ip).exists():
+
         client_mac = network.get_mac(client_ip)
+
         if Device.objects.filter(mac=client_mac).count() > 0:
+
             # If the device MAC is already registered on the network but with a different IP,
             # * If the registered device is owned by the requesting user, we change the IP of the registered device.
             # * If the registered device is owned by another user, we delete the old device and we register the new one.
@@ -112,9 +115,7 @@ def disconnect(request):
     
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-    if client_ip is None:
-        client_ip = request.META.get("REMOTE_ADDR")
-    
+
     if user_devices.filter(ip=client_ip).exists():
         # When the user decides to disconnect from the portal from a device,
         # we remove the Device from the array (if it still exists) and then we log the user out.

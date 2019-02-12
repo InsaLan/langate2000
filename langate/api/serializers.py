@@ -57,7 +57,6 @@ class UserSerializer(serializers.ModelSerializer):
 
         profile = Profile.objects.get(user=user)
 
-        profile.max_device_nb = profile_data.get('max_device_nb', 3)
         profile.role = profile_data.get('role', Role.P.value)
         profile.tournament = profile_data.get('tournament', None)
         profile.team = profile_data.get('team', None)

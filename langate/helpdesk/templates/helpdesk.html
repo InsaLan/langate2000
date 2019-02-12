@@ -1,6 +1,8 @@
 {% extends 'layout.html' %}
 {% load crispy_forms_tags %}
 
+{% block title %}Ouvrir un ticket{% endblock %}
+
 {% block content %}
 <div class="pt-3 col-sm-12 col-md-11 col-lg-10 col-xl-9 text-white mx-auto">
     <h1 class="display-5">Ouvrir un ticket</h1>
@@ -8,7 +10,7 @@
         {% csrf_token %}
         {{ form | crispy }}
         <div class="text-center">
-            <button type="submit" class="btn btn-success btn-block">envoyer</button>
+            <button type="submit" class="btn btn-success btn-block">Envoyer</button>
             
         </div>
     </form>

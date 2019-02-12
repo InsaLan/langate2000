@@ -15,6 +15,8 @@
                     <div id="create-user-feedback" class="pt-2 pb-3 d-none"></div>
 
                     <form id="create-user-form">
+                        <p class="faq-cat-header">Informations du compte</p>
+
                         <div class="form-group row" id="create-user-last-name-g">
                             <label for="create-user-last-name" class="col-sm-4 col-form-label">Nom : </label>
                             <input tabindex="1" type="text" class="form-control col-sm-8" id="create-user-last-name">
@@ -27,7 +29,7 @@
 
 
                         <div class="form-group row" id="create-user-username-g">
-                            <label for="create-user-username" class="col-sm-4 col-form-label">Pseudo : </label>
+                            <label for="create-user-username" class="col-sm-4 col-form-label">Pseudo* : </label>
                             <input tabindex="3" type="text" class="form-control col-sm-8" id="create-user-username">
                         </div>
 
@@ -40,16 +42,13 @@
                             <label for="create-user-password" class="col-sm-4 col-form-label">Mot de passe : </label>
                             <input tabindex="4" type="password" class="form-control col-sm-8 disabled" id="create-user-password">
                         </div>
+                        <small class="form-text text-muted mb-4">Si vous n'indiquez pas de mot de passe, il sera géneré aléatoirement.</small>
 
-                        <div class="form-group row" id="create-user-max-nb-device-g">
-                            <label for="create-user-max-nb-device" class="col-sm-8 col-form-label">Nombre maximal d'appareils autorisés : </label>
-                            <input tabindex="5" type="number" class="form-control col-sm-2" id="create-user-max-nb-device" value="3">
-                        </div>
-
+                        <p class="faq-cat-header">Permissions</p>
 
                         <div class="form-group row" id="create-user-role-g">
-                            <label for="create-user-role" class="col-sm-4 col-form-label">Rôle : </label>
-                            <select tabindex="6" class="form-control col-sm-8" id="create-user-role">
+                            <label for="create-user-role" class="col-sm-4 col-form-label">Rôle* : </label>
+                            <select tabindex="5" class="form-control col-sm-8" id="create-user-role">
                                 <option value="Role.P">Player</option>
                                 <option value="Role.M">Manager</option>
                                 <option value="Role.G">Guest</option>
@@ -58,8 +57,15 @@
                             </select>
                         </div>
 
+                        <div class="form-group row d-none" id="create-user-max-nb-device-g">
+                            <label for="create-user-max-nb-device" class="col-sm-8 col-form-label">Nombre maximal d'appareils autorisés : </label>
+                            <input tabindex="6" type="number" class="form-control col-sm-2" id="create-user-max-nb-device" value="3">
+                        </div>
+
+                        <p class="faq-cat-header">Tournoi</p>
+
                         <div class="form-group row" id="create-user-tournament-g">
-                            <label for="create-user-role" class="col-sm-4 col-form-label">Tournoi : </label>
+                            <label for="create-user-role" class="col-sm-4 col-form-label">Tournoi* : </label>
                             <select tabindex="7" class="form-control col-sm-8" id="create-user-tournament">
                                 <option value="no">Aucun</option>
                                 <option value="Tournament.cs">Counter Strike Global Offensive</option>

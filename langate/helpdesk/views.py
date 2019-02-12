@@ -26,20 +26,20 @@ def open_ticket(request):
                 return redirect('helpdesk')
     else:
         sent = False
-        form =  MessageForm()
-    return render(request, 'helpdesk.html', {"form": form, "sent": sent})
+        form = MessageForm()
+    return render(request, 'helpdesk.html', {"page_name": "helpdesk", "form": form, "sent": sent})
 
 
 @staff_member_required
 def admin(request):
-    return render(request, 'admin_front.html', {"tickets": Ticket.objects.all()})
+    return render(request, 'admin_front.html', {"page_name": "helpdesk-admin", "tickets": Ticket.objects.all()})
 
 @login_required
 def view_tickets(request):
     if Ticket.objects.filter(owner=request.user).count() == 0:
         return redirect('open-ticket')
     
-    return render(request, 'ticket_viewer.html', {"tickets" : Ticket.objects.filter(owner=request.user) })
+    return render(request, 'ticket_viewer.html', {"page_name": "helpdesk", "tickets" : Ticket.objects.filter(owner=request.user) })
 
 
 @login_required
@@ -78,6 +78,14 @@ def show_ticket(request, ticket_id):
                 sent = True
     else:
         sent = False
-        form =  AnwserForm()
-    
-    return render(request, 'ticket_detail.html', {"sent": sent, "form": form, "messages": Message.objects.filter(ticket=ticket.id), "ticket": ticket})
+        form = AnwserForm()
+
+    context = {
+        "page_name": "helpdesk",
+        "sent": sent,
+        "form": form,
+        "messages": Message.objects.filter(ticket=ticket.id),
+        "ticket": ticket
+    }
+
+    return render(request, 'ticket_detail.html', context)
