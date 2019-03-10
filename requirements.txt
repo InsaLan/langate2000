@@ -1,6 +1,6 @@
-Django==2.1.5
+Django>=2.1.7,<2.2
 django-bootstrap4>=0.0.7,<0.1
-requests==2.20
-djangorestframework==3.9.0
+requests>=2.21
+djangorestframework>=3.9.2,<3.10
 pwgen>0.7
-django-crispy-forms==1.7.2
+django-crispy-forms>=1.7.2,<1.8
