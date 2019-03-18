@@ -1,4 +1,6 @@
 # Langate2000
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FInsalan-EquipeTechnique%2Finsalan-langate2000.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FInsalan-EquipeTechnique%2Finsalan-langate2000?ref=badge_shield)
+
 
 Le langate, ou langate2000 pour les intimes sera le futur portail captif de l'insalan. L'interet de ce projet est de passer sur une technologie plus facilement maintenable, souple, d'ajouter des fonctionnalités à l'ancien portail (tel qu'un futur helpdesk, un dashboard plus utile pour les joueurs) ainsi que le rendre plus rapide grâce à l'usage d'IP sets.
 
@@ -16,3 +18,7 @@ Pour déployer ce projet, il faut :
 - Enfin, installez les dépendances python ```pip3 install -U -r ./requirements.txt```
 
 Vous pouvez alors lancer le serveur de développement ```python3 manage.py runserver```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FInsalan-EquipeTechnique%2Finsalan-langate2000.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FInsalan-EquipeTechnique%2Finsalan-langate2000?ref=badge_large)
