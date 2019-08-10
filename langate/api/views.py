@@ -14,6 +14,8 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import generics
 
+from modules import networkd
+
 import random
 
 # Create your views here.
@@ -107,7 +109,10 @@ class DeviceStatus(APIView):
     def get(self, request, ident):
 
         dev = self.get_device(ident, request.user)
-        info = settings.NETWORK.get_user_info(dev.mac)
+
+        r = networkd.query("get_user_info", { "mac": dev.mac })
+
+        info = r["info"]
         
         status = "up" if info[0] else "down"
         up = info[1][1]

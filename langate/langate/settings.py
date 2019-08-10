@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 from enum import Enum
 import os
 
-from modules import network
+#from modules import network
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,7 +33,7 @@ except ModuleNotFoundError:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-SERVER_IP = 'gate.insalan'
+SERVER_IP = 'gate.insalan.fr'
 
 ALLOWED_HOSTS = ['localhost', SERVER_IP]
 
@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'portal.apps.PortalConfig',  # this also loads portal
+    #'portal.apps.PortalConfig',  # TODO: replace this
+    'portal',
     'helpdesk',
     'api',
     'bootstrap4',
@@ -148,11 +149,10 @@ AUTHENTICATION_BACKENDS = (
     'langate.insalan_auth.insalan_backend.InsalanBackend'
 )
 
-# Network management interface
-
-NETWORK = network.Ipset(mark=(100, 4))
-
 # Logging settings
+
+if not os.path.exists(os.path.join(BASE_DIR, "logs/")):
+    os.mkdir(os.path.join(BASE_DIR, "logs/")) 
 
 LOGGING = {
     'version': 1,
@@ -167,13 +167,6 @@ LOGGING = {
     },
 
     'handlers': {
-        'django_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'formatter': 'verbose',
-            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
-        },
-
         'langate_file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
@@ -183,12 +176,6 @@ LOGGING = {
     },
 
     'loggers': {
-        'django': {
-            'handlers': ['django_file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-
         'langate.events': {
             'handlers': ['langate_file'],
             'level': 'DEBUG',

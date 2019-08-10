@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.compat import MinValueValidator
 
-from modules import network
+from modules import networkd
 
 # Create your models here.
 
@@ -132,12 +132,13 @@ def create_device(sender, instance, created, **kwargs):
 
         instance.name = generate_dev_name()
 
-        instance.mac = network.get_mac(ip)
-                
+        r = networkd.query("get_mac", { "ip": ip })
+
+        instance.mac = r["mac"]
         instance.area = "LAN"  # FIXME: replace with a call to the networking module
 
-        settings.NETWORK.connect_user(instance.mac)
-
+        networkd.query("connect_user", { "mac": instance.mac })
+    
         event_logger.info("Connected device {} (owned by {}) at {} to the internet.".format(instance.mac, instance.user.username, instance.ip))
 
         instance.save()
@@ -149,4 +150,4 @@ def delete_device(sender, instance, **kwargs):
 
     event_logger.info("Disconnected device {} (owned by {}) at {} of the internet.".format(instance.mac, instance.user.username, instance.ip))
 
-    settings.NETWORK.disconnect_user(instance.mac)
+    networkd.query("disconnect_user", { "mac": instance.mac })

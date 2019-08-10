@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
-
+"""
 class PortalConfig(AppConfig):
     name = 'portal'
 
@@ -21,3 +21,4 @@ class PortalConfig(AppConfig):
         for dev in all_registered_devices:
             if dev.mac not in all_connected_devices:
                 settings.NETWORK.connect_user(dev.mac)
+"""
