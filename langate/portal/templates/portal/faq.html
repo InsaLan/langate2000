@@ -1,5 +1,5 @@
 {% extends 'portal/portal_layout.html' %}
-
+{% load static %}
 {% block title %}FAQ{% endblock %}
 {% block main %}
 
@@ -60,17 +60,6 @@
 
     </div>
 
-    <script>
-        $(".faq-question").click(function () {
-            if ($(this).attr('aria-expanded') === "false") {
-                $(this).children().removeClass("fa-caret-down");
-                $(this).children().addClass("fa-caret-up");
-            }
-            else {
-                $(this).children().removeClass("fa-caret-up");
-                $(this).children().addClass("fa-caret-down");
-            }
-        });
-    </script>
+    <script src="{% static "js/main-user.js" %}"></script>
 
 {% endblock %}

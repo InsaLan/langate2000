@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-
+{% load static %}
 {% block content %}
 
 
@@ -10,5 +10,8 @@
         {% endblock %}
 
     </div>
+
+    <script src="{% static "js/main-global.js" %}"></script>
+    <script src="{% static "js/main-user.js" %}"></script>
 
 {% endblock %}
