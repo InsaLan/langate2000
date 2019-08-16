@@ -1,3 +1,3 @@
-[submodule "langate2000-networkd"]
-	path = langate2000-networkd
-	url = git@github.com:Insalan-EquipeTechnique/langate2000-networkd.git
+[submodule "langate2000-netcontrol"]
+	path = langate2000-netcontrol
+	url = git@github.com:Insalan-EquipeTechnique/langate2000-netcontrol.git
