@@ -1,3 +1,6 @@
 [submodule "langate2000-netcontrol"]
 	path = langate2000-netcontrol
 	url = git@github.com:Insalan-EquipeTechnique/langate2000-netcontrol.git
+[submodule "theming/bootstrap"]
+	path = theming/bootstrap
+	url = https://github.com/twbs/bootstrap.git
