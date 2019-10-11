@@ -23,7 +23,7 @@ RUN mkdir -p /var/www/html/static
 # Django setup
 
 ADD langate /app/langate
-ADD langate2000-networkd /app/langate2000-networkd
+ADD langate2000-netcontrol /app/langate2000-netcontrol
 
 WORKDIR /app/langate/
 

@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.compat import MinValueValidator
 
-from modules import networkd
+from modules import netcontrol
 
 # Create your models here.
 
@@ -132,12 +132,12 @@ def create_device(sender, instance, created, **kwargs):
 
         instance.name = generate_dev_name()
 
-        r = networkd.query("get_mac", { "ip": ip })
+        r = netcontrol.query("get_mac", { "ip": ip })
 
         instance.mac = r["mac"]
         instance.area = "LAN"  # FIXME: replace with a call to the networking module
 
-        networkd.query("connect_user", { "mac": instance.mac })
+        netcontrol.query("connect_user", { "mac": instance.mac })
     
         event_logger.info("Connected device {} (owned by {}) at {} to the internet.".format(instance.mac, instance.user.username, instance.ip))
 
@@ -150,4 +150,4 @@ def delete_device(sender, instance, **kwargs):
 
     event_logger.info("Disconnected device {} (owned by {}) at {} of the internet.".format(instance.mac, instance.user.username, instance.ip))
 
-    networkd.query("disconnect_user", { "mac": instance.mac })
+    netcontrol.query("disconnect_user", { "mac": instance.mac })

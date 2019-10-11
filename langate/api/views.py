@@ -14,7 +14,7 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import generics
 
-from modules import networkd
+from modules import netcontrol
 
 import random
 
@@ -110,7 +110,7 @@ class DeviceStatus(APIView):
 
         dev = self.get_device(ident, request.user)
 
-        r = networkd.query("get_user_info", { "mac": dev.mac })
+        r = netcontrol.query("get_user_info", { "mac": dev.mac })
 
         info = r["info"]
         

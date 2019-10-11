@@ -2,7 +2,7 @@ import sys, socket, struct
 import pickle
 
 class NetworkDaemonError(RuntimeError):
-    """ every error originating from networkd raise this exception  """
+    """ every error originating from netcontrol raise this exception  """
 
 def _send(sock, data):
     pack = struct.pack('>I', len(data)) + data
@@ -28,10 +28,10 @@ def _recv(sock):
 
 
 def communicate(payload):
-    networkd_socket_file = "/var/run/langate2000-networkd.sock"
+    netcontrol_socket_file = "/var/run/langate2000-netcontrol.sock"
 
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
-        sock.connect(networkd_socket_file)
+        sock.connect(netcontrol_socket_file)
         r = pickle.dumps(payload)
         _send(sock, r)
 

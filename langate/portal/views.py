@@ -6,7 +6,7 @@ from django.contrib.auth import logout
 from django.conf import settings
 
 from .models import *
-from modules import networkd
+from modules import netcontrol
 
 # Create your views here.
 
@@ -65,7 +65,7 @@ def connected(request):
 
         #client_mac = network.get_mac(client_ip)
         
-        r = networkd.query("get_mac", { "ip": client_ip })
+        r = netcontrol.query("get_mac", { "ip": client_ip })
         client_mac = r["mac"]
 
         if Device.objects.filter(mac=client_mac).count() > 0:
