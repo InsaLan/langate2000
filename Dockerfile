@@ -12,6 +12,7 @@ RUN apt-get install -y supervisor python3 python3-pip ipset iptables sudo nginx
 
 COPY requirements.txt /app/
 RUN pip3 install -r requirements.txt
+RUN pip3 install xmltodict
 
 COPY langate2000-supervisor.conf /etc/supervisor/supervisord.conf
 
