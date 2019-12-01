@@ -33,21 +33,20 @@ def _recv(sock):
 def communicate(payload):
     netcontrol_socket_file = "/var/run/langate2000-netcontrol.sock"
 
-    lock.acquire()
-    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
-        sock.connect(netcontrol_socket_file)
-        r = pickle.dumps(payload)
-        _send(sock, r)
+    with lock:
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
+            sock.connect(netcontrol_socket_file)
+            r = pickle.dumps(payload)
+            _send(sock, r)
 
-        response_r = _recv(sock)
-        response = pickle.loads(response_r)
-        
-        if response["success"]:
-            return response
-        
-        else:
-            raise NetworkDaemonError(response["message"])
-    lock.release()
+            response_r = _recv(sock)
+            response = pickle.loads(response_r)
+
+            if response["success"]:
+                return response
+
+            else:
+                raise NetworkDaemonError(response["message"])
 
 def query(q, opts = {}):
     b = { "query": q }
