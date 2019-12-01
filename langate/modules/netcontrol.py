@@ -1,5 +1,8 @@
 import sys, socket, struct
 import pickle
+import threading
+
+lock = threading.Lock()
 
 class NetworkDaemonError(RuntimeError):
     """ every error originating from netcontrol raise this exception  """
@@ -30,6 +33,7 @@ def _recv(sock):
 def communicate(payload):
     netcontrol_socket_file = "/var/run/langate2000-netcontrol.sock"
 
+    lock.acquire()
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
         sock.connect(netcontrol_socket_file)
         r = pickle.dumps(payload)
@@ -43,6 +47,7 @@ def communicate(payload):
         
         else:
             raise NetworkDaemonError(response["message"])
+    lock.release()
 
 def query(q, opts = {}):
     b = { "query": q }
