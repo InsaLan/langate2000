@@ -113,7 +113,7 @@ class DeviceStatus(APIView):
         info = r["info"]
 
         # FIXME: was removed from langate2000-netcontrol
-        # return Response({"status": "up", "upload": info["up"], "download": info["down"], "mark": info["mark"]})
+        return Response({"mark": info["mark"]})
 
 
 class UserList(generics.ListCreateAPIView):
