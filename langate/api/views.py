@@ -109,13 +109,11 @@ class DeviceStatus(APIView):
     def get(self, request, ident):
 
         dev = self.get_device(ident, request.user)
-
-        r = netcontrol.query("get_user_info", { "ip": dev.ip })
-
+        r = netcontrol.query("get_user_info", { "mac": dev.mac })
         info = r["info"]
-        
+
         # FIXME: was removed from langate2000-netcontrol
-        return Response({"status": "up", "upload": info["up"], "download": info["down"], "mark": info["mark"]})
+        # return Response({"status": "up", "upload": info["up"], "download": info["down"], "mark": info["mark"]})
 
 
 class UserList(generics.ListCreateAPIView):
@@ -258,4 +256,3 @@ class PizzaSlotDetails(generics.RetrieveDestroyAPIView):
 
     queryset = PizzaSlot.objects.all()
     serializer_class = PizzaSlotSerializer
-

@@ -137,8 +137,8 @@ def create_device(sender, instance, created, **kwargs):
         instance.mac = r["mac"]
         instance.area = "LAN"  # FIXME: replace with a call to the networking module
 
-        netcontrol.query("connect_user", { "ip": ip, "name": instance.user.username })
-    
+        netcontrol.query("connect_user", { "mac": instance.mac, "name": instance.user.username })
+
         event_logger.info("Connected device {} (owned by {}) at {} to the internet.".format(instance.mac, instance.user.username, instance.ip))
 
         instance.save()
