@@ -22,15 +22,8 @@ RUN mkdir -p /var/www/html/static
 
 # Django setup
 
-ADD theming /app/theming
 ADD langate /app/langate
 ADD langate2000-netcontrol /app/langate2000-netcontrol
-
-WORKDIR /app/theming
-
-# Sass build
-
-#RUN sass insalan.scss ../langate/static/css/langate.css
 
 WORKDIR /app/langate/
 

@@ -1,5 +1,12 @@
 // Color scheme definition
 
+$theme-colors: (
+       "dark": #313339,
+       "secondary": #545b62,
+       "success": #00ae18,
+       "danger": #f25435
+);
+
 $color-dark-grey: #313339;
 $color-darker-grey: #36393f;
 $color-lighter-grey: #b9bbbe;
@@ -10,6 +17,9 @@ $color-light-grey: rgba(0, 0, 0, .3);
 $color-light-white: rgba(255, 255, 255, .15);
 $color-light-black: #2a2a2a;
 
+$alert-color-level: 0;
+$alert-border-level: 1;
+
 // bootstrap variables overrides
 
 $body-bg: $color-darker-grey;
@@ -18,14 +28,6 @@ $body-color: $color-grey;
 //$link-color: $color-grey;
 //$link-hover-color: $color-white;
 $link-hover-decoration: none;
-
-$theme-colors: (
-	"dark": #313339,
-	"primary": #007bff,
-	"secondary": #545b62,
-	"success": #00ae18,
-	"danger": #f25435
-);
 
 $navbar-dark-color: $color-grey;
 $navbar-dark-active-color: $color-white;
@@ -42,16 +44,17 @@ $input-color: $color-grey;
 $input-border-width: 1px;
 $input-border-color: $color-light-grey;
 $input-border-radius: 3px;
+$input-focus-border-color: transparent;
 
 $card-bg: $color-dark-grey;
 $card-border-width: 1px;
 $card-border-color: $color-light-grey;
 
 $modal-content-bg: $color-darker-grey;
-$modal-header-border-width: 1px;
-$modal-header-border-color: $color-light-white;
-$modal-footer-border-width: 1px;
-$modal-footer-border-color: $color-light-white;
+$modal-header-border-width: 0px;
+//$modal-header-border-color: $color-light-white;
+$modal-footer-border-width: 0px;
+//$modal-footer-border-color: $color-light-white;
 
 $pagination-bg: $color-mid-grey;
 $pagination-color: $color-white;
@@ -67,6 +70,8 @@ $nav-tabs-link-hover-border-color: $color-light-grey;
 $nav-tabs-border-color: $color-light-grey;
 
 $nav-pills-link-active-bg: $color-mid-grey;
+
+$close-color: $color-light-grey;
 
 @import "bootstrap/scss/bootstrap";
 
@@ -88,6 +93,10 @@ $nav-pills-link-active-bg: $color-mid-grey;
     .modal-xl {
         max-width: 1000px;
     }
+}
+
+.modal-header {
+	color: $color-white !important;
 }
 
 // Custom rules
