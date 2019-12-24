@@ -1,0 +1,179 @@
+// Color scheme definition
+
+$theme-colors: (
+       "dark": #313339,
+       "secondary": #545b62,
+       "success": #00ae18,
+       "danger": #f25435
+);
+
+$color-dark-grey: #313339;
+$color-darker-grey: #36393f;
+$color-lighter-grey: #b9bbbe;
+$color-grey: #afb3aa;
+$color-mid-grey: #545b62;
+$color-white: #fff;
+$color-light-grey: rgba(0, 0, 0, .3);
+$color-light-white: rgba(255, 255, 255, .15);
+$color-light-black: #2a2a2a;
+
+$alert-color-level: 0;
+$alert-border-level: 1;
+
+// bootstrap variables overrides
+
+$body-bg: $color-darker-grey;
+$body-color: $color-grey;
+
+//$link-color: $color-grey;
+//$link-hover-color: $color-white;
+$link-hover-decoration: none;
+
+$navbar-dark-color: $color-grey;
+$navbar-dark-active-color: $color-white;
+
+$table-bg: $color-dark-grey;
+$table-border-width: .2px;
+$table-border-color: $color-light-grey;
+$table-head-border-color: $color-light-grey;
+$table-cell-vertical-align: middle;
+
+$input-bg: $color-dark-grey;
+$input-disabled-bg: $color-light-black;
+$input-color: $color-grey;
+$input-border-width: 1px;
+$input-border-color: $color-light-grey;
+$input-border-radius: 3px;
+$input-focus-border-color: transparent;
+
+$card-bg: $color-dark-grey;
+$card-border-width: 1px;
+$card-border-color: $color-light-grey;
+
+$modal-content-bg: $color-darker-grey;
+$modal-header-border-width: 0px;
+//$modal-header-border-color: $color-light-white;
+$modal-footer-border-width: 0px;
+//$modal-footer-border-color: $color-light-white;
+
+$pagination-bg: $color-mid-grey;
+$pagination-color: $color-white;
+$pagination-border-color: $color-light-grey;
+$pagination-hover-border-color: $color-light-grey;
+$pagination-active-border-color: $color-light-grey;
+$pagination-disabled-bg: $color-dark-grey;
+$pagination-disabled-color: $color-white;
+$pagination-disabled-border-color: $color-light-grey;
+
+$nav-tabs-link-active-bg: $color-dark-grey;
+$nav-tabs-link-hover-border-color: $color-light-grey;
+$nav-tabs-border-color: $color-light-grey;
+
+$nav-pills-link-active-bg: $color-mid-grey;
+
+$close-color: $color-light-grey;
+
+@import "bootstrap/scss/bootstrap";
+
+// Bootstrap rules extensions
+
+.card-title {
+	color: $color-white;
+}
+
+.alert {
+	background-color: transparent;
+}
+
+.form-group {
+	margin-bottom: 1.5rem;
+}
+
+@media (min-width: 1200px) {
+    .modal-xl {
+        max-width: 1000px;
+    }
+}
+
+.modal-header {
+	color: $color-white !important;
+}
+
+// Custom rules
+
+html, body {
+    height: 100%; // needed for the sticky footer
+}
+
+%small-letters-header {
+    color: $color-lighter-grey;
+    font-size: small;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.form-auth label {
+    @extend %small-letters-header;
+}
+
+.logo-connected {
+    width: 17rem;
+}
+
+.table-sm .fas {
+    font-size: .85rem; // icons in buttons have to be smaller when used in a small table
+}
+
+// Pulsing logo
+
+@keyframes beat {
+    to { transform: scale(1.05) }
+}
+
+.logo-connected {
+    animation: beat 2s infinite alternate;
+    transform-origin: center;
+}
+
+// Custom footer
+
+.footer-insalan {
+
+    font-size: 0.9rem;
+    color: $color-lighter-grey;
+    padding-top: 3rem;
+
+    ul li {
+        display: inline-block;
+        padding-left: 6px;
+        padding-right: 6px;
+        border-left-style: solid;
+        border-left-width: 1px;
+        line-height: 1em;
+        border-color: $color-light-white;
+    }
+    
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+}
+
+// Custom FAQ section
+
+
+.faq-cat-header {
+    @extend %small-letters-header;
+    border-bottom: 1px solid $color-light-white;
+    padding-bottom: 5px;
+}
+
+.faq-answer-container {
+    padding-bottom: 10px;
+}
+
+.faq-question .material-icons {
+    vertical-align: middle;
+}

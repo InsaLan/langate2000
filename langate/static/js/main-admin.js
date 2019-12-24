@@ -125,9 +125,9 @@ function reload_user_details(id) {
 			"<td>" + data["mark"] + "</td>\n" +
 			"<td>" + devStatus + "</td>\n" +
 			"<td>\n" +
-			"<div aria-label=\"Actions\">" +
-			//"<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Consommation données\" class=\"btn btn-sec-insalan device-usage-graph-btn\" data-deviceid=\"" + dev['id'] + "\" aria-label=\"Consommation données\"><span class=\"fas fa-chart-area\" aria-hidden=\"true\"></span></button>\n" +
-			"<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-sec-insalan delete-device-btn\" data-deviceid=\"" + dev['id'] + "\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+			"<div class=\"text-center\" aria-label=\"Actions\">" +
+			//"<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Consommation données\" class=\"btn btn-sec device-usage-graph-btn\" data-deviceid=\"" + dev['id'] + "\" aria-label=\"Consommation données\"><span class=\"fas fa-chart-area\" aria-hidden=\"true\"></span></button>\n" +
+			"<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-secondary btn-sm delete-device-btn\" data-deviceid=\"" + dev['id'] + "\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
 			"</div>" +
 			"</td>\n" +
 			"</tr>\n" +
@@ -358,7 +358,7 @@ $("#create-user-btn").click( function () {
 	    if ($("#create-user-password").val() == "") {
 		$.getJSON("/api/user_password/" + result["id"], function (data) {
 		    $("#create-user-feedback").removeClass("d-none");
-		    $("#create-user-feedback").append("<div class=\"alert alert-success-insalan\" role=\"alert\"><strong>Utilisateur " + result["username"] + " créé avec succès !</strong><br>Mot de passe de connexion : <strong>" + data["password"] + "</strong>.</div>")
+		    $("#create-user-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Utilisateur " + result["username"] + " créé avec succès !</strong><br>Mot de passe de connexion : <strong>" + data["password"] + "</strong>.</div>")
 		});
 	    }
 
@@ -370,7 +370,7 @@ $("#create-user-btn").click( function () {
 		    data : JSON.stringify({ "password" : $("#create-user-password").val() }),
 
 		    success: function(data) {
-			$("#create-user-feedback").append("<div class=\"alert alert-success-insalan\" role=\"alert\"><strong>Utilisateur " + result["username"] + " créé avec succès !</strong></div>")
+			$("#create-user-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Utilisateur " + result["username"] + " créé avec succès !</strong></div>")
 		    },
 
 		    error: function (xhr, textStatus, errorThrown) {
@@ -492,7 +492,7 @@ function reload_pizza_slots_table() {
                     "                    <td>" + a.delivery + "</td>\n" +
                     "                    <td>\n" +
                     "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer le créneau\" class=\"btn btn-sec-insalan delete-pizza-slot-btn\" data-slotid=\"" + a.id + "\" aria-label=\"Supprimer le créneau\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer le créneau\" class=\"btn btn-sec delete-pizza-slot-btn\" data-slotid=\"" + a.id + "\" aria-label=\"Supprimer le créneau\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
                     "                        </div>\n" +
                     "                    </td>\n" +
                     "                </tr>");
@@ -531,8 +531,8 @@ function reload_announces_table() {
                     "                    <td>" + ( (a.visible) ? "<span class=\"badge badge-success\"><i class=\"fas fa-check\"></i></span>" : "<span class=\"badge badge-danger\"><i class=\"fas fa-times\"></i></span>" ) + "</td>\n" +
                     "                    <td>\n" +
                     "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'annonce\" class=\"btn btn-sec-insalan modify-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Modifier l'annonce\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
-                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'annonce\" class=\"btn btn-sec-insalan delete-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Supprimer l'annonce\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'annonce\" class=\"btn btn-sec modify-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Modifier l'annonce\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
+                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'annonce\" class=\"btn btn-sec delete-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Supprimer l'annonce\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
                     "                        </div>\n" +
                     "                    </td>\n" +
                     "                </tr>");
@@ -731,7 +731,7 @@ $("#realtime-confirm-btn").click(function () {
         success: function (result) {
             reload_realtime_status_settings();
                                                                                                                                                                                                                                                                                                                                                        
-            $("#realtime-feedback").append("<div class=\"alert alert-success-insalan\" role=\"alert\"><strong>Mise à jour effectuée.</strong></div>");
+            $("#realtime-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Mise à jour effectuée.</strong></div>");
             setTimeout(function () { $("#realtime-feedback").empty() }, 6000);
         },
                                                                                                                                                                                                                                                                                                                                                        
@@ -821,7 +821,7 @@ $("#pizzas-confirm-btn").click(function () {
         success: function (result) {
             reload_pizza_slots_table();
                                                                                                                                                                                                                                                                                                                                                        
-            $("#pizzas-feedback").append("<div class=\"alert alert-success-insalan\" role=\"alert\"><strong>Mise à jour effectuée.</strong></div>");
+            $("#pizzas-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Mise à jour effectuée.</strong></div>");
             setTimeout(function () { $("#pizzas-feedback").empty() }, 6000);
         },
                                                                                                                                                                                                                                                                                                                                                        

@@ -4,4 +4,5 @@ requests>=2.21
 djangorestframework==3.9.3
 pwgen>0.7
 django-crispy-forms>=1.7.2,<1.8
-gunicorn==19.9.0
+gunicorn
+xmltodict
