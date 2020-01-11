@@ -65,15 +65,19 @@ $pagination-disabled-bg: $color-dark-grey;
 $pagination-disabled-color: $color-white;
 $pagination-disabled-border-color: $color-light-grey;
 
-$nav-tabs-link-active-bg: $color-dark-grey;
-$nav-tabs-link-hover-border-color: $color-light-grey;
-$nav-tabs-border-color: $color-light-grey;
+$nav-tabs-link-active-color: #fff;
+$nav-tabs-link-hover-border-color: #696b6f;
+$nav-tabs-border-color: #696b6f;
+$nav-tabs-link-active-bg: transparent;
 
 $nav-pills-link-active-bg: $color-mid-grey;
 
 $close-color: $color-light-grey;
+$badge-color: #313339;
 
 @import "bootstrap/scss/bootstrap";
+@import "bootstrap/scss/bootstrap-reboot";
+@import "bootstrap/scss/bootstrap-utilities";
 
 // Bootstrap rules extensions
 
