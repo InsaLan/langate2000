@@ -108,11 +108,11 @@ function reload_user_details(id) {
 		    switch (data["status"]) {
 
 			case "up":
-			    devStatus = "<span class=\"badge badge-success\"><i class=\"fas fa-check\"></i></span>";
+			    devStatus = "<span class=\"badge bg-success\"><i class=\"fas fa-check\"></i></span>";
 			    break;
 
 			case "down":
-			    devStatus = "<span class=\"badge badge-warning\"><i class=\"fas fa-times\"></i></span>";
+			    devStatus = "<span class=\"badge bg-warning\"><i class=\"fas fa-times\"></i></span>";
 			    break;
 
 		    }
@@ -492,7 +492,7 @@ function reload_pizza_slots_table() {
                     "                    <td>" + a.delivery + "</td>\n" +
                     "                    <td>\n" +
                     "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer le créneau\" class=\"btn btn-sec delete-pizza-slot-btn\" data-slotid=\"" + a.id + "\" aria-label=\"Supprimer le créneau\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer le créneau\" class=\"btn btn-sm btn-secondary delete-pizza-slot-btn\" data-slotid=\"" + a.id + "\" aria-label=\"Supprimer le créneau\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
                     "                        </div>\n" +
                     "                    </td>\n" +
                     "                </tr>");
@@ -528,11 +528,11 @@ function reload_announces_table() {
                     "                    <th scope=\"row\">" + i + "</th>\n" +
                     "                    <td>" + a.title + "</td>\n" +
                     "                    <td>" + content + "</td>\n" +
-                    "                    <td>" + ( (a.visible) ? "<span class=\"badge badge-success\"><i class=\"fas fa-check\"></i></span>" : "<span class=\"badge badge-danger\"><i class=\"fas fa-times\"></i></span>" ) + "</td>\n" +
+                    "                    <td>" + ( (a.visible) ? "<span class=\"badge bg-success\"><i class=\"fas fa-check\"></i></span>" : "<span class=\"badge bg-danger\"><i class=\"fas fa-times\"></i></span>" ) + "</td>\n" +
                     "                    <td>\n" +
                     "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'annonce\" class=\"btn btn-sec modify-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Modifier l'annonce\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
-                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'annonce\" class=\"btn btn-sec delete-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Supprimer l'annonce\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'annonce\" class=\"btn btn-sm btn-secondary modify-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Modifier l'annonce\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
+                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'annonce\" class=\"btn btn-sm btn-secondary delete-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Supprimer l'annonce\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
                     "                        </div>\n" +
                     "                    </td>\n" +
                     "                </tr>");

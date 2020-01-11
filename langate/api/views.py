@@ -113,14 +113,9 @@ class DeviceStatus(APIView):
         r = netcontrol.query("get_user_info", { "mac": dev.mac })
 
         info = r["info"]
-        
-        status = "up" if info[0] else "down"
-        up = info[1][1]
-        down = info[1][0]
-        mark = info[2]
 
-        return Response({"status": status, "upload": up, "download": down, "mark": mark})
-
+        # FIXME: was removed from langate2000-netcontrol
+        return Response({"status": "up", "mark": info["mark"]})
 
 class UserList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAdminUser,)
