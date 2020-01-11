@@ -150,4 +150,4 @@ def delete_device(sender, instance, **kwargs):
 
     event_logger.info("Disconnected device {} (owned by {}) at {} of the internet.".format(instance.mac, instance.user.username, instance.ip))
 
-    netcontrol.query("disconnect_user", { "ip": instance.ip })
+    netcontrol.query("disconnect_user", { "mac": instance.mac })
