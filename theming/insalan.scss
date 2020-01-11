@@ -1,78 +1,88 @@
 // Color scheme definition
 
+// from dark to light grey
+$color-mine-shaft: #2a2a2a;
+$color-tuna: #313339;
+$color-tuna-darker: #36393f;
+$color-abbey: #545b62;
+$color-bud: #afb3aa;
+$color-silver-sand: #b9bbbe;
+
+$color-white: #fff;
+
+// green
+$color-green-haze: #00ae18;
+
+// red
+$color-flamingo: #f25435;
+
 $theme-colors: (
-       "dark": #313339,
-       "secondary": #545b62,
-       "success": #00ae18,
-       "danger": #f25435
+       "dark": $color-tuna,
+       "secondary": $color-abbey,
+       "success": $color-green-haze,
+       "danger": $color-flamingo
 );
 
-$color-dark-grey: #313339;
-$color-darker-grey: #36393f;
-$color-lighter-grey: #b9bbbe;
-$color-grey: #afb3aa;
-$color-mid-grey: #545b62;
-$color-white: #fff;
-$color-light-grey: rgba(0, 0, 0, .3);
-$color-light-white: rgba(255, 255, 255, .15);
-$color-light-black: #2a2a2a;
+
+$color-black-transparent: rgba(0, 0, 0, .3);
+$color-white-transparent: rgba(255, 255, 255, .15);
 
 $alert-color-level: 0;
 $alert-border-level: 1;
 
 // bootstrap variables overrides
 
-$body-bg: $color-darker-grey;
-$body-color: $color-grey;
+$body-bg: $color-tuna-darker;
+$body-color: $color-bud;
 
-//$link-color: $color-grey;
+//$link-color: $color-bud;
 //$link-hover-color: $color-white;
 $link-hover-decoration: none;
 
-$navbar-dark-color: $color-grey;
+$navbar-dark-color: $color-bud;
 $navbar-dark-active-color: $color-white;
 
-$table-bg: $color-dark-grey;
+$table-bg: $color-tuna;
 $table-border-width: .2px;
-$table-border-color: $color-light-grey;
-$table-head-border-color: $color-light-grey;
+$table-border-color: $color-black-transparent;
+$table-head-border-color: $color-black-transparent;
 $table-cell-vertical-align: middle;
 
-$input-bg: $color-dark-grey;
-$input-disabled-bg: $color-light-black;
-$input-color: $color-grey;
+$input-bg: $color-tuna;
+$input-disabled-bg: $color-mine-shaft;
+$input-color: $color-bud;
 $input-border-width: 1px;
-$input-border-color: $color-light-grey;
+$input-border-color: $color-black-transparent;
 $input-border-radius: 3px;
 $input-focus-border-color: transparent;
 
-$card-bg: $color-dark-grey;
+$card-bg: $color-tuna;
 $card-border-width: 1px;
-$card-border-color: $color-light-grey;
+$card-border-color: $color-black-transparent;
 
-$modal-content-bg: $color-darker-grey;
+$modal-content-bg: $color-tuna-darker;
 $modal-header-border-width: 0px;
-//$modal-header-border-color: $color-light-white;
+//$modal-header-border-color: $color-white-transparent;
 $modal-footer-border-width: 0px;
-//$modal-footer-border-color: $color-light-white;
+//$modal-footer-border-color: $color-white-transparent;
 
-$pagination-bg: $color-mid-grey;
+$pagination-bg: $color-abbey;
 $pagination-color: $color-white;
-$pagination-border-color: $color-light-grey;
-$pagination-hover-border-color: $color-light-grey;
-$pagination-active-border-color: $color-light-grey;
-$pagination-disabled-bg: $color-dark-grey;
+$pagination-border-color: $color-black-transparent;
+$pagination-hover-border-color: $color-black-transparent;
+$pagination-active-border-color: $color-black-transparent;
+$pagination-disabled-bg: $color-tuna;
 $pagination-disabled-color: $color-white;
-$pagination-disabled-border-color: $color-light-grey;
+$pagination-disabled-border-color: $color-black-transparent;
 
 $nav-tabs-link-active-color: #fff;
 $nav-tabs-link-hover-border-color: #696b6f;
 $nav-tabs-border-color: #696b6f;
 $nav-tabs-link-active-bg: transparent;
 
-$nav-pills-link-active-bg: $color-mid-grey;
+$nav-pills-link-active-bg: $color-abbey;
 
-$close-color: $color-light-grey;
+$close-color: $color-black-transparent;
 $badge-color: #313339;
 
 @import "bootstrap/scss/bootstrap";
@@ -110,7 +120,7 @@ html, body {
 }
 
 %small-letters-header {
-    color: $color-lighter-grey;
+    color: $color-silver-sand;
     font-size: small;
     letter-spacing: .5px;
     text-transform: uppercase;
@@ -145,7 +155,7 @@ html, body {
 .footer-insalan {
 
     font-size: 0.9rem;
-    color: $color-lighter-grey;
+    color: $color-silver-sand;
     padding-top: 3rem;
 
     ul li {
@@ -155,7 +165,7 @@ html, body {
         border-left-style: solid;
         border-left-width: 1px;
         line-height: 1em;
-        border-color: $color-light-white;
+        border-color: $color-white-transparent;
     }
     
     ul {
@@ -170,7 +180,7 @@ html, body {
 
 .faq-cat-header {
     @extend %small-letters-header;
-    border-bottom: 1px solid $color-light-white;
+    border-bottom: 1px solid $color-white-transparent;
     padding-bottom: 5px;
 }
 

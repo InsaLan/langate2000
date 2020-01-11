@@ -115,7 +115,6 @@ class DeviceStatus(APIView):
         # FIXME: was removed from langate2000-netcontrol
         return Response({"mark": info["mark"]})
 
-
 class UserList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
