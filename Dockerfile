@@ -8,10 +8,12 @@ ENV LANG=C.UTF-8
 # installing deps
 
 RUN apt-get update
-RUN apt-get install -y supervisor python3 python3-pip ipset iptables sudo nginx
+RUN apt-get install -y supervisor python3 python3-pip ipset iptables sudo nginx ruby ruby-dev
+RUN gem install sass
 
 COPY requirements.txt /app/
 RUN pip3 install -r requirements.txt
+RUN pip3 install xmltodict
 
 COPY langate2000-supervisor.conf /etc/supervisor/supervisord.conf
 
@@ -22,8 +24,13 @@ RUN mkdir -p /var/www/html/static
 
 # Django setup
 
+ADD theming /app/theming
 ADD langate /app/langate
 ADD langate2000-netcontrol /app/langate2000-netcontrol
+
+WORKDIR /app/theming/
+
+RUN sass insalan.scss ../langate/static/css/langate.css
 
 WORKDIR /app/langate/
 
