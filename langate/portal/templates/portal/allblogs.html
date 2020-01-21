@@ -1,0 +1,17 @@
+
+{% block content %}
+    {% csrf_token %} <!-- Token needed for AJAX calls -->
+	<body>
+		<h1>Administration des articles</h1>
+		<br /> <br />
+	 	<h2>Dernières actus</h2>
+	 	<hr/>
+	{% for blog in blogs.all reversed %}
+		<a href="{% url 'detail' blog.id %}">  <h3>{{ blog.title }}</h3></a>
+		{{ blog.pub_date_pretty }}
+		<br/>
+    <p>{{ blog.summary }} ... </p>
+    <a href="{% url 'detail' blog.id %}"> Lire la suite ! <a>
+  {% endfor %}
+	</body>
+{% endblock %}

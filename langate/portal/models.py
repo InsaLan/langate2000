@@ -47,6 +47,18 @@ class Status(Enum):
     U = "unstable"
     F = "fail"
 
+class Blog(models.Model):
+    title = models.CharField(max_length=255)
+    pub_date = models.DateTimeField()
+    image_link = models.CharField(max_length=255)
+    body = models.TextField()
+
+    def summary(self):
+        return self.body[:100]
+    def pub_date_pretty(self):
+        return self.pub_date.strftime('%b %e, %Y')
+    def __str__(self):
+        return self.title
 
 class Profile(models.Model):
     # DOCU related : https://docs.djangoproject.com/en/2.0/topics/auth/customizing/#extending-user

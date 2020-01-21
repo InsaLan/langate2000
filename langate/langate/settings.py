@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'api',
     'bootstrap4',
     'rest_framework',
-    'crispy_forms'
+    'crispy_forms',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
@@ -152,7 +152,7 @@ AUTHENTICATION_BACKENDS = (
 # Logging settings
 
 if not os.path.exists(os.path.join(BASE_DIR, "logs/")):
-    os.mkdir(os.path.join(BASE_DIR, "logs/")) 
+    os.mkdir(os.path.join(BASE_DIR, "logs/"))
 
 LOGGING = {
     'version': 1,
