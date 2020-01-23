@@ -3,6 +3,7 @@ from .models import Blog
 
 admin.site.register(Blog)
 
+
 # Register your models here.
 
 from django.contrib.auth.admin import UserAdmin

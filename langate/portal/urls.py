@@ -12,7 +12,8 @@ urlpatterns = [
     path('management/widgets', views.widgets, name='widgets'),
     #path('management/<int:number>', views.articles),
     path('blog/', views.allblogs , name='allblogs'),
+    path('blog/articles', views.articles , name='articles'),
     path('blog/<int:blog_id>/', views.detail, name="detail"),
     path('faq', views.faq, name='faq'),
-    path('disconnect', views.disconnect, name='disconnect')
+    path('disconnect', views.disconnect, name='disconnect'),
 ]

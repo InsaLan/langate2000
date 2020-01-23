@@ -50,7 +50,6 @@ class Status(Enum):
 class Blog(models.Model):
     title = models.CharField(max_length=255)
     pub_date = models.DateTimeField()
-    image_link = models.CharField(max_length=255)
     body = models.TextField()
 
     def summary(self):

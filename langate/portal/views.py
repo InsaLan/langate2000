@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
+import markdown
 
 
 from .models import *
@@ -59,6 +60,20 @@ def allblogs(request):
 def detail(request, blog_id):
     blogdetail = get_object_or_404(Blog, pk=blog_id)
     return render(request, 'portal/detail.html', {'blog':blogdetail})
+
+@staff_member_required
+def articles(request):
+    title = request.POST.get('title');
+    pub_date = request.POST.get('pub_date');
+    body = request.POST.get('body');
+    if (title != None and pub_date != None and body != None):
+        md = markdown.Markdown()
+        html1 = md.convert(body)
+        Blog.objects.create(title=title,pub_date=pub_date,body=html1)
+
+    context = {"page_name": "articles"}
+    return render(request, 'portal/article.html', context)
+
 
 @login_required
 def connected(request):
