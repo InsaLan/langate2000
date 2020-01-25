@@ -18,13 +18,13 @@
             <a class="navbar-brand" href="#"></a>
             <ul class="nav nav-pills">
                 <li class="nav-item">
-                    <button type="button" class="btn btn-insalan align-right" data-toggle="modal" data-target="#create-user-modal">Nouvel utilisateur</button>
+                    <button type="button" class="btn btn-primary align-right" data-toggle="modal" data-target="#create-user-modal">Nouvel utilisateur</button>
                 </li>
             </ul>
         </nav>
 
 
-        <table id="user-table" class="table table-sm table-insalan">
+        <table id="user-table" class="table table-sm table-bordered">
             <thead>
             <tr>
                 <th scope="col">#</th>
@@ -33,7 +33,7 @@
                 <th scope="col">Rôle</th>
                 <th scope="col">Tournoi</th>
                 <th scope="col">Équipe</th>
-                <th scope="col" class="col-actions-admin-insalan">Actions</th>
+		<th scope="col" style="width: 10%;">Actions</th>
             </tr>
             </thead>
         </table>
@@ -184,11 +184,11 @@
                     {
                         "render": function ( data, type, row ) {
 
-                            let html = "<div role=\"group\" class=\"btn-group\" aria-label=\"Actions\">\n" +
-                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'utilisateur\" class=\"btn btn-sec-insalan modify-user-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
-                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Regénérer le mot de passe\" class=\"btn btn-sec-insalan user-password-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-key\" aria-hidden=\"true\"></span></button>\n" +
-                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Appareils enregistrés\" class=\"btn btn-sec-insalan user-details-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-globe\" aria-hidden=\"true\"></span></button>\n" +
-                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'utilisateur\" class=\"btn btn-sec-insalan delete-user-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                            let html = "<div role=\"group\" class=\"btn-group btn-group-sm\" aria-label=\"Actions\">\n" +
+                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'utilisateur\" class=\"btn btn-secondary modify-user-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
+                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Regénérer le mot de passe\" class=\"btn btn-secondary user-password-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-key\" aria-hidden=\"true\"></span></button>\n" +
+                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Appareils enregistrés\" class=\"btn btn-secondary user-details-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-globe\" aria-hidden=\"true\"></span></button>\n" +
+                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'utilisateur\" class=\"btn btn-secondary delete-user-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
                                     "</div>";
 
                             return html;

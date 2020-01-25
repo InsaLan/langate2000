@@ -9,13 +9,13 @@ function reload_device_table() {
             let current_dev = (dev.ip == current_ip) ? "yes" : "no";
                                                                                                                                                                                                                                                                                                                                                                                   
             $("#device-table").append("<tr>\n" +
-                "                    <th scope=\"row\">"+i+"</th>\n" +
-                "                    <td>"+dev.name+dev_hint+"</td>\n" +
-                "                    <td>"+dev.area+"</td>\n" +
-                "                    <td>\n" +
+                "                    <th class=\"align-middle\" scope=\"row\">"+i+"</th>\n" +
+                "                    <td class=\"align-middle\">"+dev.name+dev_hint+"</td>\n" +
+                "                    <td class=\"align-middle\">"+dev.area+"</td>\n" +
+                "                    <td class=\"align-middle\">\n" +
                 "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'appareil\" class=\"btn btn-sec-insalan modify-device-btn\" data-deviceid=\""+dev.id+"\" data-iscurrent=\""+current_dev+"\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
-                "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-sec-insalan delete-device-btn\" data-deviceid=\""+dev.id+"\" data-iscurrent=\""+current_dev+"\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'appareil\" class=\"btn btn-secondary btn-sm modify-device-btn\" data-deviceid=\""+dev.id+"\" data-iscurrent=\""+current_dev+"\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
+                "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-secondary btn-sm delete-device-btn\" data-deviceid=\""+dev.id+"\" data-iscurrent=\""+current_dev+"\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
                 "                        </div>\n" +
                 "                    </td>\n" +
                 "                </tr>");
