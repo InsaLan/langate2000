@@ -1,6 +1,6 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
@@ -10,7 +10,7 @@ from modules import netcontrol
 
 # Create your views here.
 
-
+"""
 def get_widgets():
 
     return {
@@ -31,21 +31,53 @@ def get_widgets():
             "slots": PizzaSlot.objects.all()
         }
     }
+"""
 
+@staff_member_required
+def announces(request):
+    context = {"page_name": "management_announces"}
+    return render(request, 'portal/management_announces.html', context)
 
 @staff_member_required
 def management(request):
     context = {"page_name": "management"}
-
     return render(request, 'portal/management.html', context)
 
-
+"""
 @staff_member_required
 def widgets(request):
     context = {"page_name": "management_widgets"}
-
     return render(request, 'portal/management_widgets.html', context)
 
+#@staff_member_required
+#def announces(request,number):
+#    context = {"page_name": "management_widgets",}
+#    return render(request, 'portal/management_announces', locals())
+
+@login_required
+def allblogs(request):
+    blogs = Blog.objects
+    return render(request, 'portal/allblogs.html', {'blogs':blogs})
+
+@login_required
+def detail(request, blog_id):
+    blogdetail = get_object_or_404(Blog, pk=blog_id)
+    return render(request, 'portal/detail.html', {'blog':blogdetail})
+"""
+"""
+@staff_member_required
+def announces(request):
+    title = request.POST.get('title');
+    pub_date = request.POST.get('pub_date');
+    body = request.POST.get('body');
+    if (title != None and pub_date != None and body != None):
+        md = markdown.Markdown()
+        html1 = md.convert(body)
+        Blog.objects.create(title=title,pub_date=pub_date,body=html1)
+
+    context = {"page_name": "announces"}
+    return render(request, 'portal/article.html', context)
+"""
 
 @login_required
 def connected(request):
@@ -56,7 +88,9 @@ def connected(request):
     context = {"page_name": "connected",
                "too_many_devices": False,
                "current_ip": client_ip,
-               "widgets": get_widgets(),
+               "is_announce_panel_visible": Announces.objects.filter(visible=True).count() > 0,
+               "pinned_announces": Announces.objects.filter(pinned=True).order_by('-last_update_date'),
+               "announces": Announces.objects.filter(pinned=False).order_by('-last_update_date'),
                "device_quota": request.user.profile.max_device_nb}
 
     # Checking if the device accessing the gate is already in user devices
@@ -64,7 +98,7 @@ def connected(request):
     if not user_devices.filter(ip=client_ip).exists():
 
         #client_mac = network.get_mac(client_ip)
-        
+
         r = netcontrol.query("get_mac", { "ip": client_ip })
         client_mac = r["mac"]
 
@@ -103,8 +137,8 @@ def connected(request):
 
             dev = Device(user=request.user, ip=client_ip)
             dev.save()
-    
-    # TODO: What shall we do if an user attempts to connect with a device that has the same IP 
+
+    # TODO: What shall we do if an user attempts to connect with a device that has the same IP
     # that another device already registered (ie in the Device array) but from a different user account ?
     # We could either kick out the already registered user from the network or refuse the connection of
     # the device that attempts to connect.
@@ -114,7 +148,7 @@ def connected(request):
 
 @login_required
 def disconnect(request):
-    
+
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
 
@@ -129,7 +163,11 @@ def disconnect(request):
 
 
 def faq(request):
-    context = {"page_name": "faq", "widgets": get_widgets()}
+    context = {
+        "page_name": "faq",
+        "is_announce_panel_visible": Announces.objects.filter(visible=True).count() > 0,
+        "pinned_announces": Announces.objects.filter(pinned=True).order_by('-last_update_date'),
+        "announces": Announces.objects.filter(pinned=False).order_by('-last_update_date'),
+    }
 
     return render(request, 'portal/faq.html', context)
-

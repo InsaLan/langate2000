@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'api',
     'bootstrap4',
     'rest_framework',
-    'crispy_forms'
+    'crispy_forms',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
@@ -136,6 +136,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
 STATIC_ROOT = '/var/www/html/static'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
@@ -152,7 +153,7 @@ AUTHENTICATION_BACKENDS = (
 # Logging settings
 
 if not os.path.exists(os.path.join(BASE_DIR, "logs/")):
-    os.mkdir(os.path.join(BASE_DIR, "logs/")) 
+    os.mkdir(os.path.join(BASE_DIR, "logs/"))
 
 LOGGING = {
     'version': 1,

@@ -68,7 +68,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        profile_data = validated_data.pop('profile') # the profile should always exist
+        profile_data = validated_data.pop('profile')  # the profile should always exist
         profile = instance.profile
 
         instance.username = validated_data.get('username', instance.username)
@@ -89,54 +89,33 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'first_name', 'last_name', 'username', 'email', 'is_active', 'profile')
 
+class AnnounceSerializer(serializers.ModelSerializer):
+    body = serializers.RegexField("^[^\\<\\>]+$")  # disallow < and > characters as they could be used for injections
 
-class AnnounceWidgetSerializer(serializers.ModelSerializer):
-    title = serializers.RegexField("^[^\\<\\>]+$", max_length=50)
-    content = serializers.RegexField("^[^\\<\\>]+$")
+    """
+    def create(self, validated_data):
+        markdown_body = validated_data.pop('body', "")
+        html_body = Markdown().convert(markdown_body)
 
-    class Meta:
-        model = AnnounceWidget
-        fields = ('id', 'visible', 'title', 'content')
+        blog = Blog.objects.create(**validated_data, body=html_body)
+        blog.save()
 
-
-class RealtimeStatusWidgetSerializer(serializers.ModelSerializer):
-    visible = serializers.BooleanField(default=False)
-    lan = serializers.ChoiceField(choices=[(tag, tag.value) for tag in Status])
-    wan = serializers.ChoiceField(choices=[(tag, tag.value) for tag in Status])
-    csgo = serializers.ChoiceField(choices=[(tag, tag.value) for tag in Status])
-
-    def validate_lan(self, value):
-        return value.name
-
-    def validate_wan(self, value):
-        return value.name
-
-    def validate_csgo(self, value):
-        return value.name
+        return blog
 
     def update(self, instance, validated_data):
+        markdown_body = validated_data.get('body', "")
 
+        instance.title = validated_data.get("title", None)
+        instance.pub_date = validated_data.get("last_update_date", datetime.now())
+        instance.pinned = validated_data.get("pinned", False)
         instance.visible = validated_data.get("visible", False)
-        instance.lan = validated_data.get("lan", Status.O)
-        instance.wan = validated_data.get("wan", Status.O)
-        instance.csgo = validated_data.get("csgo", Status.O)
+        instance.body = Markdown().convert(markdown_body)
 
         instance.save()
 
         return instance
+    """
 
     class Meta:
-        model = RealtimeStatusWidget
-        fields = ('visible', 'lan', 'wan', 'csgo')
-
-
-class PizzaSlotSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PizzaSlot
-        fields = ('id', 'orders_begin', 'orders_end', 'delivery')
-
-
-class PizzaWidgetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PizzaWidget
-        fields = ["visible"]
+        model = Announces
+        fields = ('id', 'title', 'last_update_date', 'pinned', 'visible', 'short' , 'body')

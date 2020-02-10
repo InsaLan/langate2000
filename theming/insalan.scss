@@ -62,9 +62,7 @@ $card-border-color: $color-black-transparent;
 
 $modal-content-bg: $color-tuna-darker;
 $modal-header-border-width: 0px;
-//$modal-header-border-color: $color-white-transparent;
 $modal-footer-border-width: 0px;
-//$modal-footer-border-color: $color-white-transparent;
 
 $pagination-bg: $color-abbey;
 $pagination-color: $color-white;
@@ -75,7 +73,7 @@ $pagination-disabled-bg: $color-tuna;
 $pagination-disabled-color: $color-white;
 $pagination-disabled-border-color: $color-black-transparent;
 
-$nav-tabs-link-active-color: #fff;
+$nav-tabs-link-active-color: $color-white;
 $nav-tabs-link-hover-border-color: #696b6f;
 $nav-tabs-border-color: #696b6f;
 $nav-tabs-link-active-bg: transparent;
@@ -83,7 +81,7 @@ $nav-tabs-link-active-bg: transparent;
 $nav-pills-link-active-bg: $color-abbey;
 
 $close-color: $color-black-transparent;
-$badge-color: #313339;
+$badge-color: $color-tuna;
 
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap/scss/bootstrap-reboot";
@@ -137,6 +135,48 @@ html, body {
 
 .table-sm .fas {
     font-size: .85rem; // icons in buttons have to be smaller when used in a small table
+}
+
+// custom CSS for the announcement cards
+
+.widget-bar-insalan {
+    .card {
+        margin-bottom: .75rem;
+    }
+
+    .card-title {
+        margin-bottom: 0;
+    }
+
+    .card-text {
+        margin-top: .5rem;
+
+        p {
+            margin-bottom: .5rem;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: $color-white;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            color: $color-white;
+        }
+
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-size: 1rem;
+            color: $color-white;
+        }
+
+        img[title~="icon"] {
+            height: 3.5rem;
+        }
+    }
 }
 
 // Pulsing logo

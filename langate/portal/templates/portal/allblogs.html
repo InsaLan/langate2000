@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}Administration des joueurs{% endblock %}
+{% block content %}
+
+    {% include 'portal/modal_create_user.html' %}
+    {% include 'portal/modal_modify_user.html' %}
+    {% include 'portal/modal_user_details.html' %}
+
+    {% csrf_token %} <!-- Token needed for AJAX calls -->
+
+    {% include 'portal/management_layout.html' %}
+<div class="col-sm-12 col-md-9 col-lg-10 col-xl-10 text-white mx-auto">
+    <h1>Administration des articles</h1>
+    <br /> <br />
+    <h2>Dernières actus</h2>
+
+    <hr/>
+  {% for blog in blogs.all reversed %}
+    <a href="{% url 'detail' blog.id %}">  <h3>{{ blog.title }}</h3></a>
+    {{ blog.pub_date }}
+    <br/>
+    <div>
+    {% autoescape off %}
+      {{ blog.summary }}
+    {% endautoescape %}
+  </div>
+    <a href="{% url 'detail' blog.id %}"> Lire la suite ! <a>
+  {% endfor %}
+
+   <script src="{% static "js/main-global.js" %}"></script>
+   <script src="{% static "js/main-admin.js" %}"></script>
+</div>
+{% endblock %}

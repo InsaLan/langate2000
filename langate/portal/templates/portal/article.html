@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}Administration des joueurs{% endblock %}
+{% block content %}
+
+    {% include 'portal/modal_create_user.html' %}
+    {% include 'portal/modal_modify_user.html' %}
+    {% include 'portal/modal_user_details.html' %}
+
+    {% csrf_token %} <!-- Token needed for AJAX calls -->
+
+    {% include 'portal/management_layout.html' %}
+<div class="col-sm-12 col-md-9 col-lg-10 col-xl-10 text-white mx-auto">
+  <form method="post">
+        {% csrf_token %} <!-- Token needed for AJAX calls -->
+    <label for="title">titre de l'article:</label>
+    <input type="text" id="title" name="title"></input>
+    <br>
+    <label for="body">texte de l'article:</label>
+    <textarea name="body" id="body" cols="100" rows="30"></textarea>
+    <br>
+    <label for="pub_date">date de publication:</label>
+    <input type="datetime-local" id="pub_date" name="pub_date"></input>
+    <br>
+    <input type="submit" value="Post">
+  </form>
+</div>
+
+
+<script src="{% static "js/main-global.js" %}"></script>
+<script src="{% static "js/main-admin.js" %}"></script>
+</div>
+{% endblock %}

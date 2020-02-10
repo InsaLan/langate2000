@@ -47,6 +47,16 @@ class Status(Enum):
     U = "unstable"
     F = "fail"
 
+class Announces(models.Model):
+    title = models.CharField(max_length=255)
+    last_update_date = models.DateTimeField(auto_now=True, blank=True)
+
+    pinned = models.BooleanField(default=False)
+    visible = models.BooleanField(default=True)
+    short = models.BooleanField(default=True)
+
+    summary = models.TextField()
+    body = models.TextField()
 
 class Profile(models.Model):
     # DOCU related : https://docs.djangoproject.com/en/2.0/topics/auth/customizing/#extending-user

@@ -1,5 +1,5 @@
 {% for error in errors %}
-    <div class="non-field-errors">
+    <div class="alert alert-danger non-fields-errors" role="alert">
         <strong>{{ error|escape }}</strong>
     </div>
 {% endfor %}
