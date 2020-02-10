@@ -105,7 +105,7 @@ function reload_user_details(id) {
 
 		    let devStatus = "";
 
-		    switch (data["status"]) {
+		    /*switch (data["status"]) {
 
 			case "up":
 			    devStatus = "<span class=\"badge bg-success\"><i class=\"fas fa-check\"></i></span>";
@@ -115,7 +115,7 @@ function reload_user_details(id) {
 			    devStatus = "<span class=\"badge bg-warning\"><i class=\"fas fa-times\"></i></span>";
 			    break;
 
-		    }
+		    }*/
 
 		    $("#device-table").append("<tr>\n" +
 			"<td>" + dev["name"] + "</td>\n" +
@@ -123,7 +123,6 @@ function reload_user_details(id) {
 			"<td>" + dev["ip"] + "</td>\n" +
 			"<td>" + dev["mac"].toUpperCase() + "</td>\n" +
 			"<td>" + data["mark"] + "</td>\n" +
-			"<td>" + devStatus + "</td>\n" +
 			"<td>\n" +
 			"<div class=\"text-center\" aria-label=\"Actions\">" +
 			//"<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Consommation données\" class=\"btn btn-sec device-usage-graph-btn\" data-deviceid=\"" + dev['id'] + "\" aria-label=\"Consommation données\"><span class=\"fas fa-chart-area\" aria-hidden=\"true\"></span></button>\n" +
@@ -358,7 +357,7 @@ $("#create-user-btn").click( function () {
 	    if ($("#create-user-password").val() == "") {
 		$.getJSON("/api/user_password/" + result["id"], function (data) {
 		    $("#create-user-feedback").removeClass("d-none");
-		    $("#create-user-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Utilisateur " + result["username"] + " créé avec succès !</strong><br>Mot de passe de connexion : <strong>" + data["password"] + "</strong>.</div>")
+		    $("#create-user-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Utilisateur " + data["username"] + " créé avec succès !</strong><br>Mot de passe de connexion : <strong>" + data["password"] + "</strong>.</div>")
 		});
 	    }
 
@@ -370,6 +369,7 @@ $("#create-user-btn").click( function () {
 		    data : JSON.stringify({ "password" : $("#create-user-password").val() }),
 
 		    success: function(data) {
+		    $("#create-user-feedback").removeClass("d-none");
 			$("#create-user-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Utilisateur " + result["username"] + " créé avec succès !</strong></div>")
 		    },
 
@@ -460,375 +460,100 @@ $("#delete-device-confirm-btn").click(function () {
 
 });
 
-function reload_pizzas_settings() {
-                                                                                                                                                                                                                                                                                                                                                       
-    $.getJSON( "/api/widgets/pizzas/", function( data ) {
-        $("#pizzas-visible").prop('checked', data["visible"]);
-        $("#pizzas-online-order-url").val(data["online_order_url"]);
-    });
-                                                                                                                                                                                                                                                                                                                                                       
-}
-                                                                                                                                                                                                                                                                                                                                                       
-function reload_pizza_slots_table() {
-                                                                                                                                                                                                                                                                                                                                                       
-    $("#pizza-slots-table").empty();
-                                                                                                                                                                                                                                                                                                                                                       
-    $.getJSON( "/api/widgets/pizzas/slots/", function( data ) {
-                                                                                                                                                                                                                                                                                                                                                       
-        if (data.length == 0) {
-            $("#pizza-slots-table").append("<tr><td colspan=\"5\" class=\"text-center\">Aucun créneau n'est enregistré.</td></tr>")
-        }
-                                                                                                                                                                                                                                                                                                                                                       
-        else {
-                                                                                                                                                                                                                                                                                                                                                       
-            let i = 1;
-                                                                                                                                                                                                                                                                                                                                                       
-            $.each(data, function (k, a) {
-                                                                                                                                                                                                                                                                                                                                                       
-                $("#pizza-slots-table").append("<tr>\n" +
-                    "                    <th scope=\"row\">" + i + "</th>\n" +
-                    "                    <td>" + a.orders_begin + "</td>\n" +
-                    "                    <td>" + a.orders_end + "</td>\n" +
-                    "                    <td>" + a.delivery + "</td>\n" +
-                    "                    <td>\n" +
-                    "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer le créneau\" class=\"btn btn-sm btn-secondary delete-pizza-slot-btn\" data-slotid=\"" + a.id + "\" aria-label=\"Supprimer le créneau\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
-                    "                        </div>\n" +
-                    "                    </td>\n" +
-                    "                </tr>");
-                                                                                                                                                                                                                                                                                                                                                       
-                i++;
-                                                                                                                                                                                                                                                                                                                                                       
-            });
-                                                                                                                                                                                                                                                                                                                                                       
-        }
-    });
-}
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-function reload_announces_table() {
-                                                                                                                                                                                                                                                                                                                                                       
-    $("#announces-table").empty();
-                                                                                                                                                                                                                                                                                                                                                       
-    $.getJSON( "/api/widgets/announce/", function( data ) {
-                                                                                                                                                                                                                                                                                                                                                       
-        if (data.length == 0) {
-            $("#announces-table").append("<tr><td colspan=\"5\" class=\"text-center\">Aucune annonce n'est enregistrée.</td></tr>")
-        }
-                                                                                                                                                                                                                                                                                                                                                       
-        else {
-                                                                                                                                                                                                                                                                                                                                                       
-            let i = 1;
-                                                                                                                                                                                                                                                                                                                                                       
-            $.each(data, function (k, a) {
-                                                                                                                                                                                                                                                                                                                                                       
-                let content = a.content.substring(0, 50) + " ...";
-                                                                                                                                                                                                                                                                                                                                                       
-                $("#announces-table").append("<tr>\n" +
-                    "                    <th scope=\"row\">" + i + "</th>\n" +
-                    "                    <td>" + a.title + "</td>\n" +
-                    "                    <td>" + content + "</td>\n" +
-                    "                    <td>" + ( (a.visible) ? "<span class=\"badge bg-success\"><i class=\"fas fa-check\"></i></span>" : "<span class=\"badge bg-danger\"><i class=\"fas fa-times\"></i></span>" ) + "</td>\n" +
-                    "                    <td>\n" +
-                    "                        <div class=\"text-center\" role=\"group\" aria-label=\"Actions\">\n" +
-                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'annonce\" class=\"btn btn-sm btn-secondary modify-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Modifier l'annonce\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
-                    "                            <button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'annonce\" class=\"btn btn-sm btn-secondary delete-announce-btn\" data-announceid=\"" + a.id + "\" aria-label=\"Supprimer l'annonce\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
-                    "                        </div>\n" +
-                    "                    </td>\n" +
-                    "                </tr>");
-                                                                                                                                                                                                                                                                                                                                                       
-                i++;
-                                                                                                                                                                                                                                                                                                                                                       
-            });
-                                                                                                                                                                                                                                                                                                                                                       
-        }
-                                                                                                                                                                                                                                                                                                                                                       
-    });
-}
-                                                                                                                                                                                                                                                                                                                                                       
-function reload_realtime_status_settings() {
-                                                                                                                                                                                                                                                                                                                                                       
-    $.getJSON( "/api/widgets/status", function( data ) {
-        $("#realtime-visible").prop('checked', data["visible"]);
-        $("#realtime-lan-status").val("Status."+data["lan"]);
-        $("#realtime-wan-status").val("Status."+data["wan"]);
-        $("#realtime-csgo-status").val("Status."+data["csgo"]);
-    });
-                                                                                                                                                                                                                                                                                                                                                       
-}
-                                                                                                                                                                                                                                                                                                                                                       
-$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-    let id = e.target.id;
-                                                                                                                                                                                                                                                                                                                                                       
-    if (id == "widget-announces-tab") {
-        reload_announces_table();
-    }
-                                                                                                                                                                                                                                                                                                                                                       
-    if (id == "widget-realtime-status-tab") {
-        reload_realtime_status_settings();
-    }
-                                                                                                                                                                                                                                                                                                                                                       
-    if (id == "widget-pizzas-tab") {
-        reload_pizzas_settings();
-        reload_pizza_slots_table();
-    }
-});
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-$(document).on("click", ".delete-announce-btn", function (e) {
-    let id = $(this).data("announceid");
-    $("#delete-announce-confirm-btn").data("announceid", id);
-    $("#delete-announce-modal").modal("show");
-});
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-$("#delete-announce-confirm-btn").click( function () {
-                                                                                                                                                                                                                                                                                                                                                       
-    let id = $(this).data("announceid");
-                                                                                                                                                                                                                                                                                                                                                       
-    $.ajax({
-        url: '/api/widgets/announce/'+id,
-        type: 'DELETE',
-                                                                                                                                                                                                                                                                                                                                                       
-        success: function(result) {
-            reload_announces_table();
-        },
-                                                                                                                                                                                                                                                                                                                                                       
-        error: function (xhr, textStatus, errorThrown) {
-            handle_error(textStatus, errorThrown, xhr.responseText);
-        }
-    });
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-    $("#delete-announce-modal").modal("hide");
-                                                                                                                                                                                                                                                                                                                                                       
-});
-
 $("#create-announce-btn").click( function () {
-                                                                                                                                                                                                                                                                                                                                                       
+
     let data = {
-        "visible": $("#create-announce-visible").is(':checked'),
         "title": $("#create-announce-title").val(),
-        "content": $("#create-announce-content").val()
+        "body": $("#create-announce-body").val(),
+		"visible": $("#create-announce-visible").is(':checked'),
+		"pinned": $("#create-announce-pinned").is(':checked'),
     };
-                                                                                                                                                                                                                                                                                                                                                       
+
     if (!/^[^<>]+$/.test(data["title"])  || data["title"].length > 50) {
         create_error_modal("Oops", "<p>Le titre de l'annonce ne peut pas faire plus de 50 caractères ou contenir les caractères <b>&lt;</b> et <b>&gt;</b>.</p>");
     }
-                                                                                                                                                                                                                                                                                                                                                       
+
     else if (!/^[^<>]+$/.test(data["content"])) {
-        create_error_modal("Oops", "<p>Le contenu l'annonce ne peut pas contenir les caractères <b>&lt;</b> et <b>&gt;</b>.</p>");
+        create_error_modal("Oops", "<p>Le contenu de l'annonce ne peut pas contenir les caractères <b>&lt;</b> et <b>&gt;</b>.</p>");
     }
-                                                                                                                                                                                                                                                                                                                                                       
+
     else {
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
+
+
         $.ajax({
-            url: '/api/widgets/announce/',
+            url: '/api/announces_list/',
             type: 'POST',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(data),
-                                                                                                                                                                                                                                                                                                                                                       
+
             success: function (result) {
-                reload_announces_table();
+                $("#create-announce-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Annonce ajoutée.</strong></div>");
+                table.ajax.reload();
             },
-                                                                                                                                                                                                                                                                                                                                                       
+
             error: function (xhr, textStatus, errorThrown) {
                 handle_error(textStatus, errorThrown, xhr.responseText);
             }
-                                                                                                                                                                                                                                                                                                                                                       
+
         });
-                                                                                                                                                                                                                                                                                                                                                       
+
     }
-                                                                                                                                                                                                                                                                                                                                                       
-    $("#create-announce-modal").modal("hide");
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
+
 });
-                                                                                                                                                                                                                                                                                                                                                       
-$(document).on("click", ".modify-announce-btn", function () {
-                                                                                                                                                                                                                                                                                                                                                       
+
+$(document).on("click", ".delete-announce-btn", function (e) {
+    id = $(this).data("announceid");
+    $("#delete-announce-confirm-btn").data("announceid", id);
+    $("#delete-announce-modal").modal("show");
+});
+
+$("#delete-announce-confirm-btn").click( function () {
+
     let id = $(this).data("announceid");
-    $("#modify-announce-confirm-btn").data("announceid", id);
-                                                                                                                                                                                                                                                                                                                                                       
-    $("#modify-announce-visible").prop('checked', false);
-    $("#modify-announce-title").empty();
-    $("#modify-announce-content").empty();
-                                                                                                                                                                                                                                                                                                                                                       
-    $.getJSON("/api/widgets/announce/" + id, function (data) {
-        $("#modify-announce-visible").prop('checked', data["visible"]);
-        $("#modify-announce-title").val(data["title"]);
-        $("#modify-announce-content").val(data["content"]);
-    });
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-    $("#modify-announce-modal").modal('show');
-                                                                                                                                                                                                                                                                                                                                                       
-});
-                                                                                                                                                                                                                                                                                                                                                       
-$("#modify-announce-confirm-btn").click( function () {
-                                                                                                                                                                                                                                                                                                                                                       
-    let id = $(this).data("announceid");
-    let data = {
-        "visible": $("#modify-announce-visible").is(':checked'),
-        "title": $("#modify-announce-title").val(),
-        "content": $("#modify-announce-content").val()
-    };
-                                                                                                                                                                                                                                                                                                                                                       
-    if (!/^[^<>]+$/.test(data["title"])  || data["title"].length > 50) {
-        create_error_modal("Oops", "<p>Le titre de l'annonce ne peut pas faire plus de 50 caractères ou contenir les caractères <b>&lt;</b> et <b>&gt;</b>.</p>");
-    }
-                                                                                                                                                                                                                                                                                                                                                       
-    else if (!/^[^<>]+$/.test(data["content"])) {
-        create_error_modal("Oops", "<p>Le contenu l'annonce ne peut pas contenir les caractères <b>&lt;</b> et <b>&gt;</b>.</p>");
-    }
-                                                                                                                                                                                                                                                                                                                                                       
-    else {
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-        $.ajax({
-            url: '/api/widgets/announce/' + id,
-            type: 'PUT',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(data),
-                                                                                                                                                                                                                                                                                                                                                       
-            success: function (result) {
-                reload_announces_table();
-            },
-                                                                                                                                                                                                                                                                                                                                                       
-            error: function (xhr, textStatus, errorThrown) {
-                handle_error(textStatus, errorThrown, xhr.responseText);
-            }
-                                                                                                                                                                                                                                                                                                                                                       
-        });
-                                                                                                                                                                                                                                                                                                                                                       
-    }
-                                                                                                                                                                                                                                                                                                                                                       
-    $("#modify-announce-modal").modal("hide");
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-});
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-$("#realtime-confirm-btn").click(function () {
-    $("#realtime-feedback").empty();
-                                                                                                                                                                                                                                                                                                                                                       
-    let data  = {
-        "visible": $("#realtime-visible").prop('checked'),
-        "lan": $("#realtime-lan-status").val(),
-        "wan": $("#realtime-wan-status").val(),
-        "csgo": $("#realtime-csgo-status").val()
-    };
-                                                                                                                                                                                                                                                                                                                                                       
+
     $.ajax({
-        url: '/api/widgets/status/',
-        type: 'POST',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(data),
-                                                                                                                                                                                                                                                                                                                                                       
-        success: function (result) {
-            reload_realtime_status_settings();
-                                                                                                                                                                                                                                                                                                                                                       
-            $("#realtime-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Mise à jour effectuée.</strong></div>");
-            setTimeout(function () { $("#realtime-feedback").empty() }, 6000);
-        },
-                                                                                                                                                                                                                                                                                                                                                       
-        error: function (xhr, textStatus, errorThrown) {
-            handle_error(textStatus, errorThrown, xhr.responseText);
-        }
-                                                                                                                                                                                                                                                                                                                                                       
+	url: '/api/announces_details/'+id,
+	type: 'DELETE',
+
+	success: function(result) {
+	    table.ajax.reload();
+	},
+
+	error: function (xhr, textStatus, errorThrown) {
+	    handle_error(textStatus, errorThrown, xhr.responseText);
+	}
+
     });
-                                                                                                                                                                                                                                                                                                                                                       
+
+
+    $("#delete-announce-modal").modal('hide');
+
 });
-                                                                                                                                                                                                                                                                                                                                                       
-$(document).on("click", ".delete-pizza-slot-btn", function (e) {
-    let id = $(this).data("slotid");
-    $("#delete-pizza-slot-confirm-btn").data("slotid", id);
-    $("#delete-pizza-slot-modal").modal("show");
-});
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-$("#delete-pizza-slot-confirm-btn").click( function () {
-                                                                                                                                                                                                                                                                                                                                                       
-    let id = $(this).data("slotid");
-                                                                                                                                                                                                                                                                                                                                                       
-    $.ajax({
-        url: '/api/widgets/pizzas/slots/'+id,
-        type: 'DELETE',
-                                                                                                                                                                                                                                                                                                                                                       
-        success: function(result) {
-            reload_pizza_slots_table();
-        },
-                                                                                                                                                                                                                                                                                                                                                       
-        error: function (xhr, textStatus, errorThrown) {
-            handle_error(textStatus, errorThrown, xhr.responseText);
-        }
+
+$("#create-announce-body").keyup(function() {
+	let data = {
+		"request": $("#create-announce-body").val()
+	};
+
+	$.ajax({
+		url: '/api/markdown_preview/',
+		type: 'POST',
+		contentType: "application/json; charset=utf-8",
+		data : JSON.stringify(data),
+
+		success: function(result) {
+			$("#preview-text").html(result["result"]);
+		},
+
+		error: function (xhr, textStatus, errorThrown) {
+			handle_error(textStatus, errorThrown, xhr.responseText);
+		}
+
     });
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-    $("#delete-pizza-slot-modal").modal("hide");
-                                                                                                                                                                                                                                                                                                                                                       
+
 });
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-$("#create-pizza-slot-btn").click( function () {
-                                                                                                                                                                                                                                                                                                                                                       
-    let data = {
-        "orders_begin": $("#create-pizza-slot-orders-begin").val(),
-        "orders_end": $("#create-pizza-slot-orders-end").val(),
-        "delivery": $("#create-pizza-slot-delivery").val()
-    };
-                                                                                                                                                                                                                                                                                                                                                       
-    $.ajax({
-        url: '/api/widgets/pizzas/slots/',
-        type: 'POST',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(data),
-                                                                                                                                                                                                                                                                                                                                                       
-        success: function (result) {
-            reload_pizzas_settings();
-            reload_pizza_slots_table();
-        },
-                                                                                                                                                                                                                                                                                                                                                       
-        error: function (xhr, textStatus, errorThrown) {
-            handle_error(textStatus, errorThrown, xhr.responseText);
-        }
-                                                                                                                                                                                                                                                                                                                                                       
-    });
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-    $("#create-pizza-slot-modal").modal("hide");
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
+
+$("#create-announce-title").keyup(function() {
+	$("#preview-title").html($("#create-announce-title").val());
 });
-                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                       
-$("#pizzas-confirm-btn").click(function () {
-    $("#pizzas-feedback").empty();
-                                                                                                                                                                                                                                                                                                                                                       
-    let data  = {
-        "visible": $("#pizzas-visible").prop('checked')
-    };
-                                                                                                                                                                                                                                                                                                                                                       
-    $.ajax({
-        url: '/api/widgets/pizzas/',
-        type: 'POST',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(data),
-                                                                                                                                                                                                                                                                                                                                                       
-        success: function (result) {
-            reload_pizza_slots_table();
-                                                                                                                                                                                                                                                                                                                                                       
-            $("#pizzas-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Mise à jour effectuée.</strong></div>");
-            setTimeout(function () { $("#pizzas-feedback").empty() }, 6000);
-        },
-                                                                                                                                                                                                                                                                                                                                                       
-        error: function (xhr, textStatus, errorThrown) {
-            handle_error(textStatus, errorThrown, xhr.responseText);
-        }
-                                                                                                                                                                                                                                                                                                                                                       
-    });
-                                                                                                                                                                                                                                                                                                                                                       
-});
+

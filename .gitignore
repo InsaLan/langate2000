@@ -163,3 +163,7 @@ langate/*/migrations/
 whitelist.json
 
 *.map
+
+.sass-cache
+
+*.pid

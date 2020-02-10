@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.conf import settings
 import logging
+from markdown import Markdown
 
 from .serializers import *
 from portal.models import *
@@ -16,7 +17,7 @@ from rest_framework import generics
 
 from modules import netcontrol
 
-import random
+import random, json
 
 # Create your views here.
 event_logger = logging.getLogger("langate.events")
@@ -159,99 +160,22 @@ class UserPasswordManager(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class AnnounceWidgetList(generics.ListCreateAPIView):
+class AnnounceList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
-    queryset = AnnounceWidget.objects.all()
-    serializer_class = AnnounceWidgetSerializer
+    queryset = Announces.objects.all()
+    serializer_class = AnnounceSerializer
 
 
-class AnnounceWidgetDetails(generics.RetrieveUpdateDestroyAPIView):
+class AnnounceDetails(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
-    queryset = AnnounceWidget.objects.all()
-    serializer_class = AnnounceWidgetSerializer
+    queryset = Announces.objects.all()
+    serializer_class = AnnounceSerializer
 
 
-class RealtimeStatusWidgetManager(APIView):
+class MarkdownPreview(APIView):
     permission_classes = (permissions.IsAdminUser,)
-
-    def get(self, request):
-
-        if RealtimeStatusWidget.objects.count() == 0:
-            RealtimeStatusWidget.objects.create()
-
-        s = RealtimeStatusWidget.objects.first()
-
-        r = {
-            "visible": s.visible,
-            "lan": s.lan,
-            "wan": s.wan,
-            "csgo": s.csgo,
-        }
-
-        return Response(r)
 
     def post(self, request):
-
-        if RealtimeStatusWidget.objects.count() == 0:
-            w = RealtimeStatusWidget.objects.create()
-
-        else:
-            w = RealtimeStatusWidget.objects.first()
-
-        serializer = RealtimeStatusWidgetSerializer(w, data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class PizzaWidgetManager(APIView):
-
-    permission_classes = (permissions.IsAdminUser,)
-
-    def get(self, request):
-
-        if PizzaWidget.objects.count() == 0:
-            PizzaWidget.objects.create()
-
-        s = PizzaWidget.objects.first()
-
-        r = {
-            "visible": s.visible
-        }
-
-        return Response(r)
-
-    def post(self, request):
-
-        if PizzaWidget.objects.count() == 0:
-            w = PizzaWidget.objects.create()
-
-        else:
-            w = PizzaWidget.objects.first()
-
-        serializer = PizzaWidgetSerializer(w, data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class PizzaSlotList(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAdminUser,)
-
-    queryset = PizzaSlot.objects.all()
-    serializer_class = PizzaSlotSerializer
-
-
-class PizzaSlotDetails(generics.RetrieveDestroyAPIView):
-    permission_classes = (permissions.IsAdminUser,)
-
-    queryset = PizzaSlot.objects.all()
-    serializer_class = PizzaSlotSerializer
+        return Response({"result": Markdown().convert(request.data["request"])})

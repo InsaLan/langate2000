@@ -14,12 +14,8 @@ urlpatterns = [
     path('user_details/<int:pk>', UserDetails.as_view()),
     path('user_password/<int:pk>', UserPasswordManager.as_view()),
 
-    path('widgets/announce/', AnnounceWidgetList.as_view()),
-    path('widgets/announce/<int:pk>', AnnounceWidgetDetails.as_view()),
-    path('widgets/status/', RealtimeStatusWidgetManager.as_view()),
+    path('announces_list/', AnnounceList.as_view()),
+    path('announces_details/<int:pk>', AnnounceDetails.as_view()),
 
-    path('widgets/pizzas/', PizzaWidgetManager.as_view()),
-    path('widgets/pizzas/slots/', PizzaSlotList.as_view()),
-    path('widgets/pizzas/slots/<int:pk>', PizzaSlotDetails.as_view())
-
+    path('markdown_preview/', MarkdownPreview.as_view())
 ]

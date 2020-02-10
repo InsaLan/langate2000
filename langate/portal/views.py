@@ -4,15 +4,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
-import markdown
-
 
 from .models import *
 from modules import netcontrol
 
 # Create your views here.
 
-
+"""
 def get_widgets():
 
     return {
@@ -33,23 +31,28 @@ def get_widgets():
             "slots": PizzaSlot.objects.all()
         }
     }
+"""
 
+@staff_member_required
+def announces(request):
+    context = {"page_name": "management_announces"}
+    return render(request, 'portal/management_announces.html', context)
 
 @staff_member_required
 def management(request):
     context = {"page_name": "management"}
     return render(request, 'portal/management.html', context)
 
-
+"""
 @staff_member_required
 def widgets(request):
     context = {"page_name": "management_widgets"}
     return render(request, 'portal/management_widgets.html', context)
 
 #@staff_member_required
-#def articles(request,number):
+#def announces(request,number):
 #    context = {"page_name": "management_widgets",}
-#    return render(request, 'portal/management_articles', locals())
+#    return render(request, 'portal/management_announces', locals())
 
 @login_required
 def allblogs(request):
@@ -60,9 +63,10 @@ def allblogs(request):
 def detail(request, blog_id):
     blogdetail = get_object_or_404(Blog, pk=blog_id)
     return render(request, 'portal/detail.html', {'blog':blogdetail})
-
+"""
+"""
 @staff_member_required
-def articles(request):
+def announces(request):
     title = request.POST.get('title');
     pub_date = request.POST.get('pub_date');
     body = request.POST.get('body');
@@ -71,9 +75,9 @@ def articles(request):
         html1 = md.convert(body)
         Blog.objects.create(title=title,pub_date=pub_date,body=html1)
 
-    context = {"page_name": "articles"}
+    context = {"page_name": "announces"}
     return render(request, 'portal/article.html', context)
-
+"""
 
 @login_required
 def connected(request):
@@ -84,7 +88,9 @@ def connected(request):
     context = {"page_name": "connected",
                "too_many_devices": False,
                "current_ip": client_ip,
-               "widgets": get_widgets(),
+               "is_announce_panel_visible": Announces.objects.filter(visible=True).count() > 0,
+               "pinned_announces": Announces.objects.filter(pinned=True).order_by('-last_update_date'),
+               "announces": Announces.objects.filter(pinned=False).order_by('-last_update_date'),
                "device_quota": request.user.profile.max_device_nb}
 
     # Checking if the device accessing the gate is already in user devices
@@ -157,6 +163,11 @@ def disconnect(request):
 
 
 def faq(request):
-    context = {"page_name": "faq", "widgets": get_widgets()}
+    context = {
+        "page_name": "faq",
+        "is_announce_panel_visible": Announces.objects.filter(visible=True).count() > 0,
+        "pinned_announces": Announces.objects.filter(pinned=True).order_by('-last_update_date'),
+        "announces": Announces.objects.filter(pinned=False).order_by('-last_update_date'),
+    }
 
     return render(request, 'portal/faq.html', context)

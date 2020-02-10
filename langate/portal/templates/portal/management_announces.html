@@ -1,0 +1,216 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}Administration des joueurs{% endblock %}
+{% block content %}
+    
+    {% csrf_token %} <!-- Token needed for AJAX calls -->
+
+    {% include 'portal/management_layout.html' %}
+
+    <div class="col-sm-12 col-md-9 col-lg-10 col-xl-10 text-white mx-auto">
+
+        <nav id="navbar-title" class="navbar navbar-dark pb-4">
+            <a class="navbar-brand" href="#"></a>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary align-right" data-toggle="modal" data-target="#create-announce-modal">Nouvel announce</button>
+                </li>
+            </ul>
+        </nav>
+
+        <table id="announces-table" class="table table-sm table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Titre</th>
+                <th scope="col">Dernière modification</th>
+                <th scope="col">Visible</th>
+                <th scope="col">Épinglé</th>
+                <th scope="col" style="width: 10%;">Actions</th>
+            </tr>
+            </thead>
+        </table>
+
+    
+    </div>
+
+    <!-- Modal Create announce -->
+
+    <div class="modal modal-insalan fade" id="create-announce-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Créer un announce</h5>
+                    <button tabindex="-1" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="preview-container widget-bar-insalan d-flex justify-content-center">
+                        <div class="card w-50">
+                            <div class="card-body">
+                                <h5 class="card-title" id="preview-title">Prévisualisation</h5>
+                                <div class="card-text" id="preview-text">
+                                    <p>Complétez les champs ci-dessous.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+    
+                        <div id="create-announce-feedback" class="pt-2 pb-3"></div>
+    
+                        <form id="create-announce-form">
+    
+                            <div class="form-group row" id="create-announce-title-g">
+                                <label for="create-announce-title" class="col-sm-2 col-form-label">Titre : </label>
+                                <input tabindex="1" type="text" class="form-control col-sm-10" id="create-announce-title">
+                            </div>
+
+                            <!--<div class="form-group row" id="create-announce-summary-g">
+                                <label for="create-announce-summary" class="col-sm-4 col-form-label">Résumé (markdown) : </label>
+                                <textarea class="form-control col-sm-8" id="create-announce-summary"></textarea>
+                            </div>-->
+
+                            <div class="form-group row" id="create-announce-body-g">
+                                <label for="create-announce-body" class="col-sm-2 col-form-label">Corps : </label>
+                                <textarea rows="10" class="form-control col-sm-10" id="create-announce-body"></textarea>
+                            </div>
+                            <div style="margin-top: -1rem; margin-bottom: .5rem; text-align: center">
+                                <small class="form-text text-muted mb-4">Syntaxe markdown supportée.</small>
+                            </div>
+
+                            <!--<div class="form-group row">
+                                <div class="form-check">
+                                  <input class="form-check-input" type="checkbox" id="create-announce-short">
+                                  <label class="form-check-label" for="create-announce-short">
+                                    Contenu court (uniquement afficher le résumé)
+                                  </label>
+                                </div>
+                            </div>-->
+
+                            <div class="form-group row">
+                                <div class="form-check">
+                                  <input class="form-check-input" checked type="checkbox" id="create-announce-visible">
+                                  <label class="form-check-label" for="create-announce-visible">
+                                    Visible
+                                  </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="form-check">
+                                  <input class="form-check-input" type="checkbox" id="create-announce-pinned">
+                                  <label class="form-check-label" for="create-announce-pinned">
+                                    Épinglé
+                                  </label>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" tabindex="-1">Fermer</button>
+                    <button tabindex="9" type="button" class="btn btn-primary" id="create-announce-btn">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Remove announces -->
+
+    <div class="modal modal-insalan" id="delete-announce-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Supprimer ?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-white">
+                    <p>Voulez-vous vraiment supprimer l'annonce ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                    <button type="button" class="btn btn-danger" id="delete-announce-confirm-btn">Oui</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        let table = null;
+
+        $(document).ready(function () {
+
+            table = $("#announces-table").DataTable({
+
+                ajax: {
+                    url: '/api/announces_list',
+                    dataSrc: ''
+                },
+
+                columns: [
+                    { "data": "id" },
+                    { "data": "title" },
+                    { "data": "last_update_date" },
+                    { "data": "visible" },
+                    { "data": "pinned" },
+                    { "data": null}
+                ],
+
+                columnDefs: [
+                    {
+                        "render": function ( data, type, row ) {
+                            return new Date(data).toLocaleString();
+                        },
+
+                        "orderable": false,
+
+                        "targets": 2
+                    },
+
+                    {
+                        "render": function ( data, type, row ) {
+                            return (data) ? "<span class=\"badge bg-success\"><i class=\"fas fa-check\"></i></span>" : "<span class=\"badge bg-danger\"><i class=\"fas fa-times\"></i></span>";
+                        },
+
+                        "orderable": false,
+
+                        "targets": [3,4]
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return "<div role=\"group\" class=\"btn-group btn-group-sm mx-auto\" aria-label=\"Actions\">\n" +
+                                "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'annonce\" class=\"btn btn-secondary modify-announce-btn\" data-announceid=\""+row["id"]+"\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
+                                "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'annonce\" class=\"btn btn-secondary delete-announce-btn\" data-announceid=\"" + row["id"] + "\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                                "</div>";
+                        },
+
+                        "orderable": false,
+
+                        "targets": 5
+                    },
+                ],
+
+                order: [[1, 'asc']]
+
+            });
+
+            $("#announces-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]'});
+
+        });
+
+    </script>
+
+   <script src="{% static "js/main-global.js" %}"></script>
+   <script src="{% static "js/main-admin.js" %}"></script>
+
+{% endblock %}

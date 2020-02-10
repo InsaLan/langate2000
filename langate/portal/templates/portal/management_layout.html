@@ -1,5 +1,5 @@
 <div class="pt-3 pb-2 text-white col-12 mx-auto">
-    <h1 class="text-white" id="management-title">Interface d'aministration</h1>
+    <h1 class="text-white" id="management-title">Interface d'administration</h1>
     <hr class="mt-2 mb-4">
 </div>
 
@@ -9,11 +9,13 @@
         <li class="nav-item">
             <a class="nav-link {% if page_name == "management" %}active{% endif %}" href="{% url 'management' %}">Utilisateurs & Appareils</a>
         </li>
+        <!--
         <li class="nav-item">
-            <a class="nav-link {% if page_name == "management_widgets" %}active{% endif %}" href="{% url 'widgets' %}">Widgets</a>
+            <a class="nav-link {% if page_name == "management_widgets" %}active{% endif %}" href="{# url 'widgets' #}">Widgets</a>
         </li>
+        -->
         <li class="nav-item">
-            <a class="nav-link {% if page_name == "allblogs" %}active{% endif %}" href="{% url 'allblogs' %}">Blog</a>
+            <a class="nav-link {% if page_name == "management_announces" %}active{% endif %}" href="{% url 'announces' %}">Annonces</a>
         </li>
     </ul>
 
