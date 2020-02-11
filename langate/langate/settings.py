@@ -35,7 +35,7 @@ DEBUG = True
 
 SERVER_IP = 'gate.insalan.fr'
 
-ALLOWED_HOSTS = ['localhost', SERVER_IP]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', SERVER_IP]
 
 # Application definition
 
