@@ -19,3 +19,13 @@ stop:
 	docker rm langate
 
 restart: stop run
+
+builddev:
+	docker build -t langate-dev -f Dockerfile.dev .
+
+rundev:
+	docker run -itd --privileged -p 80:80 --name langate-dev langate-dev
+
+stopdev:
+	docker stop langate-dev
+	docker rm langate-dev
