@@ -156,12 +156,12 @@ nbproject
 .settings
 composer.lock
 deployment-config.json
+*.swap
 
 # Django migrations
 langate/*/migrations/
 
 whitelist.json
-
 *.map
 
 .sass-cache
