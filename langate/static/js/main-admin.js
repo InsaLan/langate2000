@@ -127,7 +127,8 @@ function reload_user_details(id) {
 			"<div class=\"text-center\" aria-label=\"Actions\">" +
 			//"<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Consommation données\" class=\"btn btn-sec device-usage-graph-btn\" data-deviceid=\"" + dev['id'] + "\" aria-label=\"Consommation données\"><span class=\"fas fa-chart-area\" aria-hidden=\"true\"></span></button>\n" +
 			"<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-secondary btn-sm delete-device-btn\" data-deviceid=\"" + dev['id'] + "\" aria-label=\"Supprimer l'appareil\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
-			"</div>" +
+      "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Changer la Mark\" class=\"btn btn-secondary btn-sm change-mark-modal-btn\" data-deviceid=\"" + dev['id'] + "\" data-userid=\"" + id + "\" aria-label=\"Changer la Mark\"><span class=\"fas fa-plus\" aria-hidden=\"true\"></span></button>\n" +
+      "</div>" +
 			"</td>\n" +
 			"</tr>\n" +
 			"</tr>\n");
@@ -142,7 +143,7 @@ function reload_user_details(id) {
 
 
     });
-	
+
 }
 
 
@@ -432,7 +433,7 @@ $("#modify-user-confirm-btn").click( function () {
 	}
 
     });
-    
+
 
 });
 
@@ -557,3 +558,31 @@ $("#create-announce-title").keyup(function() {
 	$("#preview-title").html($("#create-announce-title").val());
 });
 
+$("#change-mark-btn").click(function(){
+  let id = $("#change-mark-btn").data("deviceid");
+  let userid = $("#change-mark-btn").data("userid");
+  let mark = $("#change-mark-input").val();
+
+  $.ajax({
+    url: '/api/change_mark/' +id + "/" + mark,
+    type:'GET',
+    success: function(result) {
+      $("#change-mark-modal").modal('hide');
+      reload_user_details(userid);
+    },
+
+    error: function (xhr, textStatus, errorThrown) {
+      handle_error(textStatus, errorThrown, xhr.responseText);
+    }
+  }
+  )
+}
+)
+
+$(document).on("click", ".change-mark-modal-btn", function (e) {
+    id = $(this).data("deviceid");
+    userid = $(this).data("userid");
+    $("#change-mark-btn").data("deviceid", id);
+    $("#change-mark-btn").data("userid", userid);
+    $("#change-mark-modal").modal("show");
+});

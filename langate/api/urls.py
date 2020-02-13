@@ -17,5 +17,6 @@ urlpatterns = [
     path('announces_list/', AnnounceList.as_view()),
     path('announces_details/<int:pk>', AnnounceDetails.as_view()),
 
-    path('markdown_preview/', MarkdownPreview.as_view())
+    path('markdown_preview/', MarkdownPreview.as_view()),
+    path('change_mark/<int:ident>/<int:mark>', ChangeMark.as_view()),
 ]

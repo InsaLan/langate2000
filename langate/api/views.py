@@ -42,6 +42,15 @@ class DeviceList(APIView):
         else:
             raise PermissionDenied
 
+class ChangeMark(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+    def get(self,request,ident,mark):
+        dev = Device.objects.get(id=ident)
+        r = netcontrol.query("set_mark", { "mac": dev.mac, "mark": mark})
+        if (r["success"]):
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class DeviceDetails(APIView):
     permission_classes = (permissions.IsAuthenticated,)
