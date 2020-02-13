@@ -23,13 +23,16 @@ class InsalanBackend(ModelBackend):
     def short_name_to_tournament_enum(self, short_name):
 
         short_name_table = {
-            "fbr": Tournament.ftn,
-            "cs": Tournament.cs,
-            "hs": Tournament.hs,
+            "tft": Tournament.tft,
+            "csgo": Tournament.csgo,
+            "dota": Tournament.dota,
             "lol": Tournament.lol
         }
 
-        name = short_name[:-4]  # remove year from short name
+        # remove year from short name
+        # IMPORTANT: this assumes that the short name returned by the API is in format "shortYYYY"
+        # where short is the short name and YYYY the year.
+        name = short_name[:-4]
 
         if name in short_name_table:
             return short_name_table[name].value
@@ -47,24 +50,7 @@ class InsalanBackend(ModelBackend):
         :param kwargs: could contain the username at the key 'username'
         :return user : the user found if username and password are corrects and if he has the right to connect
         """
-        # if username is None:
-        #     username = kwargs.get(UserModel.USERNAME_FIELD)
 
-        # try:
-        #     # Try to find user in local database
-        #     # TODO : to simplify, by using two backend (the default one of django, as well as this one in fallback)
-        #     user = UserModel._default_manager.get_by_natural_key(username)
-
-        #     # User exists in local database
-        #     if not (user.check_password(password) and self.user_can_authenticate(user)):
-        #         # Wrong password
-        #         raise ValidationError("Wrong username or password.")
-        #     else:
-        #         # Credentials are ok
-        #         return user
-
-        # except UserModel.DoesNotExist:
-        #     # User is missing from local database, we need to check insalan.fr
         """
         API optional request data
         { "tournaments": "t1,t2,..." }
@@ -89,7 +75,6 @@ class InsalanBackend(ModelBackend):
                 }
             ]
         }
-        For now we are not using tournament data, but we might use it in the future.
         """
 
         # Raising ValidationError exceptions
@@ -155,9 +140,10 @@ class InsalanBackend(ModelBackend):
             # Any validation error is rethrown
             raise ValidationError(e.message)
 
-        except:
+        except Exception as e:
             # Any other error must be converted to a ValidationError
             # so that the client does not crash.
             # Any other error is due to a wrong reading phase on the JSON object
             # i.e. a wrong format in this JSON object.
+            print(e)
             raise ValidationError("Unhandled error with remote API.")

@@ -28,9 +28,9 @@ def generate_dev_name():
 
 
 class Tournament(Enum):
-    cs = "Counter Strike Global Offensive"
-    ftn = "Fortnite"
-    hs = "Heartstone"
+    csgo = "Counter Strike Global Offensive"
+    dota = "Dota 2"
+    tft = "Team Fight Tactics"
     lol = "League Of Legends"
 
 
@@ -41,11 +41,6 @@ class Role(Enum):
     S = "Staff Member"
     A = "Administrator"
 
-
-class Status(Enum):
-    O = "ok"
-    U = "unstable"
-    F = "fail"
 
 class Announces(models.Model):
     title = models.CharField(max_length=255)
@@ -95,29 +90,6 @@ class Device(models.Model):
 
     # Area of the device, i.e. LAN or WiFi
     area = models.CharField(max_length=4, default="LAN")
-
-
-class RealtimeStatusWidget(models.Model):
-    visible = models.BooleanField(default=False)
-    lan = models.CharField(max_length=1, default="O", choices=[(tag, tag.value) for tag in Status])
-    wan = models.CharField(max_length=1, default="O", choices=[(tag, tag.value) for tag in Status])
-    csgo = models.CharField(max_length=1, default="O", choices=[(tag, tag.value) for tag in Status])
-
-
-class AnnounceWidget(models.Model):
-    visible = models.BooleanField(default=False)
-    title = models.CharField(max_length=50, blank=False)
-    content = models.TextField(blank=False)
-
-
-class PizzaSlot(models.Model):
-    orders_begin = models.TimeField()
-    orders_end = models.TimeField()
-    delivery = models.TimeField()
-
-
-class PizzaWidget(models.Model):
-    visible = models.BooleanField(default=False)
 
 
 # Functions listening modifications of user
