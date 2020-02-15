@@ -120,17 +120,18 @@ class InsalanBackend(ModelBackend):
                     email=email,
                     password=password)
 
-                # FIXME (insalan-langate2000#10) : taking only the first tournament of the list
-                tournament = json_result["tournament"][0]
+                for tournament in json_result["tournament"]:
+                    if tournament["has_paid"]:
+                        short_name = tournament["shortname"] if "shortname" in tournament else None
+                        is_manager = tournament["manager"] if "manager" in tournament else False
 
-                short_name = tournament["shortname"] if "shortname" in tournament else None
-                is_manager = tournament["manager"] if "manager" in tournament else False
+                        user.profile.tournament = self.short_name_to_tournament_enum(short_name)
+                        user.profile.team = tournament["team"] if "team" in tournament else None
 
-                user.profile.tournament = self.short_name_to_tournament_enum(short_name)
-                user.profile.team = tournament["team"] if "team" in tournament else None
+                        if is_manager:
+                            user.profile.role = Role.M.value
 
-                if is_manager:
-                    user.profile.role = Role.M.value
+                        break
 
                 user.save()
 
