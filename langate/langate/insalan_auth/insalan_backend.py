@@ -6,6 +6,7 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest
+from django.db import transaction
 
 from portal.models import Role, Tournament
 
@@ -115,25 +116,27 @@ class InsalanBackend(ModelBackend):
                 # The player has paid, we can return the object
                 email = json_result["user"]["email"]
 
-                user = User.objects.create(
-                    username=username,
-                    email=email,
-                    password=password)
+                with transaction.atomic():
 
-                for tournament in json_result["tournament"]:
-                    if tournament["has_paid"]:
-                        short_name = tournament["shortname"] if "shortname" in tournament else None
-                        is_manager = tournament["manager"] if "manager" in tournament else False
+                    user = User.objects.create(
+                        username=username,
+                        email=email,
+                        password=password)
 
-                        user.profile.tournament = self.short_name_to_tournament_enum(short_name)
-                        user.profile.team = tournament["team"] if "team" in tournament else None
+                    for tournament in json_result["tournament"]:
+                        if tournament["has_paid"]:
+                            short_name = tournament["shortname"] if "shortname" in tournament else None
+                            is_manager = tournament["manager"] if "manager" in tournament else False
 
-                        if is_manager:
-                            user.profile.role = Role.M.value
+                            user.profile.tournament = self.short_name_to_tournament_enum(short_name)
+                            user.profile.team = tournament["team"] if "team" in tournament else None
 
-                        break
+                            if is_manager:
+                                user.profile.role = Role.M.value
 
-                user.save()
+                            break
+
+                    user.save()
 
                 return user
 
