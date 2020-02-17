@@ -37,6 +37,10 @@ def get_widgets():
 def announces(request):
     context = {"page_name": "management_announces"}
     return render(request, 'portal/management_announces.html', context)
+@staff_member_required
+def whitelist(request):
+    context = {"page_name": "management_whitelist"}
+    return render(request, 'portal/management_whitelist.html', context)
 
 @staff_member_required
 def management(request):

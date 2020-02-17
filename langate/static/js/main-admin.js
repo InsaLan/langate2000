@@ -586,3 +586,30 @@ $(document).on("click", ".change-mark-modal-btn", function (e) {
     $("#change-mark-btn").data("userid", userid);
     $("#change-mark-modal").modal("show");
 });
+
+
+$("#create-whitelist-btn").click(function(){
+  let userid = $("#create-whitelist-btn").data("userid");
+  let mac = $("#create-whitelist-input").val();
+
+  $.ajax({
+    url: '/api/create_whitelist_device/' + mac,
+    type:'GET',
+    success: function(result) {
+      $("#create-whitelist-modal").modal('hide');
+      reload_user_details(userid);
+    },
+
+    error: function (xhr, textStatus, errorThrown) {
+      handle_error(textStatus, errorThrown, xhr.responseText);
+    }
+  }
+  )
+}
+)
+
+$(document).on("click", ".create-whitelist-modal-btn", function (e) {
+    userid = $(this).data("userid");
+    $("#create-whitelist-btn").data("userid", userid);
+    $("#create-whitelist-modal").modal("show");
+});
