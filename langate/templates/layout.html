@@ -49,7 +49,12 @@
                                 <li class="nav-item {% if "management" in page_name %}active{% endif %}">
                                     <a class="nav-link" href="{% url 'management' %}">Gestion</a>
                                 </li>
-                            {% endblock %}  
+                            {% endblock %}
+                            {% block navitem-netmap %}
+                            <li class="nav-item {% if "netmap" in page_name %}active{% endif %}">
+                                <a class="nav-link" href="{% url 'netmap' %}">Map réseau</a>
+                            </li>
+                        {% endblock %}   
                             {% block navitem-admin-helpdesk %}
                                 <li class="nav-item {% if page_name == "helpdesk-admin" %}active{% endif %}">
                                     <a class="nav-link" href="{% url 'helpdesk-admin' %}">Gestion des tickets</a>

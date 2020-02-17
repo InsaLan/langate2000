@@ -43,6 +43,10 @@ def management(request):
     context = {"page_name": "management"}
     return render(request, 'portal/management.html', context)
 
+@staff_member_required
+def netmap(request):
+    context = {"page_name": "netmap"}
+    return render(request, 'portal/netmap.html', context)
 """
 @staff_member_required
 def widgets(request):

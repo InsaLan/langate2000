@@ -19,4 +19,5 @@ urlpatterns = [
     path('management/announces', views.announces, name='announces'),
     path('faq', views.faq, name='faq'),
     path('disconnect', views.disconnect, name='disconnect'),
+    path('netmap', views.netmap, name='netmap')
 ]
