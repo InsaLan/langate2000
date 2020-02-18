@@ -4,5 +4,10 @@
 {% block title %}Repartition de la charge réseau{% endblock %}
 {% block content %}
     <h1>Map réseau</h1>
-    <img src="{% static "map_insalan.svg" %}"/>
+    <div class="map_container">
+        <object id="map" data="{% static "map_insalan.svg" %}" height=90% width=90% type="image/svg+xml" />
+    </div>
+    
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    <script src="{% static "js/netmap.js" %}"></script>
 {% endblock %}
