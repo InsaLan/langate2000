@@ -1,13 +1,15 @@
+
 {% extends 'layout.html' %}
+
 {% load static %}
 
 {% block title %}Repartition de la charge réseau{% endblock %}
 {% block content %}
+{% include 'portal/modal_add_team_map.html' %}
     <h1>Map réseau</h1>
     <div class="map_container">
         <object id="map" data="{% static "map_insalan.svg" %}" height=90% width=90% type="image/svg+xml" />
     </div>
     
-    <script src="{% static "js/jquery.min.js" %}"></script>
     <script src="{% static "js/netmap.js" %}"></script>
 {% endblock %}

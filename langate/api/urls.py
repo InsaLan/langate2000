@@ -19,4 +19,7 @@ urlpatterns = [
 
     path('markdown_preview/', MarkdownPreview.as_view()),
     path('change_mark/<int:ident>/<int:mark>', ChangeMark.as_view()),
+
+
+    path('teams/<str:team_name>', TeamPlayers.as_view()),
 ]

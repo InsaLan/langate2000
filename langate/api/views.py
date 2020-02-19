@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 from django.conf import settings
 import logging
 from markdown import Markdown
-
+import requests
 from .serializers import *
 from portal.models import *
 
@@ -188,3 +188,11 @@ class MarkdownPreview(APIView):
 
     def post(self, request):
         return Response({"result": Markdown().convert(request.data["request"])})
+
+
+class TeamPlayers(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+    def get(self, team):
+       pass #TODO: fetch team members from the API
+            
+
