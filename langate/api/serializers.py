@@ -16,6 +16,14 @@ class DeviceSerializer(serializers.ModelSerializer):
         fields = ["id", "ip", "mac", "area", "name"]
         read_only_fields = ["id", "ip", "mac", "area"]
 
+class WhiteListSerializer(serializers.ModelSerializer):
+    name = serializers.RegexField("^[^\\<\\>]+$", max_length=100)
+
+    class Meta:
+        model = WhiteListDevice
+        fields = ["id", "mac", "name"]
+        read_only_fields = ["id","mac", "name"]
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(choices=[(tag, tag.value) for tag in Role])

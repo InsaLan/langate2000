@@ -151,7 +151,7 @@ def create_whitelist_device(sender, instance, created, **kwargs):
 
     if created:
         mac = instance.mac
-        instance.name = generate_dev_name()
+        name = instance.name
 
         netcontrol.query("connect_user", { "mac": instance.mac, "name": instance.name })
 

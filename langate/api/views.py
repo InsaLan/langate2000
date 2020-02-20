@@ -42,6 +42,12 @@ class DeviceList(APIView):
         else:
             raise PermissionDenied
 
+class WhiteList_List(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+    queryset = WhiteListDevice.objects.all()
+    serializer_class = WhiteListSerializer
+
+
 class ChangeMark(APIView):
     permission_classes = (permissions.IsAdminUser,)
     def get(self,request,ident,mark):
@@ -54,8 +60,8 @@ class ChangeMark(APIView):
 
 class WhiteList(APIView):
     permission_classes = (permissions.IsAdminUser,)
-    def get(self,request,mac):
-        WhiteListDevice.objects.create(mac=mac)
+    def get(self,request,mac,name):
+        WhiteListDevice.objects.create(mac=mac,name=name)
         dev = WhiteListDevice.objects.get(mac=mac)
         r = netcontrol.query("get_user_info", { "mac": dev.mac})
         if (r["success"]):
@@ -63,8 +69,10 @@ class WhiteList(APIView):
         else:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def delete(self,request,ident,mac):
-        WhiteListDevice.objects.delete(mac=mac)
+class WhiteList_Delete(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+    def delete(self,request,ident):
+        WhiteListDevice.objects.filter(id=ident).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -209,23 +217,7 @@ class DeviceDetails(APIView):
             dev.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-class UserList(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAdminUser,)
 
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UserDetails(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (permissions.IsAdminUser,)
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def delete(self, request, *args, **kwargs):
-        u = self.get_object()
-        event_logger.info("User {} ({}) was removed by {}.".format(u.username, u.profile.role, request.user.username))
-        return super().delete(request, args, kwargs)
 
 class UserPasswordManager(APIView):
     permission_classes = (permissions.IsAdminUser,)

@@ -11,9 +11,33 @@
     {% csrf_token %} <!-- Token needed for AJAX calls -->
 
     {% include 'portal/management_layout.html' %}
+<div class="col-sm-12 col-md-9 col-lg-10 col-xl-10 text-white mx-auto">
+
+  <!-- main table -->
+      <nav id="navbar-title" class="navbar navbar-dark pb-4">
+          <a class="navbar-brand" href="#"></a>
+          <ul class="nav nav-pills">
+              <li class="nav-item">
+                <button type="button" class="btn btn-primary align-right create-whitelist-modal-btn" data-toggle="modal">Nouvel Appareil Autorisé</button>
+                <!--<button type="button" data-toggle="tooltip" data-placement="bottom" title="Créer un Whitelist Device" class="btn btn-secondary btn-sm create-whitelist-modal-btn" aria-label="Créer un Whitelist Device"><span class="fas fa-plus" aria-hidden="true"></span></button>-->
+              </li>
+          </ul>
+      </nav>
+
+
+      <table id="whitelist-table" class="table table-sm table-bordered">
+          <thead>
+          <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Mac</th>
+              <th scope="col" style="width: 10%;">Actions</th>
+          </tr>
+          </thead>
+      </table>
+
 
     <!-- Modal Add Whitelist_Device -->
-    <button type="button" data-toggle="tooltip" data-placement="bottom" title="Créer un Whitelist Device" class="btn btn-secondary btn-sm create-whitelist-modal-btn" aria-label="Créer un Whitelist Device"><span class="fas fa-plus" aria-hidden="true"></span></button>
     <div class="modal modal-insalan fade" id="create-whitelist-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -30,6 +54,10 @@
                                 <label for="create-whitelist-modal" class="col-sm-4 col-form-label">Mac de l'appareil: </label>
                                 <input tabindex="4" type="text" class="form-control col-sm-8 disabled" id="create-whitelist-input">
                             </div>
+                            <div class="form-group row">
+                                <label for="create-whitelist-modal" class="col-sm-4 col-form-label">Nom de l'appareil: </label>
+                                <input tabindex="4" type="text" class="form-control col-sm-8 disabled" id="create-whitelist-name-input">
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -42,7 +70,27 @@
     </div>
 
     <!-- Modal Remove Whitelist_Device -->
+    <div class="modal modal-insalan" id="delete-whitelist-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Supprimer ?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-white">
+                    <p>Voulez-vous vraiment supprimer l'appareil autorisé <b id="delete-whitelist"></b> ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                    <button type="button" class="btn btn-danger" id="delete-whitlist-confirm-btn">Oui</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+</div>
 
     <script src="{% static "js/Chart.bundle.min.js" %}"></script>
 
@@ -52,20 +100,17 @@
 
         $(document).ready(function () {
 
-            table = $("#user-table").DataTable({
+            table = $("#whitelist-table").DataTable({
 
                 ajax: {
-                    url: '/api/user_list',
+                    url: '/api/whitelist_list',
                     dataSrc: ''
                 },
 
                 columns: [
                     { "data": "id" },
-                    { "data": "username" },
-                    { "data": "email" },
-                    { "data": "profile.role" },
-                    { "data": "profile.tournament" },
-                    { "data": "profile.team" },
+                    { "data": "name" },
+                    { "data": "mac" },
                     { "data": null}
                 ],
 
@@ -74,10 +119,7 @@
                         "render": function ( data, type, row ) {
 
                             let html = "<div role=\"group\" class=\"btn-group btn-group-sm\" aria-label=\"Actions\">\n" +
-                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Modifier l'utilisateur\" class=\"btn btn-secondary modify-user-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-pen\" aria-hidden=\"true\"></span></button>\n" +
-                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Regénérer le mot de passe\" class=\"btn btn-secondary user-password-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-key\" aria-hidden=\"true\"></span></button>\n" +
-                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Appareils enregistrés\" class=\"btn btn-secondary user-details-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-globe\" aria-hidden=\"true\"></span></button>\n" +
-                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'utilisateur\" class=\"btn btn-secondary delete-user-btn\" data-userid=\""+row["id"]+"\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-secondary delete-whitelist-modal-btn\" data-userid=\""+row["id"] +"\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
                                     "</div>";
 
                             return html;
@@ -85,14 +127,14 @@
 
                         "orderable": false,
 
-                        "targets": 6
+                        "targets": 3,
                     },
                 ],
 
                 order: [[1, 'asc']]
             });
 
-            $("#user-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]'});
+            $("#whitelist-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]'});
 
         });
 

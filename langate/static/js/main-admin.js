@@ -589,15 +589,15 @@ $(document).on("click", ".change-mark-modal-btn", function (e) {
 
 
 $("#create-whitelist-btn").click(function(){
-  let userid = $("#create-whitelist-btn").data("userid");
   let mac = $("#create-whitelist-input").val();
+  let name = $("#create-whitelist-name-input").val();
 
   $.ajax({
-    url: '/api/create_whitelist_device/' + mac,
+    url: '/api/create_whitelist_device/' + mac+'/'+name,
     type:'GET',
     success: function(result) {
       $("#create-whitelist-modal").modal('hide');
-      reload_user_details(userid);
+      table.ajax.reload();
     },
 
     error: function (xhr, textStatus, errorThrown) {
@@ -609,7 +609,29 @@ $("#create-whitelist-btn").click(function(){
 )
 
 $(document).on("click", ".create-whitelist-modal-btn", function (e) {
-    userid = $(this).data("userid");
-    $("#create-whitelist-btn").data("userid", userid);
     $("#create-whitelist-modal").modal("show");
+});
+
+
+$("#delete-whitlist-confirm-btn").click(function(){
+  let userid = $("#delete-whitlist-confirm-btn").data("userid");
+  $.ajax({
+    url: '/api/delete_whitelist_device/' + userid,
+    type:'DELETE',
+    success: function(result) {
+      $("#delete-whitelist-modal").modal('hide');
+      table.ajax.reload();
+    },
+    error: function (xhr, textStatus, errorThrown) {
+      handle_error(textStatus, errorThrown, xhr.responseText);
+    }
+  }
+  )
+}
+)
+
+$(document).on("click", ".delete-whitelist-modal-btn", function (e) {
+    userid = $(this).data("userid");
+    $("#delete-whitlist-confirm-btn").data("userid", userid);
+    $("#delete-whitelist-modal").modal("show");
 });
