@@ -53,6 +53,7 @@ class Announces(models.Model):
     summary = models.TextField()
     body = models.TextField()
 
+
 class Profile(models.Model):
     # DOCU related : https://docs.djangoproject.com/en/2.0/topics/auth/customizing/#extending-user
     # and https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
@@ -91,14 +92,13 @@ class Device(models.Model):
     # Area of the device, i.e. LAN or WiFi
     area = models.CharField(max_length=4, default="LAN")
 
-class WhiteListDevice(models.Model):
 
+class WhiteListDevice(models.Model):
     # Name of the device
     name = models.CharField(max_length=100, default="Server")
 
     # MAC address of the device
-    mac = models.CharField(max_length=17) # One device = 1 MAC = One User, two users cannot have the same device !
-
+    mac = models.CharField(max_length=17, unique=True)
 
 
 # Functions listening modifications of user

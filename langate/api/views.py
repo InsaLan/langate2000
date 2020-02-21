@@ -42,38 +42,33 @@ class DeviceList(APIView):
         else:
             raise PermissionDenied
 
-class WhiteList_List(generics.ListCreateAPIView):
+
+class WhitelistList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAdminUser,)
+    queryset = WhiteListDevice.objects.all()
+    serializer_class = WhiteListSerializer
+
+
+class WhitelistDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+
     queryset = WhiteListDevice.objects.all()
     serializer_class = WhiteListSerializer
 
 
 class ChangeMark(APIView):
     permission_classes = (permissions.IsAdminUser,)
-    def get(self,request,ident,mark):
-        dev = Device.objects.get(id=ident)
-        r = netcontrol.query("set_mark", { "mac": dev.mac, "mark": mark})
-        if (r["success"]):
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class WhiteList(APIView):
-    permission_classes = (permissions.IsAdminUser,)
-    def get(self,request,mac,name):
-        WhiteListDevice.objects.create(mac=mac,name=name)
-        dev = WhiteListDevice.objects.get(mac=mac)
-        r = netcontrol.query("get_user_info", { "mac": dev.mac})
-        if (r["success"]):
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def get(self, request, ident, mark):
 
-class WhiteList_Delete(APIView):
-    permission_classes = (permissions.IsAdminUser,)
-    def delete(self,request,ident):
-        WhiteListDevice.objects.filter(id=ident).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if Device.objects.filter(id=ident).count() > 0:
+            dev = Device.objects.get(id=ident)
+            r = netcontrol.query("set_mark", {"mac": dev.mac, "mark": mark})
+
+            if r["success"]:
+                return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class DeviceDetails(APIView):

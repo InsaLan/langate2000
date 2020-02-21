@@ -19,7 +19,6 @@
           <ul class="nav nav-pills">
               <li class="nav-item">
                 <button type="button" class="btn btn-primary align-right create-whitelist-modal-btn" data-toggle="modal">Nouvel Appareil Autorisé</button>
-                <!--<button type="button" data-toggle="tooltip" data-placement="bottom" title="Créer un Whitelist Device" class="btn btn-secondary btn-sm create-whitelist-modal-btn" aria-label="Créer un Whitelist Device"><span class="fas fa-plus" aria-hidden="true"></span></button>-->
               </li>
           </ul>
       </nav>
@@ -30,7 +29,7 @@
           <tr>
               <th scope="col">#</th>
               <th scope="col">Nom</th>
-              <th scope="col">Mac</th>
+              <th scope="col">MAC</th>
               <th scope="col" style="width: 10%;">Actions</th>
           </tr>
           </thead>
@@ -51,12 +50,12 @@
                     <div class="container">
                       <form>
                             <div class="form-group row">
-                                <label for="create-whitelist-modal" class="col-sm-4 col-form-label">Mac de l'appareil: </label>
-                                <input tabindex="4" type="text" class="form-control col-sm-8 disabled" id="create-whitelist-input">
+                                <label for="create-whitelist-modal" class="col-sm-5 col-form-label">MAC de l'appareil: </label>
+                                <input tabindex="4" type="text" class="form-control col-sm-7 disabled" id="create-whitelist-mac-input">
                             </div>
                             <div class="form-group row">
-                                <label for="create-whitelist-modal" class="col-sm-4 col-form-label">Nom de l'appareil: </label>
-                                <input tabindex="4" type="text" class="form-control col-sm-8 disabled" id="create-whitelist-name-input">
+                                <label for="create-whitelist-modal" class="col-sm-5 col-form-label">Nom de l'appareil: </label>
+                                <input tabindex="4" type="text" class="form-control col-sm-7 disabled" id="create-whitelist-name-input">
                             </div>
                         </form>
                     </div>
@@ -103,7 +102,7 @@
             table = $("#whitelist-table").DataTable({
 
                 ajax: {
-                    url: '/api/whitelist_list',
+                    url: '/api/whitelist_device/',
                     dataSrc: ''
                 },
 

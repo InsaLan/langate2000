@@ -11,7 +11,6 @@ urlpatterns = [
     path('device_status/<int:ident>/', DeviceStatus.as_view()),
 
     path('user_list/', UserList.as_view()),
-    path('whitelist_list/', WhiteList_List.as_view()),
     path('user_details/<int:pk>', UserDetails.as_view()),
     path('user_password/<int:pk>', UserPasswordManager.as_view()),
 
@@ -20,6 +19,6 @@ urlpatterns = [
 
     path('markdown_preview/', MarkdownPreview.as_view()),
     path('change_mark/<int:ident>/<int:mark>', ChangeMark.as_view()),
-    path('create_whitelist_device/<str:mac>/<str:name>', WhiteList.as_view()),
-    path('delete_whitelist_device/<int:ident>', WhiteList_Delete.as_view()),
+    path('whitelist_device/', WhitelistList.as_view()),
+    path('whitelist_device/<int:pk>', WhitelistDetails.as_view()),
 ]
