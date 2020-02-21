@@ -22,10 +22,28 @@ import random, json
 # Create your views here.
 event_logger = logging.getLogger("langate.events")
 
+class DeviceListByName(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request, name):
+        u = User.objects.get(username=name)
+
+        if u == request.user or request.user.is_staff:
+            # A normal user should only have access to the list of its devices,
+            # So, we check that the request user matches the ID passed in parameter.
+            # Admin users have the right to consult anyone's list of devices.
+
+            qs = Device.objects.filter(user=u)
+            serializer = DeviceSerializer(qs, many=True)
+
+            return Response(serializer.data)
+
+        else:
+            raise PermissionDenied
+
 
 class DeviceList(APIView):
     permission_classes = (permissions.IsAuthenticated,)
-
+    
     def get(self, request, pk):
         u = User.objects.get(id=pk)
 
@@ -192,7 +210,6 @@ class MarkdownPreview(APIView):
 
 class TeamPlayers(APIView):
     permission_classes = (permissions.IsAdminUser,)
-    def get(self, team):
-       pass #TODO: fetch team members from the API
-            
-
+    def get(self, request):
+        teams = requests.get("https://www.insalan.fr/api/admin/placement", auth=("[username]", "[pass]"))
+        return Response(teams.json()["participants"])

@@ -90,15 +90,7 @@ class Device(models.Model):
 
     # Area of the device, i.e. LAN or WiFi
     area = models.CharField(max_length=4, default="LAN")
-
-class Team(models.Model):
-    # Name of the team
-    name = models.CharField(max_length=250)
-    # User in the team
-    members = models.ManyToManyField(User)
-    # Position ids on the map
-    pos = models.CharField(max_length=100)
-
+    
 # Functions listening modifications of user
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

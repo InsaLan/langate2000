@@ -232,11 +232,14 @@ html, body {
     vertical-align: middle;
 }
 
-
-#insalan_netmap path {
+// map style
+#insalan_netmap rect {
     fill: #757575;
 }
 
-#insalan_netmap path:hover {
+#insalan_netmap rect:hover {
     fill: #000000;
+}
+.taken_seats {
+    fill: #2a2a2a !important;
 }

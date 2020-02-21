@@ -6,8 +6,10 @@ from django.contrib.auth import logout
 from django.conf import settings
 
 from .models import *
-from modules import netcontrol
+from modules import netcontrol, api_to_svg
 
+
+import requests
 # Create your views here.
 
 """
@@ -45,7 +47,10 @@ def management(request):
 
 @staff_member_required
 def netmap(request):
-    context = {"page_name": "netmap"}
+    netmap_data = requests.get("https://www.insalan.fr/api/admin/placement", auth=("[username]", "[password]")).json()
+    print(netmap)
+    context = {"page_name": "netmap",
+               "netmap_svg": api_to_svg.api_to_map(netmap_data)}
     return render(request, 'portal/netmap.html', context)
 """
 @staff_member_required
