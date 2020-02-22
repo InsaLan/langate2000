@@ -21,23 +21,30 @@ COPY langate2000-supervisor.conf /etc/supervisor/supervisord.conf
 COPY langate2000-nginx.conf /etc/nginx/sites-enabled/default
 RUN mkdir -p /var/www/html/static
 
-# Django setup
+# netcontrol
+
+ADD langate2000-netcontrol /app/langate2000-netcontrol
+
+# theming
 
 ADD theming /app/theming
-ADD langate /app/langate
-ADD langate2000-netcontrol /app/langate2000-netcontrol
 
 WORKDIR /app/theming/
 
-RUN sass insalan.scss ../langate/static/css/langate.css
+RUN sass insalan.scss langate.css
+
+# django
+
+ADD langate /app/langate
+
+RUN cp /app/theming/langate.css /app/langate/static/css/
 
 WORKDIR /app/langate/
 
-#RUN export secret_key=$(pwgen -1 -n 100) && sed "s/<generated_random_key>/$secret_key/" langate/settings_local.py.template > langate/settings_local.py
-
-RUN python3 manage.py collectstatic --noinput
 RUN python3 manage.py makemigrations --noinput
 RUN python3 manage.py migrate --noinput
+
+RUN python3 manage.py collectstatic --noinput
 RUN echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('root', '', 'rien')" | python3 manage.py shell
 
 CMD [ "supervisord", "-c", "/etc/supervisor/supervisord.conf" ]
