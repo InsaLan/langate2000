@@ -17,6 +17,8 @@ urlpatterns = [
     path('', views.connected, name='connected'),
     path('management', views.management, name='management'),
     path('management/announces', views.announces, name='announces'),
+    path('management/whitelist', views.whitelist, name='whitelist'),
     path('faq', views.faq, name='faq'),
     path('disconnect', views.disconnect, name='disconnect'),
+
 ]

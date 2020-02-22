@@ -19,4 +19,6 @@ urlpatterns = [
 
     path('markdown_preview/', MarkdownPreview.as_view()),
     path('change_mark/<int:ident>/<int:mark>', ChangeMark.as_view()),
+    path('whitelist_device/', WhitelistList.as_view()),
+    path('whitelist_device/<int:pk>', WhitelistDetails.as_view()),
 ]

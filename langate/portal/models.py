@@ -53,6 +53,7 @@ class Announces(models.Model):
     summary = models.TextField()
     body = models.TextField()
 
+
 class Profile(models.Model):
     # DOCU related : https://docs.djangoproject.com/en/2.0/topics/auth/customizing/#extending-user
     # and https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
@@ -90,6 +91,14 @@ class Device(models.Model):
 
     # Area of the device, i.e. LAN or WiFi
     area = models.CharField(max_length=4, default="LAN")
+
+
+class WhiteListDevice(models.Model):
+    # Name of the device
+    name = models.CharField(max_length=100, default="Server")
+
+    # MAC address of the device
+    mac = models.CharField(max_length=17, unique=True)
 
 
 # Functions listening modifications of user
@@ -131,5 +140,30 @@ def delete_device(sender, instance, **kwargs):
     # When deleting a device, we need to unregister it from the network.
 
     event_logger.info("Disconnected device {} (owned by {}) at {} of the internet.".format(instance.mac, instance.user.username, instance.ip))
+
+    netcontrol.query("disconnect_user", { "mac": instance.mac })
+
+
+@receiver(post_save, sender=WhiteListDevice)
+def create_whitelist_device(sender, instance, created, **kwargs):
+    # On creating a new device, we need to use the networking module to retrieve
+    # some information : for example the MAC address or the area of the device based on the IP.
+
+    if created:
+        mac = instance.mac
+        name = instance.name
+
+        netcontrol.query("connect_user", { "mac": instance.mac, "name": instance.name })
+
+        event_logger.info("Connected device {} (the mac {} has been connected)".format(instance.mac, instance.name))
+
+        instance.save()
+
+
+@receiver(post_delete, sender=WhiteListDevice)
+def delete_whitelist_device(sender, instance, **kwargs):
+    # When deleting a device, we need to unregister it from the network.
+
+    event_logger.info("Disconnected device {} (the mac {} has been disconnected) ".format(instance.mac, instance.name))
 
     netcontrol.query("disconnect_user", { "mac": instance.mac })

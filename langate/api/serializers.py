@@ -3,7 +3,10 @@ import logging
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+
 from portal.models import *
+import re
 
 event_logger = logging.getLogger("langate.events")
 
@@ -15,6 +18,22 @@ class DeviceSerializer(serializers.ModelSerializer):
         model = Device
         fields = ["id", "ip", "mac", "area", "name"]
         read_only_fields = ["id", "ip", "mac", "area"]
+
+
+class WhiteListSerializer(serializers.ModelSerializer):
+    name = serializers.RegexField("^[^\\<\\>]+$", max_length=100)
+    mac = serializers.CharField(validators=[UniqueValidator(queryset=WhiteListDevice.objects.all())])
+
+    def validate_mac(self, mac):
+        if bool(re.match(r'^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$', mac)):
+            return mac
+        else:
+            raise serializers.ValidationError("Malformed MAC address")
+
+    class Meta:
+        model = WhiteListDevice
+        fields = ["id", "mac", "name"]
+        read_only_fields = ["id", "mac", "name"]
 
 
 class ProfileSerializer(serializers.ModelSerializer):
