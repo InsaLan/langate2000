@@ -144,6 +144,7 @@ class DeviceStatus(APIView):
         # FIXME: was removed from langate2000-netcontrol
         return Response({"mark": info["mark"]})
 
+
 class UserList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
@@ -161,57 +162,6 @@ class UserDetails(generics.RetrieveUpdateDestroyAPIView):
         u = self.get_object()
         event_logger.info("User {} ({}) was removed by {}.".format(u.username, u.profile.role, request.user.username))
         return super().delete(request, args, kwargs)
-
-
-class DeviceDetails(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get_device(self, ident, user):
-
-        # FIXME: This can raise Device.DoesNotExist exception, not sure whether we should catch this...
-        dev = Device.objects.get(id=ident)
-
-        # If the API call is made by the device owner or an admin, we should proceed, otherwise we should abort
-        if (dev.user == user) or user.is_staff:
-            return dev
-        else:
-            raise PermissionDenied
-
-    def get(self, request, ident):
-        dev = self.get_device(ident, request.user)
-        serializer = DeviceSerializer(dev)
-        return Response(serializer.data)
-
-    def put(self, request, ident, format=None):
-        dev = self.get_device(ident, request.user)
-
-        serializer = DeviceSerializer(dev, data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, ident, format=None):
-
-        client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-
-        dev = self.get_device(ident, request.user)
-
-        if dev.ip == client_ip:
-            # If the user decides to remove the device he is currently on,
-            # We remove the device and log him out.
-
-            dev.delete()
-            logout(request)
-
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        else:
-            dev.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 
 class UserPasswordManager(APIView):
