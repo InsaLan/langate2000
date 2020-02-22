@@ -46,8 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'portal.apps.PortalConfig',  # TODO: replace this
-    'portal',
+    'portal.apps.PortalConfig',
     'helpdesk',
     'api',
     'bootstrap4',
