@@ -91,7 +91,7 @@ function reload_user_details(id) {
 
 
 
-	$.getJSON("/api/devices_list/"+id, function (data) {
+	$.getJSON("/api/user_devices_list/"+id, function (data) {
 
 		if (data.length == 0) {
 			$("#device-table").append("<tr><td colspan=\"2\">Aucun périphérique enregistré.</td></tr>")
@@ -265,7 +265,7 @@ $(document).on("click", ".delete-device-btn", function (e) {
 	id = $(this).data("deviceid");
 	$("#delete-device-confirm-btn").data("deviceid", id);
 
-	$.getJSON( "/api/device_details/"+id, function( data ) {
+	$.getJSON( "/api/user_device_details/"+id, function( data ) {
 		$("#delete-device-name").text(data["name"]);
 		$("#delete-device-modal").modal("show");
 	});
@@ -444,11 +444,12 @@ $("#delete-device-confirm-btn").click(function () {
 	let id = $(this).data("deviceid");
 
 	$.ajax({
-		url: '/api/device_details/' + id + '/',
+		url: '/api/user_device_details/' + id + '/',
 		type: 'DELETE',
 
 		success: function (result) {
 			reload_user_details(id);
+			table.ajax.reload();
 		},
 
 		error: function (xhr, textStatus, errorThrown) {

@@ -23,7 +23,13 @@ import random, json
 event_logger = logging.getLogger("langate.events")
 
 
-class DeviceList(APIView):
+class DeviceList(generics.ListAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+    queryset = Device.objects.all()
+    serializer_class = DeviceSerializer
+
+
+class UserDeviceList(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, pk):
@@ -35,7 +41,7 @@ class DeviceList(APIView):
             # Admin users have the right to consult anyone's list of devices.
 
             qs = Device.objects.filter(user=u)
-            serializer = DeviceSerializer(qs, many=True)
+            serializer = UserDeviceSerializer(qs, many=True)
 
             return Response(serializer.data)
 
@@ -71,7 +77,7 @@ class ChangeMark(APIView):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class DeviceDetails(APIView):
+class UserDeviceDetails(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_device(self, ident, user):
@@ -87,13 +93,13 @@ class DeviceDetails(APIView):
 
     def get(self, request, ident):
         dev = self.get_device(ident, request.user)
-        serializer = DeviceSerializer(dev)
+        serializer = UserDeviceSerializer(dev)
         return Response(serializer.data)
 
     def put(self, request, ident, format=None):
         dev = self.get_device(ident, request.user)
 
-        serializer = DeviceSerializer(dev, data=request.data)
+        serializer = UserDeviceSerializer(dev, data=request.data)
 
         if serializer.is_valid():
             serializer.save()

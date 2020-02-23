@@ -1,6 +1,6 @@
 function reload_device_table() {
     $("#device-table").empty();
-    $.getJSON( "/api/devices_list/"+user_id, function( data ) {
+    $.getJSON( "/api/user_devices_list/"+user_id, function( data ) {
         let i = 1;
                                                                                                                                                                                                                                                                                                                                                                                   
         $.each(data, function (k, dev) {
@@ -37,7 +37,7 @@ $(document).on("click", ".delete-device-btn", function (e) {
     $("#delete-device-confirm-btn").data("deviceid", id);
     $("#delete-device-confirm-btn").data("iscurrent", iscurrent);
 
-    $.getJSON( "/api/device_details/"+id, function( data ) {
+    $.getJSON( "/api/user_device_details/"+id, function( data ) {
        $("#delete-device-name").text(data["name"]);
        $("#delete-device-modal").modal("show");
     });
@@ -47,7 +47,7 @@ $(document).on("click", ".modify-device-btn", function (e) {
     let id = $(this).data("deviceid");
     $("#modify-device-confirm-btn").data("deviceid", id);
 
-    $.getJSON( "/api/device_details/"+id, function( data ) {
+    $.getJSON( "/api/user_device_details/"+id, function( data ) {
 	$("#modify-device-name").val(data["name"]);
     });
 
@@ -60,7 +60,7 @@ $("#delete-device-confirm-btn").click( function () {
     let iscurrent = $(this).data("iscurrent") == "yes";
 
     $.ajax({
-	url: '/api/device_details/' + id + '/',
+	url: '/api/user_device_details/' + id + '/',
 	type: 'DELETE',
 
 	success: function (result) {
@@ -98,7 +98,7 @@ $("#modify-device-confirm-btn").click( function () {
 	let id = $(this).data("deviceid");
 
 	$.ajax({
-	    url: '/api/device_details/' + id + '/',
+	    url: '/api/user_device_details/' + id + '/',
 	    type: 'PUT',
 	    data: "name=" + encodeURI(name),
 

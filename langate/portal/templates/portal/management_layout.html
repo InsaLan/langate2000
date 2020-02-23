@@ -7,20 +7,21 @@
 
     <ul class="nav flex-column nav-pills management-nav-insalan">
         <li class="nav-item">
-            <a class="nav-link {% if page_name == "management" %}active{% endif %}" href="{% url 'management' %}">Utilisateurs & Appareils</a>
+            <a class="nav-link {% if page_name == "management" %}active{% endif %}" href="{% url 'management' %}">Utilisateurs</a>
         </li>
-        <!--
+
         <li class="nav-item">
-            <a class="nav-link {% if page_name == "management_widgets" %}active{% endif %}" href="{# url 'widgets' #}">Widgets</a>
-        </li>
-        -->
-        <li class="nav-item">
-            <a class="nav-link {% if page_name == "management_announces" %}active{% endif %}" href="{% url 'announces' %}">Annonces</a>
+            <a class="nav-link {% if page_name == "management_devices" %}active{% endif %}" href="{% url 'devices' %}">Appareils</a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link {% if page_name == "management_whitelist" %}active{% endif %}" href="{% url 'whitelist' %}">Appareils en liste blanche</a>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link {% if page_name == "management_announces" %}active{% endif %}" href="{% url 'announces' %}">Annonces</a>
+        </li>
+
     </ul>
 
 </div>

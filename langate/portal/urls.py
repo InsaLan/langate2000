@@ -6,16 +6,10 @@ from django.conf.urls.static import static
 from django.conf import settings
 from . import views
 
-"""
-    path('management/widgets', views.widgets, name='widgets'),
-    path('blog/', views.allblogs , name='allblogs'),
-    path('blog/articles', views.articles , name='articles'),
-    path('blog/<int:blog_id>/', views.detail, name="detail"),
-"""
-
 urlpatterns = [
     path('', views.connected, name='connected'),
-    path('management', views.management, name='management'),
+    path('management/users', views.management, name='management'),
+    path('management/devices', views.devices, name='devices'),
     path('management/announces', views.announces, name='announces'),
     path('management/whitelist', views.whitelist, name='whitelist'),
     path('faq', views.faq, name='faq'),
