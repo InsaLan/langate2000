@@ -11,7 +11,7 @@ import re
 event_logger = logging.getLogger("langate.events")
 
 
-class DeviceSerializer(serializers.ModelSerializer):
+class UserDeviceSerializer(serializers.ModelSerializer):
     name = serializers.RegexField("^[^\\<\\>]+$", max_length=100)
 
     class Meta:
@@ -108,33 +108,20 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'first_name', 'last_name', 'username', 'email', 'is_active', 'profile')
 
+
 class AnnounceSerializer(serializers.ModelSerializer):
     body = serializers.RegexField("^[^\\<\\>]+$")  # disallow < and > characters as they could be used for injections
-
-    """
-    def create(self, validated_data):
-        markdown_body = validated_data.pop('body', "")
-        html_body = Markdown().convert(markdown_body)
-
-        blog = Blog.objects.create(**validated_data, body=html_body)
-        blog.save()
-
-        return blog
-
-    def update(self, instance, validated_data):
-        markdown_body = validated_data.get('body', "")
-
-        instance.title = validated_data.get("title", None)
-        instance.pub_date = validated_data.get("last_update_date", datetime.now())
-        instance.pinned = validated_data.get("pinned", False)
-        instance.visible = validated_data.get("visible", False)
-        instance.body = Markdown().convert(markdown_body)
-
-        instance.save()
-
-        return instance
-    """
 
     class Meta:
         model = Announces
         fields = ('id', 'title', 'last_update_date', 'pinned', 'visible', 'short' , 'body')
+
+
+class DeviceSerializer(serializers.ModelSerializer):
+    name = serializers.RegexField("^[^\\<\\>]+$", max_length=100)
+    user = UserSerializer()
+
+    class Meta:
+        model = Device
+        fields = ["id", "ip", "mac", "area", "name", "user"]
+

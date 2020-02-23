@@ -6,8 +6,10 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('devices_list/<int:pk>', DeviceList.as_view()),
-    path('device_details/<int:ident>/', DeviceDetails.as_view()),
+    path('devices_list/', DeviceList.as_view()),
+
+    path('user_devices_list/<int:pk>', UserDeviceList.as_view()),
+    path('user_device_details/<int:ident>/', UserDeviceDetails.as_view()),
     path('device_status/<int:ident>/', DeviceStatus.as_view()),
 
     path('user_list/', UserList.as_view()),

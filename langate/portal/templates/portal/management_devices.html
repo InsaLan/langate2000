@@ -1,0 +1,171 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}Administration des joueurs{% endblock %}
+{% block content %}
+
+    {% include 'portal/modal_create_user.html' %}
+    {% include 'portal/modal_modify_user.html' %}
+    {% include 'portal/modal_user_details.html' %}
+
+    {% csrf_token %} <!-- Token needed for AJAX calls -->
+
+    {% include 'portal/management_layout.html' %}
+
+    <div class="col-sm-12 col-md-9 col-lg-10 col-xl-10 text-white mx-auto">
+
+        <nav id="navbar-title" class="navbar navbar-dark pb-4">
+            <a class="navbar-brand" href="#"></a>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary align-right" data-toggle="modal" data-target="#create-user-modal">Nouvel utilisateur</button>
+                </li>
+            </ul>
+        </nav>
+
+
+        <table id="user-table" class="table table-sm table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">IP</th>
+                <th scope="col">MAC</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Zone</th>
+                <th scope="col">Propriétaire</th>
+                <th scope="col" style="width: 10%;">Actions</th>
+            </tr>
+            </thead>
+        </table>
+
+    </div>
+
+    <!-- Modal Remove User -->
+
+    <div class="modal modal-insalan" id="delete-user-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Supprimer ?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-white">
+                    <p>Voulez-vous vraiment supprimer l'utilisateur <b id="delete-user-name"></b> ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                    <button type="button" class="btn btn-danger" id="delete-user-confirm-btn">Oui</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Remove Device -->
+
+    <div class="modal modal-insalan" id="delete-device-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Supprimer ?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-white">
+                    <p>Voulez-vous vraiment supprimer l'appareil <b id="delete-device-name"></b> ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                    <button type="button" class="btn btn-danger" id="delete-device-confirm-btn">Oui</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Change Mark -->
+
+    <div class="modal modal-insalan fade" id="change-mark-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Changer le VPN</h5>
+                    <button tabindex="-1" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                      <form>
+                            <div class="form-group row">
+                                <label for="change-mark-modal" class="col-sm-4 col-form-label">VPN Mark: </label>
+                                <input tabindex="4" type="text" class="form-control col-sm-8 disabled" id="change-mark-input">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" tabindex="-1">Fermer</button>
+                    <button tabindex="9" type="button" class="btn btn-primary" id="change-mark-btn">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="{% static "js/Chart.bundle.min.js" %}"></script>
+
+    <script>
+
+	let table = null;
+
+        $(document).ready(function () {
+
+            table = $("#user-table").DataTable({
+
+                ajax: {
+                    url: '/api/devices_list',
+                    dataSrc: ''
+                },
+
+                columns: [
+                    { "data": "id" },
+                    { "data": "ip" },
+                    { "data": "mac" },
+                    { "data": "name" },
+                    { "data": "area" },
+                    { "data": "user.username" },
+                    { "data": null}
+                ],
+
+                columnDefs: [
+                    {
+                        "render": function ( data, type, row ) {
+
+                            let html = "<div role=\"group\" class=\"btn-group btn-group-sm\" aria-label=\"Actions\">\n" +
+                                    "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Supprimer l'appareil\" class=\"btn btn-secondary delete-device-btn\" data-deviceid=\""+row["id"]+"\"><span class=\"fas fa-trash\" aria-hidden=\"true\"></span></button>\n" +
+                                    "</div>";
+
+                            return html;
+                        },
+
+                        "orderable": false,
+
+                        "targets": 6
+                    },
+                ],
+
+                order: [[1, 'asc']]
+            });
+
+            $("#user-table").tooltip({offset: "5px, 5px", selector: '[data-toggle=tooltip]'});
+
+        });
+
+    </script>
+
+   <script src="{% static "js/main-global.js" %}"></script>
+   <script src="{% static "js/main-admin.js" %}"></script>
+
+{% endblock %}

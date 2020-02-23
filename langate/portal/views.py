@@ -10,78 +10,29 @@ from modules import netcontrol
 
 # Create your views here.
 
-"""
-def get_widgets():
-
-    return {
-        "announces": {
-            "visible": AnnounceWidget.objects.filter(visible=True).count() > 0,
-            "items": AnnounceWidget.objects.all()
-        },
-        "status": {
-            "visible": RealtimeStatusWidget.objects.count() > 0 and RealtimeStatusWidget.objects.first().visible,
-            "lan": RealtimeStatusWidget.objects.first().lan if (RealtimeStatusWidget.objects.count() > 0) else "",
-            "wan": RealtimeStatusWidget.objects.first().wan if (RealtimeStatusWidget.objects.count() > 0) else "",
-            "csgo": RealtimeStatusWidget.objects.first().csgo if (RealtimeStatusWidget.objects.count() > 0) else ""
-        },
-
-        "pizzas": {
-            "visible": PizzaWidget.objects.count() > 0 and PizzaWidget.objects.first().visible,
-            "online_order_url": settings.PIZZA_ONLINE_ORDER_URL,
-            "slots": PizzaSlot.objects.all()
-        }
-    }
-"""
 
 @staff_member_required
 def announces(request):
     context = {"page_name": "management_announces"}
     return render(request, 'portal/management_announces.html', context)
+
+
 @staff_member_required
 def whitelist(request):
     context = {"page_name": "management_whitelist"}
     return render(request, 'portal/management_whitelist.html', context)
+
 
 @staff_member_required
 def management(request):
     context = {"page_name": "management"}
     return render(request, 'portal/management.html', context)
 
-"""
 @staff_member_required
-def widgets(request):
-    context = {"page_name": "management_widgets"}
-    return render(request, 'portal/management_widgets.html', context)
+def devices(request):
+    context = {"page_name": "management_devices"}
+    return render(request, 'portal/management_devices.html', context)
 
-#@staff_member_required
-#def announces(request,number):
-#    context = {"page_name": "management_widgets",}
-#    return render(request, 'portal/management_announces', locals())
-
-@login_required
-def allblogs(request):
-    blogs = Blog.objects
-    return render(request, 'portal/allblogs.html', {'blogs':blogs})
-
-@login_required
-def detail(request, blog_id):
-    blogdetail = get_object_or_404(Blog, pk=blog_id)
-    return render(request, 'portal/detail.html', {'blog':blogdetail})
-"""
-"""
-@staff_member_required
-def announces(request):
-    title = request.POST.get('title');
-    pub_date = request.POST.get('pub_date');
-    body = request.POST.get('body');
-    if (title != None and pub_date != None and body != None):
-        md = markdown.Markdown()
-        html1 = md.convert(body)
-        Blog.objects.create(title=title,pub_date=pub_date,body=html1)
-
-    context = {"page_name": "announces"}
-    return render(request, 'portal/article.html', context)
-"""
 
 @login_required
 def connected(request):
