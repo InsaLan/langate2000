@@ -3,7 +3,7 @@
 
 {% block title %}Administration des joueurs{% endblock %}
 {% block content %}
-    
+
     {% csrf_token %} <!-- Token needed for AJAX calls -->
 
     {% include 'portal/management_layout.html' %}
@@ -32,7 +32,7 @@
             </thead>
         </table>
 
-    
+
     </div>
 
     <!-- Modal Create announce -->
@@ -60,11 +60,11 @@
                     </div>
 
                     <div class="container">
-    
+
                         <div id="create-announce-feedback" class="pt-2 pb-3"></div>
-    
+
                         <form id="create-announce-form">
-    
+
                             <div class="form-group row" id="create-announce-title-g">
                                 <label for="create-announce-title" class="col-sm-2 col-form-label">Titre : </label>
                                 <input tabindex="1" type="text" class="form-control col-sm-10" id="create-announce-title">
@@ -116,6 +116,92 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" tabindex="-1">Fermer</button>
                     <button tabindex="9" type="button" class="btn btn-primary" id="create-announce-btn">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Modify announce -->
+
+    <div class="modal modal-insalan fade" id="modify-announce-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier une announce</h5>
+                    <button tabindex="-1" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="preview-container widget-bar-insalan d-flex justify-content-center">
+                        <div class="card w-50">
+                            <div class="card-body">
+                                <h5 class="card-title" id="preview-title">Prévisualisation</h5>
+                                <div class="card-text" id="preview-text">
+                                    <p>Complétez les champs ci-dessous.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+
+                        <div id="modify-announce-feedback" class="pt-2 pb-3"></div>
+
+                        <form id="modify-announce-form">
+
+                            <div class="form-group row" id="modify-announce-title-g">
+                                <label for="modify-announce-title" class="col-sm-2 col-form-label">Titre : </label>
+                                <input tabindex="1" type="text" class="form-control col-sm-10" id="modify-announce-title">
+                            </div>
+
+                            <!--<div class="form-group row" id="create-announce-summary-g">
+                                <label for="create-announce-summary" class="col-sm-4 col-form-label">Résumé (markdown) : </label>
+                                <textarea class="form-control col-sm-8" id="create-announce-summary"></textarea>
+                            </div>-->
+
+                            <div class="form-group row" id="modify-announce-body-g">
+                                <label for="modify-announce-body" class="col-sm-2 col-form-label">Corps : </label>
+                                <textarea rows="10" class="form-control col-sm-10" id="modify-announce-body"></textarea>
+                            </div>
+                            <div style="margin-top: -1rem; margin-bottom: .5rem; text-align: center">
+                                <small class="form-text text-muted mb-4">Syntaxe markdown supportée.</small>
+                            </div>
+
+                            <!--<div class="form-group row">
+                                <div class="form-check">
+                                  <input class="form-check-input" type="checkbox" id="create-announce-short">
+                                  <label class="form-check-label" for="create-announce-short">
+                                    Contenu court (uniquement afficher le résumé)
+                                  </label>
+                                </div>
+                            </div>-->
+
+                            <div class="form-group row">
+                                <div class="form-check">
+                                  <input class="form-check-input" checked type="checkbox" id="modify-announce-visible">
+                                  <label class="form-check-label" for="modify-announce-visible">
+                                    Visible
+                                  </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="form-check">
+                                  <input class="form-check-input" type="checkbox" id="modify-announce-pinned">
+                                  <label class="form-check-label" for="modify-announce-pinned">
+                                    Épinglé
+                                  </label>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" tabindex="-1">Fermer</button>
+                    <button tabindex="9" type="button" class="btn btn-primary" id="modify-announce-confirm-btn">Enregistrer</button>
                 </div>
             </div>
         </div>

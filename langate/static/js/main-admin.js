@@ -40,6 +40,7 @@ $(document).on("click", ".modify-user-btn", function () {
 
 });
 
+
 /* User confirm generate password button onclick handler */
 
 $(document).on("click", "#user-password-warning-confirm-btn", function () {
@@ -442,7 +443,6 @@ $("#modify-user-confirm-btn").click( function () {
 $("#delete-device-confirm-btn").click(function () {
 
 	let id = $(this).data("deviceid");
-
 	$.ajax({
 		url: '/api/user_device_details/' + id + '/',
 		type: 'DELETE',
@@ -463,7 +463,6 @@ $("#delete-device-confirm-btn").click(function () {
 });
 
 $("#create-announce-btn").click( function () {
-
 	let data = {
 		"title": $("#create-announce-title").val(),
 		"body": $("#create-announce-body").val(),
@@ -490,6 +489,10 @@ $("#create-announce-btn").click( function () {
 
 			success: function (result) {
 				$("#create-announce-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Annonce ajoutée.</strong></div>");
+				$("#create-announce-title").empty();
+				$("#create-announce-body").empty();
+				$("#create-announce-modal").modal('hide');
+				$("#create-announce-feedback").empty();
 				table.ajax.reload();
 			},
 
@@ -502,6 +505,69 @@ $("#create-announce-btn").click( function () {
 	}
 
 });
+
+$("#modify-announce-confirm-btn").click( function () {
+	id = $(this).data("announceid");
+	let data = {
+		"title": $("#modify-announce-title").val(),
+		"body": $("#modify-announce-body").val(),
+		"visible": $("#modify-announce-visible").is(':checked'),
+		"pinned": $("#modify-announce-pinned").is(':checked'),
+	};
+
+	if (!/^[^<>]+$/.test(data["title"])  || data["title"].length > 50) {
+		create_error_modal("Oops", "<p>Le titre de l'annonce ne peut pas faire plus de 50 caractères ou contenir les caractères <b>&lt;</b> et <b>&gt;</b>.</p>");
+	}
+
+	else if (!/^[^<>]+$/.test(data["content"])) {
+		create_error_modal("Oops", "<p>Le contenu de l'annonce ne peut pas contenir les caractères <b>&lt;</b> et <b>&gt;</b>.</p>");
+	}
+
+	else {
+
+
+		$.ajax({
+			url: '/api/announces_details/' + id,
+			type: 'PUT',
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(data),
+
+			success: function (result) {
+				$("#modify-announce-feedback").append("<div class=\"alert alert-success\" role=\"alert\"><strong>Annonce modifiée</strong></div>");
+				$("#modify-announce-modal").modal('hide');
+				$("#modify-announce-feedback").empty();
+				table.ajax.reload();
+			},
+
+			error: function (xhr, textStatus, errorThrown) {
+				handle_error(textStatus, errorThrown, xhr.responseText);
+			}
+
+		});
+
+	}
+});
+
+$(document).on("click", ".modify-announce-btn", function () {
+	let id = $(this).data("announceid");
+	$("#modify-announce-confirm-btn").data("announceid", id);
+	$("#modify-announce-title").empty();
+	$("#modify-announce-body").empty();
+	$("#modify-announce-visible").empty();
+	$("#modify-announce-pinned").empty();
+
+	$.getJSON("/api/announces_details/" + id, function (data) {
+		$("#modify-announce-title").val(data["title"]);
+		$("#modify-announce-body").val(data["body"]);
+		$("#modify-announce-visible").val(data["visible"])
+		$("#modify-announce-pinned").val(data["pinned"])
+	});
+
+
+	$("#modify-announce-modal").modal('show');
+
+});
+
 
 $(document).on("click", ".delete-announce-btn", function (e) {
 	id = $(this).data("announceid");
