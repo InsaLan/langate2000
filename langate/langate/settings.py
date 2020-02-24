@@ -12,8 +12,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 from enum import Enum
 import os
-
-#from modules import network
+from .config import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,15 +22,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # If you get a warning, be sure to have the variable SECRET_KEY populated into the file secret_settings.py
-try:
-    from langate.settings_local import *
 
-except ModuleNotFoundError:
-    SECRET_KEY = 'secret'
-    print("[WARN] Secret settings not found, the website isn't secure anymore.")
+SECRET_KEY = django_secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = debug
 
 SERVER_IP = 'gate.insalan.fr'
 
@@ -183,5 +178,3 @@ LOGGING = {
         }
     },
 }
-
-PIZZA_ONLINE_ORDER_URL = "https://www.insalan.fr/pizza"

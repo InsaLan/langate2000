@@ -1,6 +1,7 @@
 import sys, socket, struct
 import pickle
 import threading
+from langate import config
 
 lock = threading.Lock()
 
@@ -31,11 +32,10 @@ def _recv(sock):
 
 
 def communicate(payload):
-    netcontrol_socket_file = "/var/run/langate2000-netcontrol.sock"
 
     with lock:
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
-            sock.connect(netcontrol_socket_file)
+            sock.connect(config.netcontrol_socket_file)
             r = pickle.dumps(payload)
             _send(sock, r)
 

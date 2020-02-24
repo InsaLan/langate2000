@@ -8,6 +8,16 @@ This project has several objectives :
 * from the developer point of view : be easy to maintain and improved (by being modular, having a narrow code base, using simple and tried and tested technologies...).
 * from the sysadmin point of view : allow to authenticate and identify the players on the network.
 
+## Configuration
+
+You will need to create a file named `config.py`.
+It shall contain the following variables :
+* `debug`: if True, both django and netcontrol debug modes will be enabled (do not enable in production)
+* `netcontrol_socket_file`: path of the socket file allowing langate and netcontrol to communicate
+* `vpn_nb`: number of vpn marks
+* `first_mark`: number of first vpn mark
+* `django_secret_key`: secret key used by django
+
 ## Deployment
 
 ### Production

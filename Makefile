@@ -1,7 +1,11 @@
 install:
 	cp langate2000-netcontrol.service /etc/systemd/system/
 
-build:
+copyconfig:
+	cp config.py langate2000-netcontrol/
+	cp config.py langate/langate/
+
+build: copyconfig
 	docker build . -t langate
 
 run:
@@ -20,7 +24,7 @@ stop:
 
 restart: stop run
 
-builddev:
+builddev: copyconfig
 	docker build -t langate-dev -f Dockerfile.dev .
 
 rundev:
