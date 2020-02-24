@@ -23,18 +23,14 @@ COPY langate2000-nginx.conf /etc/nginx/sites-enabled/default
 # Django setup
 
 ADD theming /app/theming
-ADD langate /app/langate
 ADD langate2000-netcontrol /app/langate2000-netcontrol
 
 WORKDIR /app/theming/
 
-RUN sass insalan.scss ../langate/static/css/langate.css
+RUN sass insalan.scss langate.css
 
 WORKDIR /app/langate/
 
-RUN python3 manage.py collectstatic --noinput
-RUN python3 manage.py makemigrations --noinput
-RUN python3 manage.py migrate --noinput
-RUN echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('root', '', 'rien')" | python3 manage.py shell
+ADD langate/entrypoint.sh .
 
-CMD [ "gunicorn", "langate.wsgi", "-b", "0.0.0.0:8000"]
+CMD ./entrypoint.sh
