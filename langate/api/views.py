@@ -7,7 +7,7 @@ from markdown import Markdown
 import requests
 from .serializers import *
 from portal.models import *
-
+from secret import admin_creds
 from rest_framework.exceptions import APIException
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -211,5 +211,13 @@ class MarkdownPreview(APIView):
 class TeamPlayers(APIView):
     permission_classes = (permissions.IsAdminUser,)
     def get(self, request):
-        teams = requests.get("https://www.insalan.fr/api/admin/placement", auth=("[username]", "[pass]"))
+        teams = requests.get("https://www.insalan.fr/api/admin/placement", auth=(admin_creds[0], admin_creds[1]))
         return Response(teams.json()["participants"])
+
+
+class Bandwidth(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+    def get(self, request, ip):
+        #TODO: load ip by config
+        ip = requests.get("http://172.16.1.1:1312/?group-by=sip:1312")
+        return Response(ip.json()[ip])

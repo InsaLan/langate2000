@@ -5,7 +5,6 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from . import views
-
 """
     path('management/widgets', views.widgets, name='widgets'),
     path('blog/', views.allblogs , name='allblogs'),

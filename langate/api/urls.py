@@ -23,4 +23,5 @@ urlpatterns = [
     #TODO: refactor that later
     path('teams/', TeamPlayers.as_view()),
     path('devices_list_by_name/<str:name>', DeviceListByName.as_view()),
+    path('bandwidth_by_ip/<str:ip>', Bandwidth.as_view()),
 ]

@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
-
+from secret import admin_creds
 from .models import *
 from modules import netcontrol, api_to_svg
 
@@ -47,7 +47,7 @@ def management(request):
 
 @staff_member_required
 def netmap(request):
-    netmap_data = requests.get("https://www.insalan.fr/api/admin/placement", auth=("[username]", "[password]")).json()
+    netmap_data = requests.get("https://www.insalan.fr/api/admin/placement", auth=(admin_creds[0], admin_creds[1])).json()
     print(netmap)
     context = {"page_name": "netmap",
                "netmap_svg": api_to_svg.api_to_map(netmap_data)}
