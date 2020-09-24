@@ -69,7 +69,8 @@ server {
 
 #### langate2000-netcontrol
 
-Follow the install instructions on the dedicated repository.
+launch command `make install` for the first setup of the langate on your computer, that will copy netcontrol.service in systemd.
+Then follow the install instructions on the dedicated repository.
 
 #### deploying the web app
 
