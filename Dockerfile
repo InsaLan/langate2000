@@ -8,7 +8,7 @@ ENV LANG=C.UTF-8
 # installing deps
 
 RUN apt-get update
-RUN apt-get install -y supervisor python3 python3-pip ipset iptables sudo nginx ruby ruby-dev
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y supervisor python3 python3-pip ipset iptables sudo nginx ruby ruby-dev
 RUN gem install sass
 
 COPY requirements.txt /app/
