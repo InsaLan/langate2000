@@ -36,7 +36,7 @@ def devices(request):
 
 @login_required
 def connected(request):
-
+    
     user_devices = Device.objects.filter(user=request.user)
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR')
 
