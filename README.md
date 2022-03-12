@@ -33,38 +33,49 @@ First, install the nginx package provided by your distribution.
 Then, we will need to create a configuration file for nginx to be at the same time a reverse proxy in front of the gunicorn server (that lives in the provided docker image) and a static asset server. To do so, create a new file at `/etc/nginx/sites-enabled/portal` following the model below :
 
 ```nginx
-# Optional portal redirection http -> https
-server {
-  listen 80 default_server;
-  return 307 https://gate.insalan.fr/;
+server { #allow ocsp requests
+   listen 80;
+   server_name r3.o.lencr.org;
+
+    # si problèmes avec oscp, vérifier la configuration oscp de lets encrypt
+    location / {
+        proxy_pass http://r3.o.lencr.org;
+    }
+}
+
+server { #redirect to the portal
+    listen 80 default_server;
+    return 307 https://gate.insalan.fr/;
 }
 
 server {
-  listen 443 ssl;
-  server_name gate.insalan.fr;
-  
-  ssl on;
-  
-  # here goes all the ssl configuration
-  
-  # reverse proxy redirecting requests to the gunicorn WSGI server
-  location / {
-  	gzip off;
-  	
-  	proxy_set_header X-Real-IP $remote_addr;
-  	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; # used by the gate to know the IP of the clients on the LAN
-  	proxy_set_header Host gate.insalan.fr;
-  	proxy_pass http://127.0.0.1:8000; # gunicorn host and port, if you somehow changed those, you will need to edit this line
-  	
-  }
-  
-  # static assets
-  location /static/ {
-  	alias /var/www/html/static/; # this is the path where the static assets that the gate uses are stored, this path has to exist.
-  }
+    listen 443 ssl;
+    server_name gate.insalan.fr;
+
+    # here goes all the ssl configuration
+    ssl on;
+    ssl_certificate /etc/nginx/certs/fullchain.pem;
+    ssl_certificate_key /etc/nginx/certs/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4";
+    
+    # reverse proxy redirecting requests to the gunicorn WSGI server
+    location / {
+        gzip off;
+
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; # used by the gate to know the IP of the clients on the LAN
+        proxy_set_header Host gate.insalan.fr;
+        proxy_pass http://127.0.0.1:8000; # gunicorn host and port, if you somehow changed those, you will need to edit this line
+    }
+
+    # static assets
+    location /static/ {
+        alias /var/www/html/static/; # this is the path where the static assets that the gate uses are stored, this path has to exist.
+    }
 
 }
-
 ```
 
 #### langate2000-netcontrol
