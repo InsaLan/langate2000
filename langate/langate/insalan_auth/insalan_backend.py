@@ -24,10 +24,9 @@ class InsalanBackend(ModelBackend):
     def short_name_to_tournament_enum(self, short_name):
 
         short_name_table = {
-            "tft": Tournament.tft,
-            "csgo": Tournament.csgo,
-            "dota": Tournament.dota,
-            "lol": Tournament.lol
+            "CSGO2022": Tournament.csgo,
+            "TM2022": Tournament.tm,
+            "lol2022": Tournament.lol
         }
 
         # remove year from short name

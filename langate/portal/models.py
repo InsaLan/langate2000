@@ -29,8 +29,7 @@ def generate_dev_name():
 
 class Tournament(Enum):
     csgo = "Counter Strike Global Offensive"
-    dota = "Dota 2"
-    tft = "Team Fight Tactics"
+    tm = "TrackMania 2020"
     lol = "League Of Legends"
 
 
