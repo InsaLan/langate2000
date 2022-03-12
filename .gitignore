@@ -1,3 +1,11 @@
+# La config qu'il faut surtout pas commit #
+###########################################
+/langate/langate/config.py
+
+# Vim temp files #
+##################
+*.swp
+
 # Compiled source #
 ###################
 *.com
