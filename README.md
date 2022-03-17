@@ -18,6 +18,34 @@ It shall contain the following variables :
 * `first_mark`: number of first vpn mark
 * `django_secret_key`: secret key used by django
 
+### Set the correct games
+
+As games will change from one edition of the festival to another, you will need to modify a few files :
+1. In `langate/portal/models.py`, change the values of the `Tournament` enum to match the games used for the tournaments :
+```
+class Tournament(Enum):
+    csgo = "Counter Strike Global Offensive"
+    tm = "TrackMania 2020"
+    lol = "League Of Legends"
+```
+2. In `langate/langate/insalan_auth/insalan_backend.py`, change the content of the `short_name_table` dict. It is used to translate the short names used by the web to values of the eun previously modified, so you should coordinate with the web team to get it right :
+```
+# Note that the year at the end of the short code is removed
+# For example, if the short code is 'CSGO2022', the key in the dict should be 'CSGO'
+# This should be changed in the future as it is nothing but a silly way to make mistakes (TODO)
+short_name_table = {
+	"CSGO": Tournament.csgo,
+	"TM": Tournament.tm,
+	"lol": Tournament.lol
+}
+```
+3. In `langate/portal/templates/portal/modal_modify_user.html`, the lines that look like this :
+```
+<option value="Tournament.csgo">Counter Strike Global Offensive</option>
+<option value="Tournament.tm">TrackMania 2020</option>
+<option value="Tournament.lol">League Of Legends</option>
+```
+
 ## Deployment
 
 ### Production

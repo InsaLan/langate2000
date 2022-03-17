@@ -23,20 +23,23 @@ class InsalanBackend(ModelBackend):
 
     def short_name_to_tournament_enum(self, short_name):
 
+		# Remember to check the keys (short codes) with the web !
         short_name_table = {
-            "CSGO2022": Tournament.csgo,
-            "TM2022": Tournament.tm,
-            "lol2022": Tournament.lol
+            "CSGO": Tournament.csgo,
+            "TM": Tournament.tm,
+            "lol": Tournament.lol
         }
 
         # remove year from short name
         # IMPORTANT: this assumes that the short name returned by the API is in format "shortYYYY"
         # where short is the short name and YYYY the year.
+		# TODO remove this silly thing, it just makes things harder to debug
         name = short_name[:-4]
 
         if name in short_name_table:
             return short_name_table[name].value
         else:
+			print(f"Tournament {short_name} not found")
             return None
 
     def authenticate(self, request: HttpRequest, username: str = None,
