@@ -10,6 +10,8 @@ from django.db import transaction
 
 from portal.models import Role, Tournament
 
+import traceback
+
 UserModel = get_user_model()
 
 
@@ -23,7 +25,7 @@ class InsalanBackend(ModelBackend):
 
     def short_name_to_tournament_enum(self, short_name):
 
-		# Remember to check the keys (short codes) with the web !
+        # Remember to check the keys (short codes) with the web !
         short_name_table = {
             "CSGO": Tournament.csgo,
             "TM": Tournament.tm,
@@ -33,13 +35,13 @@ class InsalanBackend(ModelBackend):
         # remove year from short name
         # IMPORTANT: this assumes that the short name returned by the API is in format "shortYYYY"
         # where short is the short name and YYYY the year.
-		# TODO remove this silly thing, it just makes things harder to debug
+        # TODO remove this silly thing, it just makes things harder to debug
         name = short_name[:-4]
 
         if name in short_name_table:
             return short_name_table[name].value
         else:
-			print(f"Tournament {short_name} not found")
+            print(f"Tournament {short_name} not found")
             return None
 
     def authenticate(self, request: HttpRequest, username: str = None,
@@ -119,6 +121,8 @@ class InsalanBackend(ModelBackend):
                 email = json_result["user"]["email"]
 
                 with transaction.atomic():
+                    if User.objects.filter(username=username).exists():
+                        return User.objects.get(username=username)
 
                     user = User.objects.create(
                         username=username,
@@ -137,19 +141,17 @@ class InsalanBackend(ModelBackend):
                                 user.profile.role = Role.M.value
 
                             break
-
                     user.save()
-
-                return user
+                    return user
 
         except ValidationError as e:
             # Any validation error is rethrown
             raise ValidationError(e.message)
 
-        except Exception as e:
+        except Exception:
             # Any other error must be converted to a ValidationError
             # so that the client does not crash.
             # Any other error is due to a wrong reading phase on the JSON object
             # i.e. a wrong format in this JSON object.
-            print(e)
+            traceback.print_exc()
             raise ValidationError("Unhandled error with remote API.")
