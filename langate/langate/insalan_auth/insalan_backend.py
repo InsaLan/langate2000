@@ -15,6 +15,14 @@ import traceback
 UserModel = get_user_model()
 
 
+# Remember to check the keys (short codes) with the web !
+short_name_table = {
+    "CSGO2022": Tournament.csgo,
+    "TM2022": Tournament.tm,
+    "lol2022": Tournament.lol
+}
+
+
 class InsalanBackend(ModelBackend):
     """
     A class extending ModelBackend to authenticate remote users from insalan.fr if they are not local users (using the new API).
@@ -24,20 +32,6 @@ class InsalanBackend(ModelBackend):
     # https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
 
     def short_name_to_tournament_enum(self, short_name):
-
-        # Remember to check the keys (short codes) with the web !
-        short_name_table = {
-            "CSGO": Tournament.csgo,
-            "TM": Tournament.tm,
-            "lol": Tournament.lol
-        }
-
-        # remove year from short name
-        # IMPORTANT: this assumes that the short name returned by the API is in format "shortYYYY"
-        # where short is the short name and YYYY the year.
-        # TODO remove this silly thing, it just makes things harder to debug
-        name = short_name[:-4]
-
         if name in short_name_table:
             return short_name_table[name].value
         else:
@@ -121,6 +115,8 @@ class InsalanBackend(ModelBackend):
                 email = json_result["user"]["email"]
 
                 with transaction.atomic():
+
+                    # If the user is already registered, return the existing entry
                     if User.objects.filter(username=username).exists():
                         return User.objects.get(username=username)
 

@@ -30,13 +30,10 @@ class Tournament(Enum):
 ```
 2. In [`langate/langate/insalan_auth/insalan_backend.py`](langate/langate/insalan_auth/insalan_backend.py), change the content of the `short_name_table` dict. It is used to translate the short names used by the web to values of the eun previously modified, so you should coordinate with the web team to get it right :
 ```
-# Note that the year at the end of the short code is removed
-# For example, if the short code is 'CSGO2022', the key in the dict should be 'CSGO'
-# This should be changed in the future as it is nothing but a silly way to make mistakes (TODO)
 short_name_table = {
-	"CSGO": Tournament.csgo,
-	"TM": Tournament.tm,
-	"lol": Tournament.lol
+	"CSGO2022": Tournament.csgo,
+	"TM2022": Tournament.tm,
+	"lol2022": Tournament.lol
 }
 ```
 3. In [`langate/portal/templates/portal/modal_modify_user.html`](langate/portal/templates/portal/modal_modify_user.html), the lines that look like this :
