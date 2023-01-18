@@ -17,9 +17,10 @@ UserModel = get_user_model()
 
 # Remember to check the keys (short codes) with the web !
 short_name_table = {
-    "CSGO2022": Tournament.csgo,
-    "TM2022": Tournament.tm,
-    "lol2022": Tournament.lol
+    "CSGO2023": Tournament.csgo,
+    "TM2023": Tournament.tm,
+    "lol2023": Tournament.lol,
+    "RL2023": Tournament.rl
 }
 
 

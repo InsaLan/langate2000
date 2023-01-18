@@ -6,4 +6,4 @@ pwgen>0.7
 django-crispy-forms>=1.7.2,<1.8
 gunicorn
 xmltodict
-markdown
+markdown==3.0.1

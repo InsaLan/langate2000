@@ -31,6 +31,7 @@ class Tournament(Enum):
     csgo = "Counter Strike Global Offensive"
     tm = "TrackMania 2020"
     lol = "League Of Legends"
+    rl = "Rocket League"
 
 
 class Role(Enum):
