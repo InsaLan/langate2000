@@ -686,6 +686,44 @@ $(document).on("click", ".create-whitelist-modal-btn", function (e) {
 	$("#create-whitelist-modal").modal("show");
 });
 
+$("#create-whitelists-btn").click(function(){
+
+	let data = $("#create-whitelists-input").val().split('\n');
+	console.log("pouet");
+	data.forEach(element => {
+		if (element.split("|").length == 2) {
+			let line = {
+				"mac": element.split("|")[1],
+				"name":  element.split("|")[0]
+			};
+			$.ajax({
+				url: '/api/whitelist_device/',
+				type: 'POST',
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(line),
+
+				success: function(result) {
+					table.ajax.reload();
+				},
+
+				error: function (xhr, textStatus, errorThrown) {
+					handle_error(textStatus, errorThrown, xhr.responseText);
+				}
+			})
+		}
+	});
+
+	$("#create-whitelists-modal").modal('hide');
+}
+)
+
+$(document).on("click", ".create-whitelists-modal-btn", function (e) {
+	data = "LUX|f8:f2:1e:af:8d:39\nMASTERPIECE|d4:3d:7e:b9:b0:b6\nSLAVEPIECE|14:da:e9:dd:93:30\nJULIENLEPERS|00:19:99:83:11:70\nDATHOMIR|00:15:17:3d:06:0f\nSUNFLOWER|00:14:4f:7d:aa:13\nREDWINE|34:17:eb:97:1e:d6\nBELZEBUTH|34:17:eb:97:66:30\nGLADOS|90:e2:ba:1b:c3:70\nWHEATLEY|90:e2:ba:06:5f:48\nMORAX|90:14:4f:7d:aa:14\nDORIAN|d4:ae:52:cc:af:68";
+	$("#create-whitelists-input").val(data);
+	$("#create-whitelists-modal").modal("show");
+
+});
+
 
 $("#delete-whitlist-confirm-btn").click(function(){
 		let userid = $("#delete-whitlist-confirm-btn").data("userid");
