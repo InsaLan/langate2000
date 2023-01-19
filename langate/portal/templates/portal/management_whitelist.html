@@ -19,6 +19,7 @@
           <ul class="nav nav-pills">
               <li class="nav-item">
                 <button type="button" class="btn btn-primary align-right create-whitelist-modal-btn" data-toggle="modal">Nouvel Appareil Autorisé</button>
+                <button type="button" class="btn btn-primary align-right create-whitelists-modal-btn" data-toggle="modal">Nouveaux Appareils Autorisés</button>
               </li>
           </ul>
       </nav>
@@ -51,11 +52,11 @@
                       <form>
                             <div class="form-group row">
                                 <label for="create-whitelist-modal" class="col-sm-5 col-form-label">MAC de l'appareil: </label>
-                                <input tabindex="4" type="text" class="form-control col-sm-7 disabled" id="create-whitelist-mac-input">
+                                <input style="font-size: x-large;" tabindex="4" type="text" class="form-control col-sm-7 disabled" id="create-whitelist-mac-input">
                             </div>
                             <div class="form-group row">
                                 <label for="create-whitelist-modal" class="col-sm-5 col-form-label">Nom de l'appareil: </label>
-                                <input tabindex="4" type="text" class="form-control col-sm-7 disabled" id="create-whitelist-name-input">
+                                <input style="font-size: x-large;" tabindex="4" type="text" class="form-control col-sm-7 disabled" id="create-whitelist-name-input">
                             </div>
                         </form>
                     </div>
@@ -68,12 +69,12 @@
         </div>
     </div>
 
-        <!-- Modal Add Whitelist_Device -->
-    <div class="modal modal-insalan fade" id="create-whitelist-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Modal Add Multiple Whitelists_Devices -->
+    <div class="modal modal-insalan fade" id="create-whitelists-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Ajouter un appareil autorisé</h5>
+                    <h5 class="modal-title">Ajouter plusieurs appareils autorisés</h5>
                     <button tabindex="-1" type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -82,19 +83,15 @@
                     <div class="container">
                       <form>
                             <div class="form-group row">
-                                <label for="create-whitelist-modal" class="col-sm-5 col-form-label">MAC de l'appareil: </label>
-                                <input tabindex="4" type="text" class="form-control col-sm-7 disabled" id="create-whitelist-mac-input">
-                            </div>
-                            <div class="form-group row">
-                                <label for="create-whitelist-modal" class="col-sm-5 col-form-label">Nom de l'appareil: </label>
-                                <input tabindex="4" type="text" class="form-control col-sm-7 disabled" id="create-whitelist-name-input">
+                                <label for="create-whitelists-modal" class="col-sm-5 col-form-label">Liste de d'appareils (nom|mac) </label>
+                                <textarea style="font-size: x-large;" class="form-control" id="create-whitelists-input" rows="12" placeholder="NOM|MAC"></textarea>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" tabindex="-1">Fermer</button>
-                    <button tabindex="9" type="button" class="btn btn-primary" id="create-whitelist-btn">Enregistrer</button>
+                    <button tabindex="9" type="button" class="btn btn-primary" id="create-whitelists-btn">Enregistrer</button>
                 </div>
             </div>
         </div>
