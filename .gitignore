@@ -1,6 +1,7 @@
 # La config qu'il faut surtout pas commit #
 ###########################################
 /langate/langate/config.py
+**/config.py
 
 # Vim temp files #
 ##################
@@ -45,7 +46,7 @@ ehthumbs.db
 Thumbs.db
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 
