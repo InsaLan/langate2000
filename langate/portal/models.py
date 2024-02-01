@@ -28,10 +28,10 @@ def generate_dev_name():
 
 
 class Tournament(Enum):
-    csgo = "Counter Strike Global Offensive"
+    cs2 = "Counter Strike 2"
     tm = "TrackMania 2020"
     lol = "League Of Legends"
-    rl = "Rocket League"
+    valo = "Valorant"
 
 
 class Role(Enum):

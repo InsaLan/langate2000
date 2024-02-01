@@ -17,10 +17,10 @@ UserModel = get_user_model()
 
 # Remember to check the keys (short codes) with the web !
 short_name_table = {
-    "CSGO2023": Tournament.csgo,
-    "TM2023": Tournament.tm,
-    "lol2023": Tournament.lol,
-    "RL2023": Tournament.rl
+    "CS 2": Tournament.cs2,
+    "TM": Tournament.tm,
+    "LoL": Tournament.lol,
+    "Valo": Tournament.valo,
 }
 
 
@@ -43,7 +43,7 @@ class InsalanBackend(ModelBackend):
                      password: str = None, **kwargs):
         """
         authenticate() should check the credentials it gets and return a user object that matches those credentials
-        if the credentials are valid. If they’re not valid, it should return None
+        if the credentials are valid. If they're not valid, it should return None
         :param request: an HttpRequest and may be None if it was not provided
         :param username: a string, which is the username of the user
         :param password: a string, which is the password of the user
@@ -59,13 +59,14 @@ class InsalanBackend(ModelBackend):
         {
             "user": {
                 "username": username,
-                "name": name,
+                "first_name": first_name,
+                "last_name": last_name,
                 "email": email
             },
             "err":  "registration_not_found", (player not found)
                     "no_paid_place", (player found but he has not paid)
                     null, (player found and he has paid)
-            "tournament": [
+            "tournaments": [
                 {
                     "shortname": (...),
                     "game_name": (...),
@@ -80,17 +81,21 @@ class InsalanBackend(ModelBackend):
         # Raising ValidationError exceptions
 
         # Request with authentication
+        
         try:
-            request_result = requests.get(
-                "https://www.insalan.fr/api/user/2me",
-                auth=(username.encode("utf-8"), password.encode("utf-8")),
+            request_result = requests.post(
+                "https://api.insalan.fr/v1/langate/authenticate",
+                json={
+                    "username": username.encode("utf-8"), 
+                    "password": password.encode("utf-8")
+                    },
                 timeout=4)
 
         except requests.exceptions.Timeout:
             raise ValidationError(
                 "User not registered locally and remote API unreachable.")
 
-        if request_result.status_code == 401:  # 401 = Unauthorized
+        if request_result.status_code == 404:  # 404 = Not found
             # Bad credentials
             raise ValidationError("Wrong username or password.")
 
@@ -114,6 +119,8 @@ class InsalanBackend(ModelBackend):
             else:
                 # The player has paid, we can return the object
                 email = json_result["user"]["email"]
+                first_name = json_result["user"]["first_name"]
+                last_name = json_result["user"]["last_name"]
 
                 with transaction.atomic():
 
@@ -124,9 +131,11 @@ class InsalanBackend(ModelBackend):
                     user = User.objects.create(
                         username=username,
                         email=email,
-                        password=password)
+                        password=password,
+                        first_name=first_name,
+                        last_name=last_name)
 
-                    for tournament in json_result["tournament"]:
+                    for tournament in json_result["tournaments"]:
                         if tournament["has_paid"]:
                             short_name = tournament["shortname"] if "shortname" in tournament else None
                             is_manager = tournament["manager"] if "manager" in tournament else False
