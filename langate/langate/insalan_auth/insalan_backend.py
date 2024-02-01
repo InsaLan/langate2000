@@ -33,8 +33,8 @@ class InsalanBackend(ModelBackend):
     # https://docs.djangoproject.com/en/2.0/ref/contrib/auth/#available-authentication-backends
 
     def short_name_to_tournament_enum(self, short_name):
-        if name in short_name_table:
-            return short_name_table[name].value
+        if short_name in short_name_table:
+            return short_name_table[short_name].value
         else:
             print(f"Tournament {short_name} not found")
             return None
@@ -84,7 +84,7 @@ class InsalanBackend(ModelBackend):
             request_result = requests.get(
                 "https://www.insalan.fr/api/user/2me",
                 auth=(username.encode("utf-8"), password.encode("utf-8")),
-                timeout=1)
+                timeout=4)
 
         except requests.exceptions.Timeout:
             raise ValidationError(

@@ -22,7 +22,7 @@ class PortalConfig(AppConfig):
                 if not connect_res["success"]:
                     print("[PortalConfig] Could not connect device {}".format(dev.name))
 
-                mark_res = netcontrol.query("set_mark", {"mac": dev.mac, "mark": 0})
+                mark_res = netcontrol.query("set_mark", {"mac": dev.mac, "mark": 100})
                 if not mark_res["success"]:
                     print("[PortalConfig] Could not set mark 0 for device {}".format(dev.name))
 
