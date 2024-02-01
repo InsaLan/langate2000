@@ -86,8 +86,8 @@ class InsalanBackend(ModelBackend):
             request_result = requests.post(
                 "https://api.insalan.fr/v1/langate/authenticate",
                 json={
-                    "username": username.encode("utf-8"), 
-                    "password": password.encode("utf-8")
+                    "username": username, 
+                    "password": password
                     },
                 timeout=4)
 
