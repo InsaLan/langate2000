@@ -107,48 +107,55 @@ class InsalanBackend(ModelBackend):
         try:
             json_result = request_result.json()
             paid_status = json_result["err"]
-            if paid_status == "registration_not_found":
-                # The insalan.fr account exists, but the player
-                # is not registered during the event
-                raise ValidationError(
-                    "The account exists, but this player is not registered.")
-            elif paid_status == "no_paid_place":
-                # The player is registered but has not paid
-                raise ValidationError(
-                    "This player is registered but has not paid.")
-            else:
-                # The player has paid, we can return the object
-                email = json_result["user"]["email"]
-                first_name = json_result["user"]["first_name"]
-                last_name = json_result["user"]["last_name"]
+            is_staff = "is_staff" in json_result and json_result["is_staff"]
 
-                with transaction.atomic():
+            if not is_staff:
+                if paid_status == "registration_not_found":
+                    # The insalan.fr account exists, but the player
+                    # is not registered during the event
+                    raise ValidationError(
+                        "The account exists, but this player is not registered.")
+                elif paid_status == "no_paid_place":
+                    # The player is registered but has not paid
+                    raise ValidationError(
+                        "This player is registered but has not paid.")
 
-                    # If the user is already registered, return the existing entry
-                    if User.objects.filter(username=username).exists():
-                        return User.objects.get(username=username)
+            # The player has paid, we can return the object
+            email = json_result["user"]["email"]
+            first_name = json_result["user"]["first_name"]
+            last_name = json_result["user"]["last_name"]
 
-                    user = User.objects.create(
-                        username=username,
-                        email=email,
-                        password=password,
-                        first_name=first_name,
-                        last_name=last_name)
+            with transaction.atomic():
 
-                    for tournament in json_result["tournaments"]:
-                        if tournament["has_paid"]:
-                            short_name = tournament["shortname"] if "shortname" in tournament else None
-                            is_manager = tournament["manager"] if "manager" in tournament else False
+                # If the user is already registered, return the existing entry
+                if User.objects.filter(username=username).exists():
+                    return User.objects.get(username=username)
 
-                            user.profile.tournament = self.short_name_to_tournament_enum(short_name)
-                            user.profile.team = tournament["team"] if "team" in tournament else None
+                user = User.objects.create(
+                    username=username,
+                    email=email,
+                    password=password,
+                    first_name=first_name,
+                    last_name=last_name)
 
-                            if is_manager:
-                                user.profile.role = Role.M.value
+                for tournament in json_result["tournaments"]:
+                    if tournament["has_paid"]:
+                        short_name = tournament["shortname"] if "shortname" in tournament else None
+                        is_manager = tournament["manager"] if "manager" in tournament else False
 
-                            break
-                    user.save()
-                    return user
+                        user.profile.tournament = self.short_name_to_tournament_enum(short_name)
+                        user.profile.team = tournament["team"] if "team" in tournament else None
+
+                        if is_manager:
+                            user.profile.role = Role.M.value
+
+                        break
+
+                if is_staff:
+                    user.profile.role = Role.S.value
+
+                user.save()
+                return user
 
         except ValidationError as e:
             # Any validation error is rethrown
