@@ -16,7 +16,7 @@
         {% for message in messages %}
         <div class="text-center">
             <p class="mb-1">{{message}}</p>
-            <small class="text-muted">{{message.sender}} - ({{message.date|date:"l - H:m"}})</small>
+            <small class="text-muted">{{message.sender}} - ({{message.date|date:"l - H:i"}})</small>
         </div>
         {% endfor %}
 
