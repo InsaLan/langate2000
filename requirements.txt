@@ -1,7 +1,7 @@
 Django==2.2.10
 django-bootstrap4==1.0.1
 requests>=2.21
-djangorestframework==3.9.3
+djangorestframework==3.11.2
 pwgen>0.7
 django-crispy-forms>=1.7.2,<1.8
 gunicorn
